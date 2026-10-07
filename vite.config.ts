@@ -3,7 +3,9 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import { fileURLToPath } from 'node:url';
 
+// Set VITE_BASE=/NOVA/ when hosting under a sub-path (for example GitHub Pages project sites). Default: site root.
 export default defineConfig({
+  base: process.env.VITE_BASE ?? '/',
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   plugins: [
     react(),

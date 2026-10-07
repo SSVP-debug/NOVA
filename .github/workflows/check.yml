@@ -33,3 +33,6 @@ jobs:
 
       # the production build must also work (includes the offline service worker)
       - run: npm run build
+
+      # the built app must be fully saved by the service worker and load nothing from the internet
+      - run: npm run check:offline

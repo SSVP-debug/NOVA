@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useSession } from '@/app/session';
 import { DemoTools } from './DemoTools';
+import { OfflineBadge } from './OfflineBadge';
 import { Diagnostic } from './screens/Diagnostic';
 import { Dna } from './screens/Dna';
 import { Home } from './screens/Home';
@@ -20,7 +21,7 @@ export function App() {
   const { ready, profile, selectProfile } = useSession();
   const [route, setRoute] = useState<Route>({ name: 'home' });
   if (!ready) return <div className="wrap">Loading...</div>;
-  if (!profile) return <ProfilePicker />;
+  if (!profile) return (<><ProfilePicker /><div className="wrap"><OfflineBadge /></div></>);
   const tab = (name: Route['name'], label: string) => (
     <button className={route.name === name ? 'on' : ''} onClick={() => setRoute({ name } as Route)}>{label}</button>
   );
@@ -30,6 +31,7 @@ export function App() {
         <b style={{ fontSize: 24 }}>NOVA</b>
         <span className="mu">{profile.name} {profile.seeded ? '(sample data)' : ''} <button onClick={() => selectProfile(null)}>Switch</button></span>
       </div>
+      <div style={{ margin: '2px 0 6px' }}><OfflineBadge /></div>
       <DemoTools />
       <nav>{tab('home', 'Home')}{tab('learn', 'Learn')}{tab('practice', 'Practice')}{tab('dna', 'My DNA')}</nav>
       {route.name === 'home' && <Home go={setRoute} />}

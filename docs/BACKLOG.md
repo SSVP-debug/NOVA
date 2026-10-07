@@ -32,7 +32,7 @@ Definition of done for every task: `npm run check` passes, tests added, works of
 ## Phase D: Offline, accessibility, evidence
 | ID | Task | Acceptance |
 |---|---|---|
-| D1 | Verify offline install in a real browser; document steps | Wi-Fi off, reload, full session works; screenshot of empty network tab |
+| D1 | **PARTLY DONE.** Done and tested: `npm run check:offline` (CI), live "Ready to work offline" badge, sub-path hosting support (`VITE_BASE`), step-by-step guide `docs/OFFLINE_TEST.md`. **Still needs a person:** run the real-browser and real-device test and save the screenshot and numbers | Table in `docs/OFFLINE_TEST.md` filled in, screenshot of the empty Network tab |
 | D2 | Accessibility: text size control, high contrast, read-aloud (browser speech), focus order, labels | Keyboard-only run through the loop |
 | D3 | Export/import UI in Settings with clear messages | Round trip restores state |
 | D4 | Evidence pack: engine tests, simulated-learner script, weak-device numbers | `docs/EVIDENCE.md` with real numbers |
