@@ -18,7 +18,7 @@ export function SessionSummaryView({ summary: s, go, restart }: Props) {
       <div className="card">
         <div className="mu">Session summary</div>
         <h2 style={{ margin: '4px 0' }}>{s.headline}</h2>
-        <p style={{ fontSize: 20, margin: '4px 0' }}><b>{s.correct} of {s.total}</b> correct ({pct(s.accuracy)})</p>
+        <p style={{ fontSize: '1.25rem', margin: '4px 0' }}><b>{s.correct} of {s.total}</b> correct ({pct(s.accuracy)})</p>
         {s.sureWrong > 0 && (
           <p className="mu">You marked {s.sureWrong} wrong {s.sureWrong === 1 ? 'answer' : 'answers'} as "sure". Noticing this helps you double-check next time.</p>
         )}

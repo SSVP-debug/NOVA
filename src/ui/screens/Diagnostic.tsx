@@ -3,6 +3,7 @@ import { diagnosticLength, nextDiagnosticQuestion, summarizeDiagnostic, type Dia
 import type { AttemptEvent, Confidence, PlanStep, Question } from '@/core/types';
 import { useSession } from '@/app/session';
 import type { Route } from '../App';
+import { ListenButton } from '../ListenButton';
 
 const LEVEL_TEXT: Record<DiagnosticLevel, string> = { 'needs-work': 'Needs work', building: 'Building', solid: 'Solid' };
 const pct = (n: number) => `${Math.round(n * 100)}%`;
@@ -77,7 +78,7 @@ export function Diagnostic({ go }: { go: (r: Route) => void }) {
         <div className="card">
           <div className="mu">Quick check done</div>
           <h2 ref={heading} tabIndex={-1} style={{ margin: '4px 0' }}>Your starting point</h2>
-          <p style={{ fontSize: 20, margin: '4px 0' }}><b>{result.correct} of {result.total}</b> correct</p>
+          <p style={{ fontSize: '1.25rem', margin: '4px 0' }}><b>{result.correct} of {result.total}</b> correct</p>
           {result.sureWrong > 0 && (
             <p className="mu">You marked {result.sureWrong} wrong {result.sureWrong === 1 ? 'answer' : 'answers'} as "sure". Noticing this helps you double-check next time.</p>
           )}
@@ -178,6 +179,7 @@ export function Diagnostic({ go }: { go: (r: Route) => void }) {
       <div className="card">
         <h3 ref={heading} tabIndex={-1} style={{ marginTop: 4 }}>{q.prompt}</h3>
         {q.code && <pre>{q.code}</pre>}
+        <ListenButton label="the question" text={`${q.prompt} ${q.options.map((o, i) => `Option ${i + 1}: ${o.text}.`).join(' ')}`} />
         <p className="mu" id="dx-conf-label">How sure are you?</p>
         <div className="row" role="group" aria-labelledby="dx-conf-label">
           {(['sure', 'unsure', 'guess'] as Confidence[]).map((c) => (

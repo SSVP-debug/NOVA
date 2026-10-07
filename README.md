@@ -52,3 +52,7 @@ Foundation complete: contracts, engine, storage, AI port with fallback, generato
 - AI tools (Claude) were used to help write parts of the code and documents. Every change is covered by automated checks (`npm run check`), and the team reviews and tests it.
 - Demo learners are **sample data** and are labeled that way in the app.
 - Per-task change notes are in `docs/changes/`.
+
+## Accessibility and backup
+
+Open **Settings** in the app for text size, high contrast, read aloud, and backup/restore of a profile. Manual accessibility checks are in `docs/ACCESSIBILITY_CHECK.md`.

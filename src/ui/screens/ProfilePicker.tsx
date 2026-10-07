@@ -1,10 +1,10 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useSession } from '@/app/session';
+import { BackupImport } from '../BackupImport';
 
 export function ProfilePicker() {
-  const { profiles, createProfile, selectProfile, seedDemoProfiles, importFile, removeProfile } = useSession();
+  const { profiles, createProfile, selectProfile, seedDemoProfiles, removeProfile } = useSession();
   const [name, setName] = useState('');
-  const file = useRef<HTMLInputElement>(null);
   return (
     <div className="wrap">
       <h1>NOVA</h1>
@@ -28,9 +28,8 @@ export function ProfilePicker() {
       </div>
       <div className="row">
         <button onClick={seedDemoProfiles}>Load demo learners</button>
-        <button onClick={() => file.current?.click()}>Import profile file</button>
-        <input ref={file} type="file" accept="application/json" hidden onChange={async (e) => { const f = e.target.files?.[0]; if (f) await importFile(await f.text()); e.target.value = ''; }} />
       </div>
+      <div style={{ marginTop: 8 }}><BackupImport label="Restore from a backup file" /></div>
     </div>
   );
 }

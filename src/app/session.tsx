@@ -1,6 +1,7 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { applyAttempt } from '@/core/engine';
-import type { AttemptEvent, LearnerState, Profile } from '@/core/types';
+import type { AttemptEvent, LearnerState, Profile, Settings } from '@/core/types';
+import { normalizeSettings } from '@/core/settings';
 import { aaravLearner, freshLearner, makeProfile } from '@/seed/personas';
 import { createLearner } from '@/core/engine';
 import type { Services } from './container';
@@ -21,7 +22,8 @@ interface Session {
   resetTime(): void;
   recordAttempts(evs: AttemptEvent[]): Promise<LearnerState>; // several answers at once, in order, saved once
   exportCurrent(): Promise<string>;
-  importFile(text: string): Promise<void>;
+  importFile(text: string): Promise<Profile>; // throws; use describeImportError() for words
+  updateSettings(patch: Partial<Settings>): Promise<void>;
   removeProfile(id: string): Promise<void>;
 }
 
@@ -37,6 +39,8 @@ export function SessionProvider({ services, children }: { services: Services; ch
   const [ready, setReady] = useState(false);
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const profileRef = useRef<Profile | null>(null); // always the newest profile, even between renders
+  profileRef.current = profile;
   const [learner, setLearner] = useState<LearnerState | null>(null);
   const [timeShiftDays, setTimeShiftDays] = useState(services.demoClock?.shiftDays ?? 0);
   const advanceDays = useCallback((days: number) => { services.demoClock?.advanceDays(days); setTimeShiftDays(services.demoClock?.shiftDays ?? 0); }, [services]);
@@ -91,7 +95,24 @@ export function SessionProvider({ services, children }: { services: Services; ch
   }, [profile, storage]);
 
   const importFile = useCallback(async (text: string) => {
-    await storage.importBundle(JSON.parse(text));
+    const raw: unknown = JSON.parse(text); // a SyntaxError here means "not a readable file"
+    const before = await storage.listProfiles();
+    let p = await storage.importBundle(raw);
+    if (before.some((x) => x.name === p.name)) { // never leave two profiles with the same name
+      p = { ...p, name: `${p.name} (restored)` };
+      await storage.saveProfile(p);
+    }
+    await refresh();
+    return p;
+  }, [storage, refresh]);
+
+  const updateSettings = useCallback(async (patch: Partial<Settings>) => {
+    const current = profileRef.current;
+    if (!current) return;
+    const next: Profile = { ...current, settings: normalizeSettings({ ...current.settings, ...patch }) };
+    profileRef.current = next; // so a second quick change builds on this one, not on the old profile
+    setProfile(next);
+    await storage.saveProfile(next);
     await refresh();
   }, [storage, refresh]);
 
@@ -102,7 +123,7 @@ export function SessionProvider({ services, children }: { services: Services; ch
   }, [storage, profile, refresh]);
 
   const value = useMemo<Session>(() => ({
-    services, ready, profiles, profile, learner, canShiftTime: !!services.demoClock, timeShiftDays, advanceDays, resetTime, createProfile, selectProfile, seedDemoProfiles, recordAttempt, recordAttempts, exportCurrent, importFile, removeProfile,
-  }), [services, ready, profiles, profile, learner, timeShiftDays, advanceDays, resetTime, createProfile, selectProfile, seedDemoProfiles, recordAttempt, recordAttempts, exportCurrent, importFile, removeProfile]);
+    services, ready, profiles, profile, learner, canShiftTime: !!services.demoClock, timeShiftDays, advanceDays, resetTime, createProfile, selectProfile, seedDemoProfiles, recordAttempt, recordAttempts, exportCurrent, importFile, updateSettings, removeProfile,
+  }), [services, ready, profiles, profile, learner, timeShiftDays, advanceDays, resetTime, createProfile, selectProfile, seedDemoProfiles, recordAttempt, recordAttempts, exportCurrent, importFile, updateSettings, removeProfile]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

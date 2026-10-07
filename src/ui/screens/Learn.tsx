@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { buildLesson, lessonText } from '@/core/engine';
 import type { ExplanationStyle } from '@/core/types';
 import { useSession } from '@/app/session';
+import { ListenButton } from '../ListenButton';
 import type { Route } from '../App';
 
 const STYLE_LABEL: Record<ExplanationStyle, string> = {
@@ -33,6 +34,7 @@ export function Learn({ concept, go }: { concept?: string; go: (r: Route) => voi
         <h2 style={{ marginTop: 0 }}>{c.title}</h2>
         <div className="mu">Explained as: <b>{STYLE_LABEL[shown]}</b>{picked ? ' (your choice)' : ''}</div>
         <p aria-live="polite">{lessonText(pack, c.id, shown)}</p>
+        <ListenButton label="the lesson" text={`${c.title}. ${lessonText(pack, c.id, shown)}`} />
         <details>
           <summary>Why this?</summary>
           <p>{picked ? `You picked this style yourself. NOVA would have chosen "${STYLE_LABEL[lesson.style]}". ${lesson.reason}` : lesson.reason}</p>

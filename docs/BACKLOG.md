@@ -33,8 +33,8 @@ Definition of done for every task: `npm run check` passes, tests added, works of
 | ID | Task | Acceptance |
 |---|---|---|
 | D1 | **PARTLY DONE.** Done and tested: `npm run check:offline` (CI), live "Ready to work offline" badge, sub-path hosting support (`VITE_BASE`), step-by-step guide `docs/OFFLINE_TEST.md`. **Still needs a person:** run the real-browser and real-device test and save the screenshot and numbers | Table in `docs/OFFLINE_TEST.md` filled in, screenshot of the empty Network tab |
-| D2 | Accessibility: text size control, high contrast, read-aloud (browser speech), focus order, labels | Keyboard-only run through the loop |
-| D3 | Export/import UI in Settings with clear messages | Round trip restores state |
+| D2 | **DONE in code; manual checks pending.** Settings screen with text size (3 sizes), high contrast (palette tested to WCAG AAA), read aloud ("Listen" buttons on lessons and questions, uses a local voice when one exists), skip link, main landmark, focus moves to the new screen, `aria-current` on tabs. Guide: `docs/ACCESSIBILITY_CHECK.md` | Keyboard-only run, 200% zoom, high-contrast look, offline read-aloud and (optional) screen reader checked by a person on the demo device |
+| D3 | **DONE.** Settings has "Save a backup file" (clear file name and message) and "Restore from a backup file" (also on the profile screen). Plain-words errors; a restore always makes a NEW profile and adds "(restored)" if the name exists; damaged files are rejected without changing anything | Round trip proven by `backup.test.ts` and `settings.test.tsx` |
 | D4 | Evidence pack: engine tests, simulated-learner script, weak-device numbers | `docs/EVIDENCE.md` with real numbers |
 | D5 | Demo mode: seeded personas, reset button, backup recording | Demo script runs end to end in under 3 minutes |
 

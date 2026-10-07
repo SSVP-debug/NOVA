@@ -4,6 +4,7 @@ import { CONFIG } from '@/core/config';
 import type { AttemptEvent, Confidence, ExplanationStyle, Intervention, MisconceptionId, Option, Question } from '@/core/types';
 import { useSession } from '@/app/session';
 import type { Route } from '../../App';
+import { ListenButton } from '../../ListenButton';
 import { SessionSummaryView } from './SessionSummaryView';
 
 interface Result { option: Option; intervention?: Intervention; text?: string }
@@ -90,6 +91,7 @@ export function PracticeSession({ concept, focus, go, restart }: Props) {
         {probeFor && <div className="mu">Probe: checking that this mistake is fixed</div>}
         <h3 style={{ marginTop: 4 }}>{q.prompt}</h3>
         {q.code && <pre>{q.code}</pre>}
+        {!res && <ListenButton label="the question" text={`${q.prompt} ${q.options.map((o, i) => `Option ${i + 1}: ${o.text}.`).join(' ')}`} />}
 
         {!res ? (
           <>
@@ -120,6 +122,7 @@ export function PracticeSession({ concept, focus, go, restart }: Props) {
                 <div className="box tip">
                   <b>{res.intervention?.style}</b><br />{res.text ?? res.intervention?.baseText}
                   <details><summary>Why this?</summary>{res.intervention?.reason}</details>
+                  <ListenButton label="the explanation" text={res.text ?? res.intervention?.baseText ?? ''} />
                 </div>
               </>
             )}

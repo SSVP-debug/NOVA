@@ -1,9 +1,9 @@
+import { DEFAULT_SETTINGS } from '@/core/settings';
 import { applyAttempt, createLearner } from '@/core/engine';
-import type { AttemptEvent, Confidence, ContentPack, ExplanationStyle, LearnerState, MisconceptionId, Profile, Settings } from '@/core/types';
+import type { AttemptEvent, Confidence, ContentPack, ExplanationStyle, LearnerState, MisconceptionId, Profile } from '@/core/types';
 import { DAY } from '@/core/util/time';
 import { newId } from '@/core/util/id';
 
-export const DEFAULT_SETTINGS: Settings = { aiMode: 'auto', textScale: 1, highContrast: false, readAloud: false };
 const PALETTE = ['#0f766e', '#4f46e5', '#b45309', '#be185d', '#0369a1'];
 
 export function makeProfile(name: string, now: number, seeded = false): Profile {
