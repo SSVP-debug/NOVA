@@ -1,6 +1,6 @@
 import { CONFIG } from '../config';
 import type { ConceptId, ConceptStatus, ContentPack, LearnerState, MisconceptionId, MisconceptionStatus } from '../types';
-import { conceptStatus, getConcept, masteryOf, topoOrder } from './graph';
+import { conceptStatus, getConcept, masteryOf, prerequisiteMet, topoOrder } from './graph';
 
 /**
  * Data for the "My Learning DNA" screen (backlog A4). Pure: only reads the pack and the learner.
@@ -51,7 +51,7 @@ export function buildConceptMap(pack: ContentPack, state: LearnerState): Concept
     id,
     title: getConcept(pack, id)?.title ?? id,
     mastery: masteryOf(state, id),
-    met: masteryOf(state, id) >= CONFIG.mastery.lockBelow,
+    met: prerequisiteMet(state, pack, id),
   });
 
   const rowsUsed = new Map<number, number>();

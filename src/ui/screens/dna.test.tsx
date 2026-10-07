@@ -40,7 +40,7 @@ describe('DNA screen', () => {
     await show('fresh');
     await screen.findByText('Topic by topic');
     expect(screen.getAllByText(/To unlock:/).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/reach 35% in Variables \(now 0%\)/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/reach 35% in Loops \(now 0%\)/).length).toBeGreaterThan(0);
     expect(screen.getByText(/Unlocks: Lists, Loops\./)).toBeTruthy();
     expect(screen.getByText(/Needs: Loops \(0% ✖\), Lists \(0% ✖\)\./)).toBeTruthy();
   });

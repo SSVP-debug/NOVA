@@ -17,15 +17,24 @@ export function planToday(state: LearnerState, pack: ContentPack, now: number): 
     .map((def) => ({ def, st: state.misconceptions[def.id] }))
     .filter((x) => x.st?.status === 'active')
     .sort((a, b) => b.st!.seen - a.st!.seen);
-  for (const { def, st } of active) {
+  // One "fix" step per concept (the most repeated mistake leads), so the plan never repeats a topic.
+  const byConcept = new Map<ConceptId, typeof active>();
+  for (const a of active) byConcept.set(a.def.concept, [...(byConcept.get(a.def.concept) ?? []), a]);
+  for (const [concept, list] of byConcept) {
+    const top = list[0]!;
+    const n = top.st!.seen;
+    const title = getConcept(pack, concept)?.title ?? concept;
     steps.push({
       kind: 'fix-misconception',
-      concept: def.concept,
-      misconception: def.id,
-      reason: `You have made the mistake "${def.title}" ${st!.seen} time${st!.seen > 1 ? 's' : ''}. A short probe will check if it is fixed.`,
+      concept,
+      misconception: top.def.id,
+      reason:
+        list.length === 1
+          ? `You have made the mistake "${top.def.title}" ${n} time${n > 1 ? 's' : ''}. A short probe will check if it is fixed.`
+          : `You have ${list.length} different mistakes in ${title}. The most repeated is "${top.def.title}" (${n} time${n > 1 ? 's' : ''}). A short probe will check if it is fixed.`,
       estMinutes: mins.fix,
     });
-    used.add(def.concept);
+    used.add(concept);
   }
 
   for (const id of dueConcepts(state, now)) {

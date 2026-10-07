@@ -27,9 +27,23 @@ export function masteryOf(state: LearnerState, id: ConceptId): number {
   return state.concepts[id]?.mastery ?? 0;
 }
 
+/** A concept can only be measured if the pack has at least one question for it. */
+export function isTestable(pack: ContentPack, id: ConceptId): boolean {
+  return pack.questions.some((q) => q.concept === id);
+}
+
+/**
+ * Does this prerequisite allow its dependants to open?
+ * A prerequisite with no questions cannot be measured, so it must not block anyone
+ * (otherwise a student who answers correctly would still see "Locked" topics).
+ */
+export function prerequisiteMet(state: LearnerState, pack: ContentPack, id: ConceptId): boolean {
+  return !isTestable(pack, id) || masteryOf(state, id) >= CONFIG.mastery.lockBelow;
+}
+
 export function isLocked(state: LearnerState, pack: ContentPack, id: ConceptId): boolean {
   const c = getConcept(pack, id);
-  return !!c && c.prerequisites.some((p) => masteryOf(state, p) < CONFIG.mastery.lockBelow);
+  return !!c && c.prerequisites.some((p) => !prerequisiteMet(state, pack, p));
 }
 
 export function conceptStatus(state: LearnerState, pack: ContentPack, id: ConceptId): ConceptStatus {

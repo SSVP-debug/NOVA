@@ -151,7 +151,7 @@ All numbers are in `src/core/config.ts`. Each rule is a replaceable function wit
 | Area | Rule today | Upgrade path |
 |---|---|---|
 | Mastery | Correct: close 25% of the gap to 1 (half if "guess"). Wrong: lose 15% (22% if "sure"). | Bayesian Knowledge Tracing, same signature |
-| Locking | A concept is locked if any prerequisite mastery is below 0.35 | Per-concept thresholds |
+| Locking | A concept is locked if any prerequisite that CAN be measured (it has questions) has mastery below 0.35. A prerequisite with no questions never blocks. | Per-concept thresholds |
 | Misconceptions | Wrong tagged option: seen+1, active. Correct normal answer in the concept: active becomes improving. Passed probe: resolved. Relapse: active again. | Beta belief scores |
 | Review | Expanding intervals 1, 3, 7, 14, 30 days; wrong answer resets | Forgetting-curve model |
 | Strategy | 1) a style with at least 2 uses and help rate at least 50% wins; 2) if a mistake repeats 2+ times, try an untried style; 3) else plain. Always returns a human-readable `reason`. | Thompson-sampling bandit |
@@ -259,7 +259,7 @@ Do not claim educational impact that was not measured. Say "prototype".
 | Learn with style (task A3, done) | `engine/lesson.ts` (`buildLesson`, pure) picks the style with the same `chooseStyle` rules as practice feedback and a repeating mistake in that concept counts. Learn screen shows that style, a "Why this?" reason, and buttons for other styles (marked "your choice", no learner state changes). Home sends a new topic to Learn. Lesson text is verified template text; no AI call, so lite mode is unaffected. 11 new tests |
 | DNA screen (task A4, done) | `engine/dna.ts` (`buildConceptMap`, `buildMistakeTimeline`, pure). Concept map as a small SVG: columns by prerequisite depth, arrows from a topic to what it unlocks (solid = prerequisite strong enough, dashed = not yet). Status is a glyph, a word, a border style and a percent, never colour alone. Every topic lists what it needs and unlocks; locked topics say exactly what to reach ("reach 35% in Variables, now 0%"). Mistake timeline per misconception with dates in words. 11 new tests |
 | PWA | Config present; production build succeeds with service worker precache |
-| Verification run | 68 tests pass (including UI tests in jsdom), typecheck passes, content validation passes, build succeeds |
+| Verification run | 75 tests pass (including UI tests in jsdom), typecheck passes, content validation passes, build succeeds |
 
 **Not done / honest gaps**
 - The UI has **not been checked in a real browser**. It is compiled, built, and exercised by jsdom tests (Practice screen only), which do not check visual layout. Visual layout, offline install, and service-worker behavior need manual verification (backlog D1).

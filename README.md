@@ -40,3 +40,10 @@ Offline test: open the built app once online, switch Wi-Fi off, reload, and use 
 ## Status
 
 Foundation complete: contracts, engine, storage, AI port with fallback, generator plugins, content validator, sample pack, seeded personas, PWA shell, and a thin working UI slice. See the status table in the design report.
+
+## Project history and honesty
+
+- The foundation (architecture, engine, storage, sample content pack, tests, CI) was prepared **before** the event. Features, real content and the demo built from the event start are visible in the git history.
+- AI tools (Claude) were used to help write parts of the code and documents. Every change is covered by automated checks (`npm run check`), and the team reviews and tests it.
+- Demo learners are **sample data** and are labeled that way in the app.
+- Per-task change notes are in `docs/changes/`.
