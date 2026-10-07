@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useSession } from '@/app/session';
+import { DemoTools } from './DemoTools';
 import { Diagnostic } from './screens/Diagnostic';
 import { Dna } from './screens/Dna';
 import { Home } from './screens/Home';
@@ -29,6 +30,7 @@ export function App() {
         <b style={{ fontSize: 24 }}>NOVA</b>
         <span className="mu">{profile.name} {profile.seeded ? '(sample data)' : ''} <button onClick={() => selectProfile(null)}>Switch</button></span>
       </div>
+      <DemoTools />
       <nav>{tab('home', 'Home')}{tab('learn', 'Learn')}{tab('practice', 'Practice')}{tab('dna', 'My DNA')}</nav>
       {route.name === 'home' && <Home go={setRoute} />}
       {route.name === 'learn' && <Learn concept={route.concept} go={setRoute} />}

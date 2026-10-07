@@ -15,6 +15,10 @@ interface Session {
   selectProfile(id: string | null): Promise<void>;
   seedDemoProfiles(): Promise<void>;
   recordAttempt(ev: AttemptEvent): Promise<LearnerState>;
+  canShiftTime: boolean; // the demo clock can be moved
+  timeShiftDays: number;
+  advanceDays(days: number): void;
+  resetTime(): void;
   recordAttempts(evs: AttemptEvent[]): Promise<LearnerState>; // several answers at once, in order, saved once
   exportCurrent(): Promise<string>;
   importFile(text: string): Promise<void>;
@@ -34,6 +38,9 @@ export function SessionProvider({ services, children }: { services: Services; ch
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [learner, setLearner] = useState<LearnerState | null>(null);
+  const [timeShiftDays, setTimeShiftDays] = useState(services.demoClock?.shiftDays ?? 0);
+  const advanceDays = useCallback((days: number) => { services.demoClock?.advanceDays(days); setTimeShiftDays(services.demoClock?.shiftDays ?? 0); }, [services]);
+  const resetTime = useCallback(() => { services.demoClock?.reset(); setTimeShiftDays(0); }, [services]);
 
   const refresh = useCallback(async () => setProfiles(await storage.listProfiles()), [storage]);
   useEffect(() => { refresh().finally(() => setReady(true)); }, [refresh]);
@@ -95,7 +102,7 @@ export function SessionProvider({ services, children }: { services: Services; ch
   }, [storage, profile, refresh]);
 
   const value = useMemo<Session>(() => ({
-    services, ready, profiles, profile, learner, createProfile, selectProfile, seedDemoProfiles, recordAttempt, recordAttempts, exportCurrent, importFile, removeProfile,
-  }), [services, ready, profiles, profile, learner, createProfile, selectProfile, seedDemoProfiles, recordAttempt, recordAttempts, exportCurrent, importFile, removeProfile]);
+    services, ready, profiles, profile, learner, canShiftTime: !!services.demoClock, timeShiftDays, advanceDays, resetTime, createProfile, selectProfile, seedDemoProfiles, recordAttempt, recordAttempts, exportCurrent, importFile, removeProfile,
+  }), [services, ready, profiles, profile, learner, timeShiftDays, advanceDays, resetTime, createProfile, selectProfile, seedDemoProfiles, recordAttempt, recordAttempts, exportCurrent, importFile, removeProfile]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

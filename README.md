@@ -26,6 +26,10 @@ Offline test: open the built app once online, switch Wi-Fi off, reload, and use 
 
 `core/` imports nothing outside `core/`. Everything else depends inward on it.
 
+## Demo tip: show the review schedule without waiting
+
+Open the app with `?demo=1` (for example `http://localhost:5173/?demo=1`). A small bar appears with **+1 day**, **+7 days** and **Reset time**. It moves only the app clock, so a topic practised today becomes "due for review" on Home. Students do not see this bar without `?demo=1`.
+
 ## Where to add things
 
 | I want to add... | Do this |

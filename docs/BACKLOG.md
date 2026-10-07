@@ -9,8 +9,8 @@ Definition of done for every task: `npm run check` passes, tests added, works of
 | A2 | **DONE.** Quick diagnostic for a new profile: `diagnostic.ts` (pure, rules in `CONFIG.diagnostic`) and the `Diagnostic` screen; 6 to 8 adaptive questions, answers saved together at the end, results show levels, mistakes and the changed plan | Verified by `diagnostic.test.ts` (engine) and `diagnostic.test.tsx` (full check in jsdom). Needs real-browser check (D1) |
 | A3 | **DONE.** Learn screen uses the style chosen by `chooseStyle` (via `buildLesson`), with "Why this?" and a way to look at other styles | Verified by `lesson.test.ts` and `learn.test.tsx`: Fresh sees plain, Aarav sees counterexample on Loop bounds. Needs real-browser check (D1) |
 | A4 | **DONE.** DNA screen: concept map (SVG, no library) with prerequisite arrows, status shown by glyph + word + border style + percent, locked topics say what unlocks them, mistake timeline per misconception | Verified by `dna.test.ts` and `dna.test.tsx`. Needs real-browser check (D1) |
-| A5 | Today's plan card on Home with reasons (exists) plus review-due list | Plan reflects due reviews after time passes (test with a fake Clock) |
-| A6 | Replace `Date.now` calls in UI with the injected `Clock` everywhere; add a hidden "advance 7 days" demo control | Demo can show retention/review without waiting |
+| A5 | **DONE.** Home shows today's plan with reasons plus a **Review** list from `reviewSchedule` (due topics with "Review" buttons, or the next review time). Wording: "due today", "due 2 days ago", "due tomorrow", "due in 5 days" | Verified by `review-schedule.test.ts` (fake time) and `home-review.test.tsx` |
+| A6 | **DONE.** All app time comes from the injected `Clock` (a test, `clock-guard.test.ts`, fails if `Date.now()` or `new Date()` appears outside `src/app/clock.ts`, `src/core/util/id.ts` and `src/adapters/`). Hidden demo tools: open the app with `?demo=1` to get "+1 day", "+7 days" and "Reset time" | Verified by `clock.test.ts` and `home-review.test.tsx` |
 
 ## Phase B: Content
 | ID | Task | Acceptance |

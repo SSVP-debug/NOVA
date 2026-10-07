@@ -4,6 +4,7 @@ import { MemoryStorage } from '@/adapters/storage/memoryStorage';
 import { DEFAULT_PACK_ID, getPack } from '@/content';
 import type { AIPort, Clock, GeneratorRegistry, StoragePort } from '@/core/ports';
 import type { ContentPack } from '@/core/types';
+import { createAdjustableClock, type AdjustableClock } from './clock';
 import { createDefaultGenerators } from '@/generators';
 
 /** Composition root: the ONLY place that decides which adapter implements which port. */
@@ -12,17 +13,23 @@ export interface Services {
   storage: StoragePort;
   ai: AIPort;
   clock: Clock;
+  demoClock?: AdjustableClock; // set when `clock` is adjustable (demo tools move time with it)
   generators: GeneratorRegistry;
 }
 
 export function createServices(overrides: Partial<Services> = {}): Services {
   const hasIDB = typeof indexedDB !== 'undefined';
-  return {
+  const adjustable = createAdjustableClock();
+  const services: Services = {
     pack: getPack(DEFAULT_PACK_ID),
     storage: hasIDB ? new DexieStorage() : new MemoryStorage(),
     ai: createAI('auto'),
-    clock: { now: () => Date.now() },
+    clock: adjustable,
+    demoClock: adjustable,
     generators: createDefaultGenerators(),
     ...overrides,
   };
+  // A custom clock (tests) is only movable if the caller also says so.
+  if (overrides.clock && !('demoClock' in overrides)) services.demoClock = undefined;
+  return services;
 }
