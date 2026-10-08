@@ -22,6 +22,7 @@ async function open(url: string) {
   const clock = createAdjustableClock(() => NOW);
   render(<SessionProvider services={createServices({ storage, ai: new TemplateAI(), clock, demoClock: clock })}><App /></SessionProvider>);
   fireEvent.click(await screen.findByRole('button', { name: 'Asha' }));
+  await screen.findByRole('navigation', { name: 'Main' }); // the demo tools also show on the profile screen, so wait for the main screen
 }
 
 describe('device check button (demo tools)', () => {

@@ -6,6 +6,9 @@ import { newId } from '@/core/util/id';
 
 const PALETTE = ['#0f766e', '#4f46e5', '#b45309', '#be185d', '#0369a1'];
 
+/** Names of the two demo learners. Profiles marked `seeded` are the only ones the demo reset may delete. */
+export const DEMO_NAMES = { fresh: 'Fresh learner (demo)', aarav: 'Aarav, 3 weeks of history (demo)' } as const;
+
 export function makeProfile(name: string, now: number, seeded = false): Profile {
   return { id: newId(), name, color: PALETTE[Math.floor(Math.random() * PALETTE.length)] as string, createdAt: now, seeded, settings: { ...DEFAULT_SETTINGS } };
 }

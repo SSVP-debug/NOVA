@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { applyAttempt } from '@/core/engine';
 import type { AttemptEvent, LearnerState, Profile, Settings } from '@/core/types';
 import { normalizeSettings } from '@/core/settings';
-import { aaravLearner, freshLearner, makeProfile } from '@/seed/personas';
+import { aaravLearner, DEMO_NAMES, freshLearner, makeProfile } from '@/seed/personas';
 import { createLearner } from '@/core/engine';
 import type { Services } from './container';
 
@@ -14,7 +14,9 @@ interface Session {
   learner: LearnerState | null;
   createProfile(name: string): Promise<void>;
   selectProfile(id: string | null): Promise<void>;
-  seedDemoProfiles(): Promise<void>;
+  seedDemoProfiles(): Promise<void>; // adds only the demo learners that are missing
+  resetDemoProfiles(): Promise<void>; // deletes ONLY sample-data profiles, recreates both, resets demo time
+  openDemoProfile(kind: 'fresh' | 'aarav'): Promise<void>;
   recordAttempt(ev: AttemptEvent): Promise<LearnerState>;
   canShiftTime: boolean; // the demo clock can be moved
   timeShiftDays: number;
@@ -64,14 +66,38 @@ export function SessionProvider({ services, children }: { services: Services; ch
     await refresh(); await selectProfile(p.id);
   }, [storage, pack, clock, refresh, selectProfile]);
 
-  const seedDemoProfiles = useCallback(async () => {
+  /** Makes sure both demo learners exist (never duplicates them) and returns them. */
+  const ensureDemo = useCallback(async () => {
+    const list = await storage.listProfiles();
     const now = clock.now();
-    const a = makeProfile('Fresh learner (demo)', now, true);
-    const b = makeProfile('Aarav, 3 weeks of history (demo)', now + 1, true);
-    await storage.saveProfile(a); await storage.saveLearner(freshLearner(a.id, pack, now));
-    await storage.saveProfile(b); await storage.saveLearner(aaravLearner(b.id, pack, now));
+    const make = async (name: string, build: typeof freshLearner, offset: number) => {
+      const found = list.find((x) => x.seeded && x.name === name);
+      if (found) return found;
+      const p = makeProfile(name, now + offset, true);
+      await storage.saveProfile(p);
+      await storage.saveLearner(build(p.id, pack, now));
+      return p;
+    };
+    const fresh = await make(DEMO_NAMES.fresh, freshLearner, 0);
+    const aarav = await make(DEMO_NAMES.aarav, aaravLearner, 1);
     await refresh();
+    return { fresh, aarav };
   }, [storage, pack, clock, refresh]);
+
+  const seedDemoProfiles = useCallback(async () => { await ensureDemo(); }, [ensureDemo]);
+
+  const resetDemoProfiles = useCallback(async () => {
+    services.demoClock?.reset(); // seeded history is built from "now", so time goes back to real time first
+    setTimeShiftDays(0);
+    for (const p of await storage.listProfiles()) if (p.seeded) await storage.deleteProfile(p.id); // real profiles stay
+    if (profileRef.current?.seeded) { setProfile(null); setLearner(null); }
+    await ensureDemo();
+  }, [services, storage, ensureDemo]);
+
+  const openDemoProfile = useCallback(async (kind: 'fresh' | 'aarav') => {
+    const d = await ensureDemo();
+    await selectProfile((kind === 'fresh' ? d.fresh : d.aarav).id);
+  }, [ensureDemo, selectProfile]);
 
   const recordAttempt = useCallback(async (ev: AttemptEvent) => {
     if (!learner) throw new Error('No active learner');
@@ -123,7 +149,7 @@ export function SessionProvider({ services, children }: { services: Services; ch
   }, [storage, profile, refresh]);
 
   const value = useMemo<Session>(() => ({
-    services, ready, profiles, profile, learner, canShiftTime: !!services.demoClock, timeShiftDays, advanceDays, resetTime, createProfile, selectProfile, seedDemoProfiles, recordAttempt, recordAttempts, exportCurrent, importFile, updateSettings, removeProfile,
-  }), [services, ready, profiles, profile, learner, timeShiftDays, advanceDays, resetTime, createProfile, selectProfile, seedDemoProfiles, recordAttempt, recordAttempts, exportCurrent, importFile, updateSettings, removeProfile]);
+    services, ready, profiles, profile, learner, canShiftTime: !!services.demoClock, timeShiftDays, advanceDays, resetTime, createProfile, selectProfile, seedDemoProfiles, resetDemoProfiles, openDemoProfile, recordAttempt, recordAttempts, exportCurrent, importFile, updateSettings, removeProfile,
+  }), [services, ready, profiles, profile, learner, timeShiftDays, advanceDays, resetTime, createProfile, selectProfile, seedDemoProfiles, resetDemoProfiles, openDemoProfile, recordAttempt, recordAttempts, exportCurrent, importFile, updateSettings, removeProfile]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

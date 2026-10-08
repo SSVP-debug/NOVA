@@ -14,7 +14,7 @@ Date of these numbers: 7 October 2026. Everything here was measured on the **sam
 
 ## 2. Automated tests (run `npm run check`)
 
-**136 tests in 25 files pass**, plus content validation (0 errors, 5 warnings for topics that have no questions yet) and a production build.
+**146 tests in 27 files pass**, plus content validation (0 errors, 5 warnings for topics that have no questions yet) and a production build.
 
 | Area | What the tests prove |
 |---|---|
@@ -28,6 +28,7 @@ Date of these numbers: 7 October 2026. Everything here was measured on the **sam
 | Offline | `npm run check:offline` (CI): every file the page needs is saved by the service worker, no internet addresses in the build, size limit |
 | Accessibility | `theme.test.ts`: the high-contrast palette meets WCAG AAA (7:1 text, 3:1 borders); `settings.test.tsx`: text size, skip link, focus movement, Listen button |
 | Screens | Practice session, quick check, Learn, DNA map, Settings, Home review list, device check, all played in a simulated browser |
+| Demo path | `demo-flow.test.tsx` plays the whole 3-minute demo through the real screens (both learners, same wrong answer, different teaching, probe, fixed mistake, reviews, safe reset); `demoScript.test.ts` fails if content edits would break the demo |
 
 ## 3. Personalization in one sentence you can say live
 "Same wrong answer, two learners: the new learner gets a plain explanation; the learner with history gets the counterexample that worked for them before, and **Why this?** shows the rule." (Demo with the seeded learners, labeled sample data.)

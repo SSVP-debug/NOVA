@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { buildIntervention, planToday, selectQuestion, summarizeSession } from '@/core/engine';
+import { buildIntervention, materializeQuestion, planToday, selectQuestion, summarizeSession } from '@/core/engine';
 import { CONFIG } from '@/core/config';
 import type { AttemptEvent, Confidence, ExplanationStyle, Intervention, MisconceptionId, Option, Question } from '@/core/types';
 import { useSession } from '@/app/session';
+import type { ScriptedQuestion } from '@/seed/demoScript';
+import { demoToolsRequested } from '../../DemoTools';
 import type { Route } from '../../App';
 import { ListenButton } from '../../ListenButton';
 import { SessionSummaryView } from './SessionSummaryView';
@@ -11,25 +13,30 @@ interface Result { option: Option; intervention?: Intervention; text?: string }
 interface Props {
   concept?: string;
   focus?: string;
+  scripted?: ScriptedQuestion;
   go: (r: Route) => void;
   restart: (next?: { concept?: string; focus?: string }) => void;
 }
 
 /** One practice session of CONFIG.session.length questions, then a summary. */
-export function PracticeSession({ concept, focus, go, restart }: Props) {
+export function PracticeSession({ concept, focus, scripted, go, restart }: Props) {
   const { services, learner, recordAttempt } = useSession();
   const { pack, generators, ai, clock } = services;
   const length = CONFIG.session.length;
 
   const [before] = useState(learner); // snapshot for "before and after"
   const [startConcept] = useState(() => concept ?? (learner ? planToday(learner, pack, clock.now()).steps[0]?.concept : undefined) ?? pack.concepts[0]!.id);
-  const [seed, setSeed] = useState(() => clock.now() % 100000);
+  const [seed, setSeed] = useState(() => scripted?.seed ?? clock.now() % 100000);
   const [events, setEvents] = useState<AttemptEvent[]>([]);
   const [recent, setRecent] = useState<string[]>([]);
   const [probeFor, setProbeFor] = useState<MisconceptionId | undefined>();
   const [afterStyle, setAfterStyle] = useState<ExplanationStyle | undefined>();
-  const [q, setQ] = useState<Question | null>(() =>
-    learner ? selectQuestion({ pack, state: learner, generators, concept: startConcept, seed, focus: focus ? [focus] : [] }) : null);
+  const [q, setQ] = useState<Question | null>(() => {
+    if (!learner) return null;
+    const spec = scripted ? pack.questions.find((x) => x.id === scripted.specId) : undefined;
+    if (scripted && spec) return materializeQuestion(spec, generators, scripted.seed, [scripted.focus]); // demo: the same question for everyone
+    return selectQuestion({ pack, state: learner, generators, concept: startConcept, seed, focus: focus ? [focus] : [] });
+  });
   const [conf, setConf] = useState<Confidence | null>(null);
   const [picked, setPicked] = useState<string | null>(null);
   const [hints, setHints] = useState(0);
@@ -91,6 +98,9 @@ export function PracticeSession({ concept, focus, go, restart }: Props) {
         {probeFor && <div className="mu">Probe: checking that this mistake is fixed</div>}
         <h3 style={{ marginTop: 4 }}>{q.prompt}</h3>
         {q.code && <pre>{q.code}</pre>}
+        {!res && scripted && events.length === 0 && demoToolsRequested() && (
+          <div className="box tip" data-testid="demo-helper">Demo helper: to show the mistake, pick "{q.options.find((o) => o.misconception === scripted.focus)?.text}".</div>
+        )}
         {!res && <ListenButton label="the question" text={`${q.prompt} ${q.options.map((o, i) => `Option ${i + 1}: ${o.text}.`).join(' ')}`} />}
 
         {!res ? (
