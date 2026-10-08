@@ -1,5 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { applyAttempt } from '@/core/engine';
+import type { AIPort } from '@/core/ports';
+import { TemplateAI } from '@/adapters/ai/templateAI';
 import type { AttemptEvent, LearnerState, Profile, Settings } from '@/core/types';
 import { normalizeSettings } from '@/core/settings';
 import { aaravLearner, DEMO_NAMES, freshLearner, makeProfile } from '@/seed/personas';
@@ -8,6 +10,7 @@ import type { Services } from './container';
 
 interface Session {
   services: Services;
+  ai: AIPort;
   ready: boolean;
   profiles: Profile[];
   profile: Profile | null;
@@ -44,6 +47,10 @@ export function SessionProvider({ services, children }: { services: Services; ch
   const profileRef = useRef<Profile | null>(null); // always the newest profile, even between renders
   profileRef.current = profile;
   const [learner, setLearner] = useState<LearnerState | null>(null);
+  const ai = useMemo(
+    () => profile?.settings.aiMode === 'off' ? new TemplateAI() : services.ai,
+    [profile?.settings.aiMode, services.ai],
+  );
   const [timeShiftDays, setTimeShiftDays] = useState(services.demoClock?.shiftDays ?? 0);
   const advanceDays = useCallback((days: number) => { services.demoClock?.advanceDays(days); setTimeShiftDays(services.demoClock?.shiftDays ?? 0); }, [services]);
   const resetTime = useCallback(() => { services.demoClock?.reset(); setTimeShiftDays(0); }, [services]);
@@ -149,7 +156,7 @@ export function SessionProvider({ services, children }: { services: Services; ch
   }, [storage, profile, refresh]);
 
   const value = useMemo<Session>(() => ({
-    services, ready, profiles, profile, learner, canShiftTime: !!services.demoClock, timeShiftDays, advanceDays, resetTime, createProfile, selectProfile, seedDemoProfiles, resetDemoProfiles, openDemoProfile, recordAttempt, recordAttempts, exportCurrent, importFile, updateSettings, removeProfile,
-  }), [services, ready, profiles, profile, learner, timeShiftDays, advanceDays, resetTime, createProfile, selectProfile, seedDemoProfiles, resetDemoProfiles, openDemoProfile, recordAttempt, recordAttempts, exportCurrent, importFile, updateSettings, removeProfile]);
+    services, ai, ready, profiles, profile, learner, canShiftTime: !!services.demoClock, timeShiftDays, advanceDays, resetTime, createProfile, selectProfile, seedDemoProfiles, resetDemoProfiles, openDemoProfile, recordAttempt, recordAttempts, exportCurrent, importFile, updateSettings, removeProfile,
+  }), [services, ai, ready, profiles, profile, learner, timeShiftDays, advanceDays, resetTime, createProfile, selectProfile, seedDemoProfiles, resetDemoProfiles, openDemoProfile, recordAttempt, recordAttempts, exportCurrent, importFile, updateSettings, removeProfile]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

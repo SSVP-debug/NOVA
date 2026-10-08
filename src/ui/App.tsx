@@ -9,6 +9,8 @@ import { Home } from './screens/Home';
 import { Learn } from './screens/Learn';
 import { Practice } from './screens/Practice';
 import { Settings } from './screens/Settings';
+import { TeachBack } from './screens/TeachBack';
+import { Ask } from './screens/Ask';
 import { ProfilePicker } from './screens/ProfilePicker';
 import { DEFAULT_SETTINGS } from '@/core/settings';
 import { applyDisplaySettings } from './theme';
@@ -16,6 +18,8 @@ import { applyDisplaySettings } from './theme';
 export type Route =
   | { name: 'home' }
   | { name: 'learn'; concept?: string }
+  | { name: 'teach-back'; concept?: string }
+  | { name: 'ask' }
   | { name: 'practice'; concept?: string; focus?: string; scripted?: ScriptedQuestion }
   | { name: 'diagnostic' }
   | { name: 'dna' }
@@ -61,10 +65,12 @@ export function App() {
         <span className="mu">{profile.name} {profile.seeded ? '(sample data)' : ''} <button onClick={() => selectProfile(null)}>Switch</button></span>
       </div>
       <div style={{ margin: '2px 0 6px' }}><OfflineBadge /></div>
-      <nav aria-label="Main">{tab('home', 'Home')}{tab('learn', 'Learn')}{tab('practice', 'Practice')}{tab('dna', 'My DNA')}{tab('settings', 'Settings')}</nav>
+      <nav aria-label="Main">{tab('home', 'Home')}{tab('learn', 'Learn')}{tab('teach-back', 'Teach-back')}{tab('ask', 'Ask')}{tab('practice', 'Practice')}{tab('dna', 'My DNA')}{tab('settings', 'Settings')}</nav>
       <main id="main" ref={main} tabIndex={-1}>
       {route.name === 'home' && <Home go={setRoute} />}
       {route.name === 'learn' && <Learn concept={route.concept} go={setRoute} />}
+      {route.name === 'teach-back' && <TeachBack concept={route.concept} go={setRoute} />}
+      {route.name === 'ask' && <Ask go={setRoute} />}
       {route.name === 'practice' && <Practice key={`${route.concept}-${route.focus}-${route.scripted?.run ?? ''}`} concept={route.concept} focus={route.focus} scripted={route.scripted} go={setRoute} />}
       {route.name === 'diagnostic' && <Diagnostic go={setRoute} />}
       {route.name === 'dna' && <Dna />}

@@ -4,6 +4,7 @@ import { downloadTextFile } from '@/app/download';
 import { useSession } from '@/app/session';
 import { isSpeechSupported } from '@/app/speech';
 import { TEXT_SIZES } from '@/core/settings';
+import { isLowResourceDevice } from '@/adapters/ai';
 import { BackupImport } from '../BackupImport';
 
 export function Settings() {
@@ -50,6 +51,24 @@ export function Settings() {
         </label>
         {!speech && <p className="mu">This browser has no read-aloud voice, so this option is off.</p>}
         <p className="mu">These choices are saved for {profile.name} on this device.</p>
+      </section>
+
+      <section className="card" aria-labelledby="set-ai">
+        <h2 id="set-ai" style={{ marginTop: 0 }}>AI and lite mode</h2>
+        <label className="choice">
+          <input
+            type="checkbox"
+            checked={s.aiMode === 'off'}
+            onChange={(e) => updateSettings({ aiMode: e.target.checked ? 'off' : 'auto' })}
+          />
+          Lite mode: use verified templates only (no model)
+        </label>
+        <p className="mu">
+          {isLowResourceDevice()
+            ? 'This device has limited memory or CPU, so NOVA automatically uses templates even when lite mode is off.'
+            : 'In Auto mode, NOVA uses a configured local model when available and otherwise uses verified templates.'}
+          {' '}Learning features work with the model off.
+        </p>
       </section>
 
       <section className="card" aria-labelledby="set-backup">

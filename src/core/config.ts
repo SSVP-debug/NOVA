@@ -24,5 +24,5 @@ export const CONFIG = {
   },
   history: { cap: 200 },
   pace: { emaWeight: 0.3 },
-  ai: { timeoutMs: 4000 },
+  ai: { timeoutMs: 4000, liteModeMaxCores: 2, liteModeMaxMemoryGB: 2 },
 } as const;

@@ -222,7 +222,7 @@ For weak devices, `aiMode: 'off'` removes the model. The whole loop still works 
 - **Screens:** see 3.2. The DNA screen is the demo centerpiece: concept map, named mistakes with status, confidence accuracy, best style, reviews due. Every piece of text on it is derived from data the student can inspect.
 - **Always show reasons.** "Why this?" under every recommendation and intervention.
 - **Accessibility (required):** keyboard operation, visible focus, labels on inputs, status shown with text or shape not only color, adjustable text size, high-contrast mode, read-aloud using the browser's speech synthesis (test offline; voices vary), plain-language mode, no hover-only controls.
-- **Low-resource:** small bundle (currently about 355 KB precached), no heavy chart or UI libraries, no GPU-dependent animation, respect reduced motion.
+- **Low-resource:** small bundle (currently about 400 KB precached / 125.6 KB gzip), no heavy chart or UI libraries, no GPU-dependent animation, respect reduced motion.
 - **Tone:** short, specific, encouraging. Never shame an overconfident answer.
 
 ---
@@ -251,7 +251,7 @@ Do not claim educational impact that was not measured. Say "prototype".
 | Content validator and script | Done; sample pack passes with 5 warnings (empty concepts) |
 | Generators | 2 example plugins for `loop-bounds`; 500-seed tests |
 | Storage | Dexie and Memory adapters; export/import validation; tests |
-| AI | Template, LocalModel, Fallback, Ollama example runtime; tests with fake runtimes |
+| AI | Grounded Template/LocalModel/Fallback AI, Ollama runtime with abortable generation, Teach-back and Ask screens, per-profile lite mode, low-resource auto-detection. Automated tests cover fallback, routing, checklist coverage and mode selection. Real-device model benchmark is still pending (see `docs/EVIDENCE.md`, section 6). |
 | Seeded personas | Fresh and "Aarav", built through the real engine |
 | App shell | Composition root, session provider, profile picker, Home, Learn, DNA |
 | Review list and demo time (tasks A5 and A6, done) | Home shows due and upcoming reviews. Open the app with `?demo=1` for "+1 day / +7 days / Reset time" to show retention in the demo. A test forbids reading the real time outside the clock |
@@ -264,12 +264,12 @@ Do not claim educational impact that was not measured. Say "prototype".
 | Learn with style (task A3, done) | `engine/lesson.ts` (`buildLesson`, pure) picks the style with the same `chooseStyle` rules as practice feedback and a repeating mistake in that concept counts. Learn screen shows that style, a "Why this?" reason, and buttons for other styles (marked "your choice", no learner state changes). Home sends a new topic to Learn. Lesson text is verified template text; no AI call, so lite mode is unaffected. 11 new tests |
 | DNA screen (task A4, done) | `engine/dna.ts` (`buildConceptMap`, `buildMistakeTimeline`, pure). Concept map as a small SVG: columns by prerequisite depth, arrows from a topic to what it unlocks (solid = prerequisite strong enough, dashed = not yet). Status is a glyph, a word, a border style and a percent, never colour alone. Every topic lists what it needs and unlocks; locked topics say exactly what to reach ("reach 35% in Variables, now 0%"). Mistake timeline per misconception with dates in words. 11 new tests |
 | PWA | Config present; production build succeeds with service worker precache |
-| Verification run | 146 tests pass (including UI tests in jsdom), typecheck passes, content validation passes, build succeeds |
+| Verification run | 154 tests pass (including UI tests in jsdom), typecheck passes, content validation passes, production build and offline checks succeed |
 
 **Not done / honest gaps**
-- The UI has **not been checked in a real browser**. It is compiled, built, and exercised by jsdom tests (Practice screen only), which do not check visual layout. Visual layout, offline install, and service-worker behavior need manual verification (backlog D1).
+- The UI has **not been checked in a real browser**. It is compiled, built, and exercised by jsdom tests (including Practice, Teach-back, Ask and Settings), which do not check visual layout. Visual layout, offline install, and service-worker behavior need manual verification (backlog D1).
 - Sample content is placeholder-quality and covers only part of the concepts.
-- Not implemented: teach-back screen, Ask box, settings screen, text-size/contrast/read-aloud features, export/import UI, real local-model runtime, evidence scripts.
+- Phase C's code is implemented, but C1 still needs the team to benchmark 1-2 models on the demo laptop and weakest device before selecting a model (backlog C1; see `docs/EVIDENCE.md`, section 6).
 - The `Practice` screen is solid but its look is basic; visual design is still to do.
 - Strategy, mastery and planner rules are intentionally simple.
 - Unverified external facts: event schedule and rules, model availability and licences, free-tier limits.
@@ -282,7 +282,7 @@ Follow `docs/BACKLOG.md`. Summary and suggested owners:
 
 1. **Phase A (core loop, Lead + Member 2):** polish Practice, diagnostic, Learn with style, DNA, plan, clock injection. This reaches the 70 percent prototype.
 2. **Phase B (content, Members 3 and 4, reviewed by Lead):** 6 concepts fully authored, 4 to 6 questions per concept, 4 more generators, a second small pack.
-3. **Phase C (AI, Member 2):** benchmark, implement one runtime, teach-back, Ask box, lite mode.
+3. **Phase C (AI, Member 2):** runtime, Teach-back, Ask and lite mode are implemented; finish the real-device benchmark before selecting a model.
 4. **Phase D (offline, accessibility, evidence, demo, whole team):** real-browser offline test, accessibility, export/import UI, evidence pack, demo mode and backup video.
 5. **Phase E (stretch):** only after A to D are demo-ready.
 

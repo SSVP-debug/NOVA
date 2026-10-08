@@ -5,13 +5,13 @@ body{margin:0;background:var(--bg);color:var(--tx);font:1rem/1.5 "Segoe UI",syst
 .wrap{max-width:min(48rem,100%);margin:0 auto;padding:14px}
 .card{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:16px;margin-bottom:12px}
 .mu{color:var(--mu);font-size:.875rem}
-button,input{font:inherit;border-radius:10px;border:1px solid var(--ln);background:var(--card);color:var(--tx);padding:9px 14px}
-button{cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+button,input,textarea,select{font:inherit;border-radius:10px;border:1px solid var(--ln);background:var(--card);color:var(--tx);padding:9px 14px}
+button{cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
 button.on{background:var(--acb);border-color:var(--ac);color:var(--ac);font-weight:600}
 button.pri{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
 button[disabled]{opacity:.45;cursor:not-allowed}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0}
-nav{display:flex;gap:6px;margin:10px 0}nav button{flex:1}
+nav{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}nav button{flex:1 0 7rem}
 pre{background:var(--bg);border:1px solid var(--ln);border-radius:10px;padding:10px;overflow-x:auto;font:.875rem/1.5 ui-monospace,Consolas,monospace}
 .opts{display:grid;gap:8px;margin-top:8px}.opt{text-align:left;font-family:ui-monospace,Consolas,monospace}
 .box{border-radius:10px;padding:10px 12px;margin-top:10px}.good{background:var(--okb);color:var(--ok)}.bad{background:var(--bdb);color:var(--bd)}.tip{background:var(--acb)}
@@ -23,8 +23,8 @@ pre{background:var(--bg);border:1px solid var(--ln);border-radius:10px;padding:1
 main:focus{outline:none}
 .choice{display:flex;gap:.5rem;align-items:center;margin:.5rem 0;cursor:pointer}
 input[type=checkbox],input[type=radio]{width:1.25rem;height:1.25rem;padding:0;accent-color:var(--ac);flex:none}
-html[data-contrast="high"] .card,html[data-contrast="high"] button,html[data-contrast="high"] input,html[data-contrast="high"] pre{border-width:2px}
-html[data-contrast="high"] button:focus-visible,html[data-contrast="high"] input:focus-visible{outline-width:4px}
+html[data-contrast="high"] .card,html[data-contrast="high"] button,html[data-contrast="high"] input,html[data-contrast="high"] textarea,html[data-contrast="high"] select,html[data-contrast="high"] pre{border-width:2px}
+html[data-contrast="high"] button:focus-visible,html[data-contrast="high"] input:focus-visible,html[data-contrast="high"] textarea:focus-visible,html[data-contrast="high"] select:focus-visible{outline-width:4px}
 html[data-contrast="high"] .bar{background:var(--card);border:2px solid var(--ln);height:.75rem}
 html[data-contrast="high"] .box{border:2px solid currentColor}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
