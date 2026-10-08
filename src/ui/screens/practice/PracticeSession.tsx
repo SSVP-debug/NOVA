@@ -20,8 +20,8 @@ interface Props {
 
 /** One practice session of CONFIG.session.length questions, then a summary. */
 export function PracticeSession({ concept, focus, scripted, go, restart }: Props) {
-  const { services, learner, recordAttempt } = useSession();
-  const { pack, generators, ai, clock } = services;
+  const { services, ai, learner, recordAttempt } = useSession();
+  const { pack, generators, clock } = services;
   const length = CONFIG.session.length;
 
   const [before] = useState(learner); // snapshot for "before and after"

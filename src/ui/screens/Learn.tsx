@@ -45,7 +45,10 @@ export function Learn({ concept, go }: { concept?: string; go: (r: Route) => voi
             {others.map((s) => <button key={s} onClick={() => setAlt({ concept: c.id, style: s })}>{STYLE_LABEL[s]}</button>)}
           </div>
         )}
-        <div className="row"><button className="pri" onClick={() => go({ name: 'practice', concept: c.id })}>Practice this</button></div>
+        <div className="row">
+          <button className="pri" onClick={() => go({ name: 'practice', concept: c.id })}>Practice this</button>
+          <button onClick={() => go({ name: 'teach-back', concept: c.id })}>Teach this back</button>
+        </div>
       </div>
     </div>
   );

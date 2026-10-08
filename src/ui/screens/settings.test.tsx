@@ -95,6 +95,17 @@ describe('Settings: reading and display', () => {
     expect(screen.getByText(/no read-aloud voice/)).toBeTruthy();
   });
 
+  it('lite mode is saved for the active profile', async () => {
+    const { storage } = await openApp();
+    await goSettings();
+    const lite = screen.getByLabelText(/Lite mode: use verified templates only/) as HTMLInputElement;
+    fireEvent.click(lite);
+    await waitFor(() => expect(lite.checked).toBe(true));
+    expect((await storage.listProfiles())[0]!.settings.aiMode).toBe('off');
+    fireEvent.click(lite);
+    await waitFor(async () => expect((await storage.listProfiles())[0]!.settings.aiMode).toBe('auto'));
+  });
+
   it('read aloud adds Listen buttons that speak the lesson, and stops speaking when they go away', async () => {
     fakeSpeech();
     await openApp();

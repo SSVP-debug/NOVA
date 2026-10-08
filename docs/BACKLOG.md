@@ -23,11 +23,11 @@ Definition of done for every task: `npm run check` passes, tests added, works of
 ## Phase C: AI layer
 | ID | Task | Acceptance |
 |---|---|---|
-| C1 | Benchmark 1 to 2 small models on the demo laptop and weakest device (load time, answer time, memory) | Table in docs/EVIDENCE.md; choose or reject |
-| C2 | Implement the chosen `LocalModelRuntime` (Transformers.js, WebLLM, or Ollama) | `explain()` returns model text; falls back on failure/timeout |
-| C3 | Teach-back screen using `evaluateTeachBack` | Checklist coverage shown; model message optional |
-| C4 | Ask box: route with `matchConcepts`, answer from lesson text, offer questions (no-AI path must work) | "I don't get loops" opens Loops with a short quiz; unknown topics get a polite miss |
-| C5 | Lite mode toggle (`aiMode: 'off'`) and auto-detect on slow devices | App fully works with the model off |
+| C1 | **DEVICE TEST PENDING.** Benchmark 1 to 2 small models on the demo laptop and weakest device (load time, answer time, memory) | Procedure and honest unmeasured rows in `docs/EVIDENCE.md`; team must run on both real devices and choose or reject |
+| C2 | **DONE.** Ollama `LocalModelRuntime`, grounded rephrasing, timeout cancellation and template fallback | Adapter tests verify model output, errors, timeout and fallback |
+| C3 | **DONE.** Teach-back screen using `evaluateTeachBack` | Checklist coverage and message shown; model remains optional |
+| C4 | **DONE.** Ask box routes with `matchConcepts`, answers from lesson text and offers lesson/practice | Tests cover "I don't get loops" and unknown-topic response |
+| C5 | **DONE.** Lite mode toggle (`aiMode: 'off'`) and auto-detection on low-resource devices | Profile setting selects templates; limits are centralized in `CONFIG.ai` |
 
 ## Phase D: Offline, accessibility, evidence
 | ID | Task | Acceptance |

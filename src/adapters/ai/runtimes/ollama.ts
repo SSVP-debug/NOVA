@@ -21,7 +21,10 @@ export class OllamaRuntime implements LocalModelRuntime {
       body: JSON.stringify({ model: this.model, prompt, stream: false, options: { num_predict: opts.maxTokens ?? 160, temperature: 0.3 } }),
     });
     if (!res.ok) throw new Error(`Ollama error ${res.status}`);
-    const data = (await res.json()) as { response?: string };
-    return data.response ?? '';
+    const data: unknown = await res.json();
+    if (!data || typeof data !== 'object' || !('response' in data) || typeof data.response !== 'string') {
+      throw new Error('Ollama returned an invalid response');
+    }
+    return data.response;
   }
 }

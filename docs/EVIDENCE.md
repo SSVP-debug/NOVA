@@ -14,7 +14,7 @@ Date of these numbers: 7 October 2026. Everything here was measured on the **sam
 
 ## 2. Automated tests (run `npm run check`)
 
-**146 tests in 27 files pass**, plus content validation (0 errors, 5 warnings for topics that have no questions yet) and a production build.
+**154 tests in 29 files pass**, plus content validation (0 errors, 5 warnings for topics that have no questions yet) and a production build.
 
 | Area | What the tests prove |
 |---|---|
@@ -81,7 +81,7 @@ Learner export (Aarav, 15 answers): 4.5 KB. Simulation run time: 1.2 s.
 
 The Node numbers above (microseconds per engine call) were measured on a cloud server, **not a weak device**. They show the engine is not the bottleneck: every call takes far less than a millisecond.
 
-**To get real weak-device numbers:** open the app on the weakest device with `?demo=1`, press **Run device check**, then **Copy these numbers** and paste them below. Also use `npm run check:offline` for the saved size (currently **122.9 KB gzipped, 390.4 KB raw**).
+**To get real weak-device numbers:** open the app on the weakest device with `?demo=1`, press **Run device check**, then **Copy these numbers** and paste them below. Also use `npm run check:offline` for the saved size (currently **125.6 KB gzipped, 400.6 KB raw**).
 
 | Item | Result |
 |---|---|
@@ -91,27 +91,41 @@ The Node numbers above (microseconds per engine call) were measured on a cloud s
 | Storage used by app and profiles (MB) | ______ |
 | Engine: save one answer / plan / next question (microseconds) | ______ |
 | Time from tapping the link to the first question visible (stopwatch) | ______ s |
-| Saved app size (gzip) | 122.9 KB |
+| Saved app size (gzip) | 125.6 KB |
 
 Paste the raw copied text here:
 ```
 (paste the device check output)
 ```
 
-## 6. Offline evidence
-Automated: build check passes (see section 2). **Still to do by a person:** the real-browser and real-device test in `docs/OFFLINE_TEST.md` (screenshot of the empty Network tab and the results table).
+## 6. AI model benchmark (Phase C1 — device run pending)
 
-## 7. Accessibility evidence
+No model benchmark has been run for this checkout: Ollama is not installed in the development environment, and the demo laptop and weakest device are not available here. Do not present the following as measurements or claim a model is selected.
+
+| Device | Candidate/runtime | Model download size | First model load | First answer | Warm answer (3-sentence rewrite) | Model memory | 10-intervention quality/licence | Result |
+|---|---|---:|---:|---:|---:|---:|---|---|
+| Demo laptop | Ollama + the model configured by `VITE_OLLAMA_MODEL` (default `gemma3:1b`) | Not measured | Not measured | Not measured | Not measured | Not measured | Not reviewed | Pending team run |
+| Weakest device | Same candidate, if it can run Ollama; otherwise reject local model there | Not measured | Not measured | Not measured | Not measured | Not measured | Not reviewed | Pending team run |
+
+Run the same 10 verified `Intervention` texts on each candidate after downloading it, with Wi-Fi disconnected. Record cold first generation separately from warm generations. Use Ollama's model list/process information for download and resident model memory, and the device's process monitor for peak memory; browser JS heap alone is not model memory. Review each output against its verified base text for added or changed facts, readability and the 3-sentence limit. Record the exact model tag and licence source. Compare at most two candidates and choose the smallest model that is acceptably fast and faithful; if either target device is too slow or cannot run it, reject model use there and use lite mode. Run a separate table row for every candidate tested.
+
+The Ollama adapter is implemented, but `gemma3:1b` is only the current default tag, **not a benchmark-backed model choice**. Lite mode and template fallback remain the supported path until the device results are recorded.
+
+## 7. Offline evidence
+Automated: build check passes (see section 2). The latest build precaches **400.6 KB raw / 125.6 KB gzip**. **Still to do by a person:** the real-browser and real-device test in `docs/OFFLINE_TEST.md` (screenshot of the empty Network tab and the results table).
+
+## 8. Accessibility evidence
 Automated: contrast (AAA), text sizes, focus and Listen button (section 2). **Still to do by a person:** `docs/ACCESSIBILITY_CHECK.md` (keyboard-only run, 200% zoom, read-aloud with Wi-Fi off, optional screen reader).
 
-## 8. Known limits (say these before a judge asks)
+## 9. Known limits (say these before a judge asks)
 - No real students have used NOVA. The simulation is a model of behaviour, not of people.
 - The content pack is a small sample. Results will change with real content.
 - Style adaptation needs several sessions to show.
 - Short diagnosis finds fewer mistakes than a random quiz that flags every wrong answer.
 - Not yet tested in a real browser or on a weak device (steps are written).
+- A local model has not yet been benchmarked or selected on the demo laptop and weakest device; the AI UI works with templates instead.
 
-## 9. How to regenerate
+## 10. How to regenerate
 ```
 npm run evidence        # rewrites docs/evidence-data/simulation.md and simulation.json
 npm run check           # tests and content validation
