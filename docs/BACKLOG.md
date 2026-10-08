@@ -39,4 +39,4 @@ Definition of done for every task: `npm run check` passes, tests added, works of
 | D5 | **DONE in code and tests; rehearsal and recording pending.** Under `?demo=1`: one-click **Open Fresh learner / Open Aarav**, **Start demo question** (same fixed question for both, with a helper line naming the answer to pick), **Reset demo data** (asks first; only deletes sample-data profiles), rehearsal **timer** that says if the run is under 3:00, time buttons, device check. `docs/DEMO_SCRIPT.md` has the minute-by-minute script, roles, fallbacks, backup-recording steps and likely questions. A test plays the whole demo through the real screens, and `demoScript.test.ts` fails if content edits would break it | Rehearsal log in `docs/DEMO_SCRIPT.md` filled in (3 runs under 3:00) and the backup video recorded and copied to 3 places |
 
 ## Phase E: Stretch (only if A to D are done)
-Bandit strategy selector, BKT mastery, bring-your-own-notes, Pyodide code questions, voice input.
+Bandit strategy selector, BKT mastery, bring-your-own-notes, Pyodide code questions, voice input
