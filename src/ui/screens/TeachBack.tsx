@@ -34,8 +34,9 @@ export function TeachBack({ concept, go }: { concept?: string; go: (route: Route
       <section className="card" aria-labelledby="teach-back-heading">
         <h2 id="teach-back-heading" style={{ marginTop: 0 }}>Teach it back</h2>
         <p>Explain the topic in your own words. NOVA checks your explanation against the key ideas.</p>
-        <label htmlFor="teach-back-topic">Topic</label>
+        <label className="field" htmlFor="teach-back-topic">Topic</label>
         <select
+          className="wide"
           id="teach-back-topic"
           value={current.id}
           disabled={busy}
@@ -49,8 +50,9 @@ export function TeachBack({ concept, go }: { concept?: string; go: (route: Route
           {pack.concepts.map((item) => <option key={item.id} value={item.id}>{item.title}</option>)}
         </select>
         <form onSubmit={submit}>
-          <label htmlFor="teach-back-answer">Your explanation</label>
+          <label className="field" htmlFor="teach-back-answer">Your explanation</label>
           <textarea
+            className="wide"
             id="teach-back-answer"
             rows={5}
             value={answer}

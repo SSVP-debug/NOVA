@@ -26,8 +26,9 @@ export function Ask({ go }: { go: (route: Route) => void }) {
         <h2 id="ask-heading" style={{ marginTop: 0 }}>Ask about a topic</h2>
         <p>Describe what is confusing. NOVA finds a topic in this lesson pack and answers with its verified lesson text.</p>
         <form onSubmit={submit}>
-          <label htmlFor="ask-question">What are you stuck on?</label>
+          <label className="field" htmlFor="ask-question">What are you stuck on?</label>
           <textarea
+            className="wide"
             id="ask-question"
             rows={3}
             value={question}

@@ -34,7 +34,7 @@ describe('Home review list and the demo time control', () => {
     fireEvent.click(screen.getByRole('button', { name: '+7 days' }));
     expect(await screen.findByText('1 topic due for review')).toBeTruthy();
     expect(screen.getByText('due 4 days ago')).toBeTruthy();
-    expect(screen.getByText('review: Lists')).toBeTruthy(); // also a step in today's plan
+    expect(screen.getByText('Review: Lists')).toBeTruthy(); // also a step in today's plan
     expect(screen.getByText(/7 days ahead of real time/)).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Review Lists' })).toBeTruthy();
 
