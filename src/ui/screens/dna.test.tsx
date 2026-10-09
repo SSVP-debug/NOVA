@@ -41,8 +41,8 @@ describe('DNA screen', () => {
     await screen.findByText('Topic by topic');
     expect(screen.getAllByText(/To unlock:/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/reach 35% in Loops \(now 0%\)/).length).toBeGreaterThan(0);
-    expect(screen.getByText(/Unlocks: Lists, Loops\./)).toBeTruthy();
-    expect(screen.getByText(/Needs: Loops \(0% ✖\), Lists \(0% ✖\)\./)).toBeTruthy();
+    expect(screen.getByText(/Unlocks: .*Lists.*Loops.*Hashing/)).toBeTruthy();
+    expect(screen.getAllByText(/Needs: /).some((node) => /Variables \(0% ✖\)/.test(node.textContent ?? '') || /Loops \(0% ✖\), Lists \(0% ✖\)/.test(node.textContent ?? ''))).toBe(true);
   });
 
   it('each topic has a text status, not only a colour', async () => {

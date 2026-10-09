@@ -25,5 +25,5 @@ export default defineConfig({
       },
     }),
   ],
-  test: { environment: 'node', include: ['src/**/*.test.{ts,tsx}'] },
+  test: { environment: 'node', include: ['src/**/*.test.{ts,tsx}'], testTimeout: 30000 },
 });

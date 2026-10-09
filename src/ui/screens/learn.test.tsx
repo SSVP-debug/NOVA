@@ -54,10 +54,11 @@ describe('Learn screen', () => {
     expect(screen.getByText(/gives the numbers from a up to/)).toBeTruthy();
   });
 
-  it('a concept with one style has no "other styles" row', async () => {
+  it('a concept with multiple authored styles offers the alternate explanation', async () => {
     await show('fresh', (go) => <Learn concept="lists" go={go} />);
     await screen.findByText('Plain explanation');
-    expect(screen.queryByRole('group', { name: 'Other ways to explain this' })).toBeNull();
+    expect(screen.getByRole('group', { name: 'Other ways to explain this' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Worked example' })).toBeTruthy();
   });
 });
 

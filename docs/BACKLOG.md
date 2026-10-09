@@ -13,12 +13,13 @@ Definition of done for every task: `npm run check` passes, tests added, works of
 | A6 | **DONE.** All app time comes from the injected `Clock` (a test, `clock-guard.test.ts`, fails if `Date.now()` or `new Date()` appears outside `src/app/clock.ts`, `src/core/util/id.ts` and `src/adapters/`). Hidden demo tools: open the app with `?demo=1` to get "+1 day", "+7 days" and "Reset time" | Verified by `clock.test.ts` and `home-review.test.tsx` |
 
 ## Phase B: Content
+Code implementation is complete below; authored question content is AI-drafted and still requires human review before release: `{"draft": true, "review": "pending"}`.
 | ID | Task | Acceptance |
 |---|---|---|
-| B1 | Author 6 concepts fully: explanations in 2+ styles, teach-back checklist, keywords | Validator has no warnings for those concepts |
-| B2 | 4 to 6 questions per concept with misconception-tagged distractors | Every wrong option tagged; reviewed by a human |
-| B3 | 4 more generator templates (e.g. accumulator init, loop condition, index vs value in lists, base case) | Each passes the generator test pattern (500 seeds) |
-| B4 | Second small pack (about 10 questions, non-programming) to prove generality | Loads via the same code with zero engine changes |
+| B1 | **IMPLEMENTED.** Complete the original 6 concepts with explanations in 2+ styles, teach-back checklists, and keywords | Validator has no warnings for those concepts |
+| B2 | **IMPLEMENTED; human review pending.** 4 to 6 questions per concept with misconception-tagged distractors | Every wrong option tagged; reviewed by a human |
+| B3 | **IMPLEMENTED.** Add 4 generator templates (accumulator init, loop condition, index vs value in lists, base case) | Each passes the generator test pattern (500 seeds) |
+| B4 | **IMPLEMENTED.** Add a second small pack (about 10 questions, non-programming) to prove generality | Loads via the same code with zero engine changes |
 
 ## Phase C: AI layer
 | ID | Task | Acceptance |

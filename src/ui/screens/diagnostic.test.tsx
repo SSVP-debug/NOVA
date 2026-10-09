@@ -6,7 +6,7 @@ import { MemoryStorage } from '@/adapters/storage/memoryStorage';
 import { TemplateAI } from '@/adapters/ai/templateAI';
 import { createServices } from '@/app/container';
 import { SessionProvider, useSession } from '@/app/session';
-import { planToday } from '@/core/engine';
+import { diagnosticLength, planToday } from '@/core/engine';
 import { makeProfile } from '@/seed/personas';
 import { NOW, pack } from '@/testkit';
 import { Home } from './Home';
@@ -47,35 +47,36 @@ describe('Diagnostic screen', () => {
 
   it('runs the whole check, saves mastery for 3+ concepts, and shows the changed plan', async () => {
     const { storage, p, services } = await setup();
+    const max = diagnosticLength(pack).max;
     fireEvent.click(await screen.findByRole('button', { name: 'Start the check' }));
-    expect(await screen.findByText('Question 1 of up to 6')).toBeTruthy();
+    expect(await screen.findByText(`Question 1 of up to ${max}`)).toBeTruthy();
 
-    for (let i = 1; i <= 6; i++) {
+    for (let i = 1; i <= max; i++) {
       expect(screen.getByRole('progressbar').getAttribute('aria-valuenow')).toBe(String(i - 1));
-      // no right/wrong marks are shown while the check runs
       expect(screen.queryByText(/Correct\.|Not quite/)).toBeNull();
       answerFirstOption('sure');
     }
 
     expect(await screen.findByText('Your starting point')).toBeTruthy();
-    expect(screen.getByText(/of 6/)).toBeTruthy();
+    expect(screen.getByText(new RegExp(`of ${max}`))).toBeTruthy();
     expect(screen.getByText('Mistakes NOVA found')).toBeTruthy();
     expect(screen.getByText(/Before: Start with a quick check/)).toBeTruthy();
 
     const saved = await storage.loadLearner(p.id, pack.id);
     const placed = Object.values(saved!.concepts).filter((c) => c.attempts > 0);
     expect(placed.length).toBeGreaterThanOrEqual(3);
-    expect(saved!.history).toHaveLength(6);
+    expect(saved!.history).toHaveLength(max);
     expect(planToday(saved!, services.pack, NOW).steps[0]!.kind).not.toBe('diagnostic');
   });
 
   it('Leave in the middle saves nothing, so a new profile is still offered the check', async () => {
     const routes: unknown[] = [];
     const { storage, p } = await setup('diagnostic', (r) => routes.push(r));
+    const max = diagnosticLength(pack).max;
     fireEvent.click(await screen.findByRole('button', { name: 'Start the check' }));
-    await screen.findByText('Question 1 of up to 6');
+    await screen.findByText(`Question 1 of up to ${max}`);
     answerFirstOption('guess');
-    await screen.findByText('Question 2 of up to 6');
+    await screen.findByText(`Question 2 of up to ${max}`);
     fireEvent.click(screen.getByRole('button', { name: 'Leave' }));
     expect(routes).toEqual([{ name: 'home' }]);
     const saved = await storage.loadLearner(p.id, pack.id);

@@ -8,7 +8,7 @@ const fresh = () => createLearner('p', pack, NOW);
 describe('buildLesson', () => {
   it('lists the styles a concept really has text for', () => {
     expect(lessonStyles(pack, 'loop-bounds')).toEqual(['plain', 'counterexample']);
-    expect(lessonStyles(pack, 'lists')).toEqual(['plain']);
+    expect(lessonStyles(pack, 'lists')).toEqual(['plain', 'worked-example']);
   });
 
   it('two seeded personas see different styles on the same concept, each with a reason', () => {

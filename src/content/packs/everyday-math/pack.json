@@ -1,0 +1,278 @@
+{
+  "schemaVersion": 1,
+  "id": "everyday-math",
+  "title": "Everyday Math: Fractions and Percentages",
+  "subject": "Mathematics",
+  "version": "0.1.0",
+  "description": "A small non-programming pack for practicing fraction and percentage fundamentals.",
+  "concepts": [
+    {
+      "id": "fractions",
+      "title": "Fractions",
+      "summary": "A fraction describes equal parts of a whole; the numerator counts selected parts and the denominator counts total equal parts.",
+      "prerequisites": [],
+      "keywords": ["fraction", "fractions", "numerator", "denominator", "equivalent", "equal parts"],
+      "explanations": {
+        "plain": "In a/b, the denominator b tells how many equal parts make the whole, and the numerator a tells how many of those parts are selected.",
+        "worked-example": "If a pizza is divided into 8 equal slices and 3 are eaten, the eaten part is 3/8: 3 selected slices out of 8 equal slices."
+      },
+      "teachBack": [
+        { "id": "numerator-count", "label": "the numerator counts selected parts", "keywords": ["numerator", "selected", "top", "chosen"] },
+        { "id": "denominator-whole", "label": "the denominator counts equal parts in the whole", "keywords": ["denominator", "equal parts", "whole", "bottom"] },
+        { "id": "equal-parts", "label": "fraction parts are equal-sized", "keywords": ["equal", "same size", "same-sized"] }
+      ]
+    },
+    {
+      "id": "percentages",
+      "title": "Percentages",
+      "summary": "A percentage is a number of parts per hundred and can be converted to a decimal by dividing by 100.",
+      "prerequisites": ["fractions"],
+      "keywords": ["percent", "percentage", "per hundred", "discount", "rate", "decimal"],
+      "explanations": {
+        "plain": "Percent means per hundred. For example, 25% is 25 out of 100, or 0.25 as a decimal.",
+        "worked-example": "To find 10% of 80, write 10% as 0.10 and multiply: 0.10 × 80 = 8."
+      },
+      "teachBack": [
+        { "id": "per-hundred", "label": "percent means per hundred", "keywords": ["per hundred", "out of 100", "hundred"] },
+        { "id": "decimal-conversion", "label": "divide a percent by 100 to get its decimal", "keywords": ["divide by 100", "decimal", "move the decimal"] },
+        { "id": "part-calculation", "label": "multiply the decimal rate by the whole to find the part", "keywords": ["multiply", "rate", "whole", "part"] }
+      ]
+    }
+  ],
+  "misconceptions": [
+    {
+      "id": "fraction-top-bottom-swapped",
+      "concept": "fractions",
+      "title": "Numerator and denominator swapped",
+      "description": "reverses the roles of the selected parts and the total equal parts",
+      "explanations": { "plain": "The numerator is the selected-part count on top; the denominator is the total equal-part count on the bottom." }
+    },
+    {
+      "id": "fraction-add-denominators",
+      "concept": "fractions",
+      "title": "Denominators added",
+      "description": "adds denominators when adding fractions that already have the same denominator",
+      "explanations": { "plain": "When denominators match, add the numerators and keep the common denominator." }
+    },
+    {
+      "id": "fraction-equivalence-missed",
+      "concept": "fractions",
+      "title": "Equivalent fractions missed",
+      "description": "does not recognize that multiplying numerator and denominator by the same number preserves a fraction's value",
+      "explanations": { "plain": "Multiplying both the numerator and denominator by the same nonzero number keeps the fraction equivalent." }
+    },
+    {
+      "id": "percent-not-divided-by-hundred",
+      "concept": "percentages",
+      "title": "Percent not converted",
+      "description": "uses a percent as a whole number rather than converting it to a rate per hundred",
+      "explanations": { "plain": "Convert a percent to a decimal by dividing by 100 before multiplying by the whole." }
+    },
+    {
+      "id": "percent-whole-confused",
+      "concept": "percentages",
+      "title": "Part and whole confused",
+      "description": "reports the percentage or whole amount instead of the calculated part",
+      "explanations": { "plain": "Multiply the decimal rate by the whole to find the part." }
+    },
+    {
+      "id": "percent-discount-direction",
+      "concept": "percentages",
+      "title": "Discount direction confused",
+      "description": "adds a discount to the original price rather than subtracting it",
+      "explanations": { "plain": "A discount reduces the original price, so subtract the discount amount." }
+    }
+  ],
+  "questions": [
+    {
+      "kind": "static",
+      "id": "fractions-numerator-beginner",
+      "concept": "fractions",
+      "difficulty": 1,
+      "prompt": "In the fraction 3/8, what does the 3 count?",
+      "options": [
+        { "text": "The selected equal parts", "correct": true },
+        { "text": "All equal parts in the whole", "misconception": "fraction-top-bottom-swapped" },
+        { "text": "The number of wholes", "misconception": "fraction-equivalence-missed" },
+        { "text": "The size of each part", "misconception": "fraction-add-denominators" }
+      ],
+      "hints": ["The numerator is the top number."],
+      "feedback": {
+        "fraction-top-bottom-swapped": { "plain": "The 3 is the numerator and counts the selected parts; 8 is the total number of equal parts." },
+        "fraction-equivalence-missed": { "plain": "The numerator counts selected parts, not the number of complete wholes." },
+        "fraction-add-denominators": { "plain": "The 3 counts how many of the 8 equal parts are selected." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "fractions-add-same-denominator-beginner",
+      "concept": "fractions",
+      "difficulty": 1,
+      "prompt": "What is 1/5 + 2/5?",
+      "options": [
+        { "text": "3/5", "correct": true },
+        { "text": "3/10", "misconception": "fraction-add-denominators" },
+        { "text": "2/5", "misconception": "fraction-equivalence-missed" },
+        { "text": "3/25", "misconception": "fraction-top-bottom-swapped" }
+      ],
+      "hints": ["The pieces have the same size, so combine their counts."],
+      "feedback": {
+        "fraction-add-denominators": { "plain": "Add the numerators 1 + 2 and keep the common denominator 5, giving 3/5." },
+        "fraction-equivalence-missed": { "plain": "Both fractions have denominator 5, so their selected-part counts combine to 3." },
+        "fraction-top-bottom-swapped": { "plain": "The denominator remains 5 because all parts are fifths." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "fractions-equivalent-intermediate",
+      "concept": "fractions",
+      "difficulty": 2,
+      "prompt": "Which fraction is equivalent to 1/2?",
+      "options": [
+        { "text": "3/6", "correct": true },
+        { "text": "2/6", "misconception": "fraction-equivalence-missed" },
+        { "text": "1/4", "misconception": "fraction-top-bottom-swapped" },
+        { "text": "2/3", "misconception": "fraction-add-denominators" }
+      ],
+      "hints": ["Multiply the numerator and denominator by the same number."],
+      "feedback": {
+        "fraction-equivalence-missed": { "plain": "Multiplying both parts of 1/2 by 3 gives 3/6, which has the same value." },
+        "fraction-top-bottom-swapped": { "plain": "1/4 is not equal to 1/2; the numerator and denominator must be scaled together." },
+        "fraction-add-denominators": { "plain": "2/3 has a different value; 1/2 becomes 3/6 when both terms are multiplied by 3." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "fractions-of-quantity-intermediate",
+      "concept": "fractions",
+      "difficulty": 2,
+      "prompt": "What is 3/4 of 20?",
+      "options": [
+        { "text": "15", "correct": true },
+        { "text": "5", "misconception": "fraction-top-bottom-swapped" },
+        { "text": "23", "misconception": "fraction-add-denominators" },
+        { "text": "60", "misconception": "fraction-equivalence-missed" }
+      ],
+      "hints": ["Find one quarter of 20, then take three of those quarters."],
+      "feedback": {
+        "fraction-top-bottom-swapped": { "plain": "One quarter of 20 is 5; three quarters is 3 × 5 = 15." },
+        "fraction-add-denominators": { "plain": "A fraction of a quantity is found by multiplication: 20 × 3/4 = 15." },
+        "fraction-equivalence-missed": { "plain": "Multiply by 3/4, not by 3; 20 × 3/4 equals 15." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "fractions-compare-advanced",
+      "concept": "fractions",
+      "difficulty": 3,
+      "prompt": "Which fraction is greater: 3/5 or 2/3?",
+      "options": [
+        { "text": "2/3", "correct": true },
+        { "text": "3/5", "misconception": "fraction-top-bottom-swapped" },
+        { "text": "They are equal", "misconception": "fraction-equivalence-missed" },
+        { "text": "Cannot compare fractions", "misconception": "fraction-add-denominators" }
+      ],
+      "hints": ["Convert both fractions to fifteenths or compare their decimal values."],
+      "feedback": {
+        "fraction-top-bottom-swapped": { "plain": "3/5 is 9/15, while 2/3 is 10/15, so 2/3 is greater." },
+        "fraction-equivalence-missed": { "plain": "The fractions are close but not equal: 9/15 is less than 10/15." },
+        "fraction-add-denominators": { "plain": "Fractions can be compared using a shared denominator: 3/5 = 9/15 and 2/3 = 10/15." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "percent-conversion-beginner",
+      "concept": "percentages",
+      "difficulty": 1,
+      "prompt": "What is 25% written as a decimal?",
+      "options": [
+        { "text": "0.25", "correct": true },
+        { "text": "25", "misconception": "percent-not-divided-by-hundred" },
+        { "text": "2.5", "misconception": "percent-whole-confused" },
+        { "text": "0.025", "misconception": "percent-discount-direction" }
+      ],
+      "hints": ["A percent is a number per 100."],
+      "feedback": {
+        "percent-not-divided-by-hundred": { "plain": "25% means 25 out of 100, so divide 25 by 100 to get 0.25." },
+        "percent-whole-confused": { "plain": "Move the decimal two places left when converting 25% to a decimal: 0.25." },
+        "percent-discount-direction": { "plain": "25 divided by 100 is 0.25; 0.025 would represent 2.5%." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "percent-of-quantity-beginner",
+      "concept": "percentages",
+      "difficulty": 1,
+      "prompt": "What is 10% of 80?",
+      "options": [
+        { "text": "8", "correct": true },
+        { "text": "10", "misconception": "percent-whole-confused" },
+        { "text": "800", "misconception": "percent-not-divided-by-hundred" },
+        { "text": "72", "misconception": "percent-discount-direction" }
+      ],
+      "hints": ["Convert 10% to 0.10, then multiply by 80."],
+      "feedback": {
+        "percent-whole-confused": { "plain": "The part is 0.10 × 80 = 8; 10 is the rate, not the resulting amount." },
+        "percent-not-divided-by-hundred": { "plain": "Use 0.10 rather than 10: 0.10 × 80 = 8." },
+        "percent-discount-direction": { "plain": "This asks for the part, not a discounted price: 10% of 80 is 8." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "percent-discount-intermediate",
+      "concept": "percentages",
+      "difficulty": 2,
+      "prompt": "A $50 item has a 20% discount. What is its price after the discount?",
+      "options": [
+        { "text": "$40", "correct": true },
+        { "text": "$60", "misconception": "percent-discount-direction" },
+        { "text": "$10", "misconception": "percent-whole-confused" },
+        { "text": "$1,000", "misconception": "percent-not-divided-by-hundred" }
+      ],
+      "hints": ["First find 20% of $50, then subtract that amount from $50."],
+      "feedback": {
+        "percent-discount-direction": { "plain": "20% of $50 is $10; a discount subtracts it, so the new price is $50 - $10 = $40." },
+        "percent-whole-confused": { "plain": "$10 is the discount amount. The question asks for the price after subtracting it: $40." },
+        "percent-not-divided-by-hundred": { "plain": "Use 0.20, not 20: $50 × 0.20 = $10 discount, leaving a $40 price." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "percent-of-quantity-intermediate",
+      "concept": "percentages",
+      "difficulty": 2,
+      "prompt": "What is 15% of 200?",
+      "options": [
+        { "text": "30", "correct": true },
+        { "text": "15", "misconception": "percent-whole-confused" },
+        { "text": "3000", "misconception": "percent-not-divided-by-hundred" },
+        { "text": "185", "misconception": "percent-discount-direction" }
+      ],
+      "hints": ["Write 15% as 0.15 before multiplying."],
+      "feedback": {
+        "percent-whole-confused": { "plain": "15 is the percent rate; the requested part is 0.15 × 200 = 30." },
+        "percent-not-divided-by-hundred": { "plain": "Convert 15% to 0.15, then multiply by 200 to get 30." },
+        "percent-discount-direction": { "plain": "This asks for 15% of 200, not 200 reduced by 15; the part is 30." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "percent-fraction-conversion-advanced",
+      "concept": "percentages",
+      "difficulty": 3,
+      "prompt": "What percentage is equal to 0.4?",
+      "options": [
+        { "text": "40%", "correct": true },
+        { "text": "4%", "misconception": "percent-not-divided-by-hundred" },
+        { "text": "0.4%", "misconception": "percent-whole-confused" },
+        { "text": "400%", "misconception": "percent-discount-direction" }
+      ],
+      "hints": ["To convert a decimal to a percent, multiply it by 100."],
+      "feedback": {
+        "percent-not-divided-by-hundred": { "plain": "Multiply 0.4 by 100 to convert it to a percent: 40%." },
+        "percent-whole-confused": { "plain": "0.4 is the decimal form; as a percent it is 40%." },
+        "percent-discount-direction": { "plain": "0.4 × 100 = 40, so the equivalent percentage is 40%, not 400%." }
+      }
+    }
+  ]
+}

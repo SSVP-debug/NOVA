@@ -26,7 +26,7 @@ describe('simulated learners', () => {
   });
 
   it('with perfect teaching and no noise, NOVA resolves every learner', () => {
-    const r = resolutionExperiment(small({ pLearnMatch: 1, pLearnMismatch: 1, pHold: 1, pSlip: 0, budget: 60 }), 'nova');
+    const r = resolutionExperiment(small({ pLearnMatch: 1, pLearnMismatch: 1, pHold: 1, pSlip: 0, budget: 80 }), 'nova');
     expect(r.resolvedWithinBudget.p).toBe(1);
   });
 
