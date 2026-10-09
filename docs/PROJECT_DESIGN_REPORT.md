@@ -167,7 +167,7 @@ All numbers are in `src/core/config.ts`. Each rule is a replaceable function wit
 ## 7. Content system
 
 ### 7.1 Pack schema
-See `src/core/types.ts` and the sample `src/content/packs/programming-basics/pack.json`. **The sample pack is a placeholder for plumbing; the team must author and review the real content.**
+See `src/core/types.ts` and the packs under `src/content/packs/`. Phase B implementation now provides the programming pack and a small non-programming fractions/percentages pack. The authored questions are AI-drafted and still require human review before release.
 
 ### 7.2 The key idea: misconception-tagged wrong options
 Each wrong option encodes one specific wrong belief. Picking it diagnoses the misconception instantly with no AI. For example, for `range(1, 3)` over `[4, 7, 2]`, the option "4 7 2" is tagged `off-by-one-start`.
@@ -248,8 +248,9 @@ Do not claim educational impact that was not measured. Say "prototype".
 |---|---|
 | Contracts, ports, config | Done |
 | Engine: mastery, misconceptions, review, calibration, strategy, planner, selector, intervention, matcher, reducer, session summary | Done (reference rules), 18 tests |
-| Content validator and script | Done; sample pack passes with 5 warnings (empty concepts) |
-| Generators | 2 example plugins for `loop-bounds`; 500-seed tests |
+| Content validator and script | Done; both registered packs validate with zero errors and warnings |
+| Content | Phase B implementation covers 10 programming concepts with 4 to 6 questions each, including the four added DSA concepts; a separate two-concept non-programming pack has 10 questions. AI-drafted content still requires human review |
+| Generators | 6 plugins total: 2 loop-bound examples plus 4 Phase B templates; each has deterministic 500-seed tests |
 | Storage | Dexie and Memory adapters; export/import validation; tests |
 | AI | Grounded Template/LocalModel/Fallback AI, Ollama runtime with abortable generation, Teach-back and Ask screens, per-profile lite mode, low-resource auto-detection. Automated tests cover fallback, routing, checklist coverage and mode selection. Real-device model benchmark is still pending (see `docs/EVIDENCE.md`, section 6). |
 | Seeded personas | Fresh and "Aarav", built through the real engine |
@@ -264,11 +265,11 @@ Do not claim educational impact that was not measured. Say "prototype".
 | Learn with style (task A3, done) | `engine/lesson.ts` (`buildLesson`, pure) picks the style with the same `chooseStyle` rules as practice feedback and a repeating mistake in that concept counts. Learn screen shows that style, a "Why this?" reason, and buttons for other styles (marked "your choice", no learner state changes). Home sends a new topic to Learn. Lesson text is verified template text; no AI call, so lite mode is unaffected. 11 new tests |
 | DNA screen (task A4, done) | `engine/dna.ts` (`buildConceptMap`, `buildMistakeTimeline`, pure). Concept map as a small SVG: columns by prerequisite depth, arrows from a topic to what it unlocks (solid = prerequisite strong enough, dashed = not yet). Status is a glyph, a word, a border style and a percent, never colour alone. Every topic lists what it needs and unlocks; locked topics say exactly what to reach ("reach 35% in Variables, now 0%"). Mistake timeline per misconception with dates in words. 11 new tests |
 | PWA | Config present; production build succeeds with service worker precache |
-| Verification run | 154 tests pass (including UI tests in jsdom), typecheck passes, content validation passes, production build and offline checks succeed |
+| Verification run | 168 tests pass (including UI tests in jsdom), typecheck passes, both packs validate with zero errors/warnings, production build succeeds |
 
 **Not done / honest gaps**
 - The UI has **not been checked in a real browser**. It is compiled, built, and exercised by jsdom tests (including Practice, Teach-back, Ask and Settings), which do not check visual layout. Visual layout, offline install, and service-worker behavior need manual verification (backlog D1).
-- Sample content is placeholder-quality and covers only part of the concepts.
+- Phase B content is implemented, but authored content still needs human review before release.
 - Phase C's code is implemented, but C1 still needs the team to benchmark 1-2 models on the demo laptop and weakest device before selecting a model (backlog C1; see `docs/EVIDENCE.md`, section 6).
 - The `Practice` screen is solid but its look is basic; visual design is still to do.
 - Strategy, mastery and planner rules are intentionally simple.

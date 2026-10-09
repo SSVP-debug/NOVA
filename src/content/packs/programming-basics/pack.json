@@ -1,64 +1,1927 @@
 {
   "schemaVersion": 1,
   "id": "programming-basics",
-  "title": "Programming Basics: Loops and Lists",
+  "title": "Programming Basics + DSA Fundamentals",
   "subject": "Programming",
   "version": "0.1.0",
-  "description": "SAMPLE pack for the foundation. Replace and extend with the team's reviewed content.",
+  "description": "A foundation pack extended with four core DSA topics: arrays, hashing, stacks, and binary search.",
   "concepts": [
-    { "id": "variables", "title": "Variables", "summary": "A variable is a name that holds a value.", "prerequisites": [], "keywords": ["variable", "variables", "assign", "store", "name", "value"],
-      "explanations": { "plain": "A variable is a name that points to a value. x = 5 stores 5 under the name x." },
-      "teachBack": [ { "id": "name-value", "label": "a variable is a name for a stored value", "keywords": ["name", "store", "holds", "value"] } ] },
-    { "id": "lists", "title": "Lists", "summary": "A list holds many values in order. Positions start at 0.", "prerequisites": ["variables"], "keywords": ["list", "lists", "array", "index", "item", "items", "element"],
-      "explanations": { "plain": "A list keeps several values in order. The first item is at index 0, the second at index 1, and so on." },
-      "teachBack": [ { "id": "index-zero", "label": "the first item is at index 0", "keywords": ["0", "zero", "first"] }, { "id": "order", "label": "items keep their order", "keywords": ["order", "sequence", "position"] } ] },
-    { "id": "loops", "title": "Loops", "summary": "A loop repeats a block of code.", "prerequisites": ["variables"], "keywords": ["loop", "loops", "for", "while", "repeat", "iterate", "range"],
-      "explanations": { "plain": "A for loop repeats its body once for each value it is given, for example each value from range()." },
-      "teachBack": [ { "id": "repeat", "label": "a loop repeats code", "keywords": ["repeat", "again", "each", "many times"] } ] },
-    { "id": "loop-bounds", "title": "Loop bounds", "summary": "range(a, b) starts at a and stops before b.", "prerequisites": ["loops", "lists"], "keywords": ["bound", "bounds", "start", "stop", "skip", "skips", "first", "last", "range", "off", "index"],
+    {
+      "id": "variables",
+      "title": "Variables",
+      "summary": "A variable is a name that holds a value.",
+      "prerequisites": [],
+      "keywords": [
+        "variable",
+        "variables",
+        "assign",
+        "store",
+        "name",
+        "value"
+      ],
+      "explanations": {
+        "plain": "A variable is a name that points to a value. x = 5 stores 5 under the name x.",
+        "worked-example": "If score = 8 and then score = score + 2 runs, the old value 8 is read, 2 is added, and score now stores 10."
+      },
+      "teachBack": [
+        {
+          "id": "name-value",
+          "label": "a variable is a name for a stored value",
+          "keywords": [
+            "name",
+            "store",
+            "holds",
+            "value"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lists",
+      "title": "Lists",
+      "summary": "A list holds many values in order. Positions start at 0.",
+      "prerequisites": [
+        "variables"
+      ],
+      "keywords": [
+        "list",
+        "lists",
+        "array",
+        "index",
+        "item",
+        "items",
+        "element"
+      ],
+      "explanations": {
+        "plain": "A list keeps several values in order. The first item is at index 0, the second at index 1, and so on.",
+        "worked-example": "For colors = ['red', 'blue', 'green'], colors[0] is 'red' and colors[2] is 'green'. The list has 3 items, so its final index is 2."
+      },
+      "teachBack": [
+        {
+          "id": "index-zero",
+          "label": "the first item is at index 0",
+          "keywords": [
+            "0",
+            "zero",
+            "first"
+          ]
+        },
+        {
+          "id": "order",
+          "label": "items keep their order",
+          "keywords": [
+            "order",
+            "sequence",
+            "position"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "loops",
+      "title": "Loops",
+      "summary": "A loop repeats a block of code.",
+      "prerequisites": [
+        "variables"
+      ],
+      "keywords": [
+        "loop",
+        "loops",
+        "for",
+        "while",
+        "repeat",
+        "iterate",
+        "range"
+      ],
+      "explanations": {
+        "plain": "A for loop repeats its body once for each value it is given, for example each value from range().",
+        "worked-example": "for n in [2, 4, 6] runs its body three times. The values of n are 2, then 4, then 6."
+      },
+      "teachBack": [
+        {
+          "id": "repeat",
+          "label": "a loop repeats code",
+          "keywords": [
+            "repeat",
+            "again",
+            "each",
+            "many times"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "loop-bounds",
+      "title": "Loop bounds",
+      "summary": "range(a, b) starts at a and stops before b.",
+      "prerequisites": [
+        "loops",
+        "lists"
+      ],
+      "keywords": [
+        "bound",
+        "bounds",
+        "start",
+        "stop",
+        "skip",
+        "skips",
+        "first",
+        "last",
+        "range",
+        "off",
+        "index"
+      ],
       "explanations": {
         "plain": "range(a, b) gives the numbers from a up to, but not including, b. A list starts at index 0, so a loop over every item usually starts at 0.",
         "counterexample": "Try range(1, 3) on [4, 7, 2]. i is 1, then 2. The 4 at index 0 is never visited."
       },
       "teachBack": [
-        { "id": "start", "label": "where the loop starts (the first value of i)", "keywords": ["start", "begin", "first value"] },
-        { "id": "stop-excluded", "label": "the stop value is not included", "keywords": ["not included", "exclusive", "before", "stops before", "doesn't include", "does not include"] },
-        { "id": "zero-index", "label": "list positions start at 0", "keywords": ["0", "zero"] }
-      ] },
-    { "id": "functions", "title": "Functions", "summary": "A function is a reusable block of code with a name.", "prerequisites": ["loops"], "keywords": ["function", "functions", "def", "return", "call", "parameter"],
-      "explanations": { "plain": "A function packages code under a name so you can run it again by calling it." }, "teachBack": [] },
-    { "id": "recursion", "title": "Recursion", "summary": "A function that calls itself, with a base case to stop.", "prerequisites": ["functions"], "keywords": ["recursion", "recursive", "base case", "itself"],
-      "explanations": { "plain": "A recursive function calls itself on a smaller problem and stops at a base case." }, "teachBack": [] }
+        {
+          "id": "start",
+          "label": "where the loop starts (the first value of i)",
+          "keywords": [
+            "start",
+            "begin",
+            "first value"
+          ]
+        },
+        {
+          "id": "stop-excluded",
+          "label": "the stop value is not included",
+          "keywords": [
+            "not included",
+            "exclusive",
+            "before",
+            "stops before",
+            "doesn't include",
+            "does not include"
+          ]
+        },
+        {
+          "id": "zero-index",
+          "label": "list positions start at 0",
+          "keywords": [
+            "0",
+            "zero"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "functions",
+      "title": "Functions",
+      "summary": "A function is a reusable block of code with a name.",
+      "prerequisites": [
+        "loops"
+      ],
+      "keywords": [
+        "function",
+        "functions",
+        "def",
+        "return",
+        "call",
+        "parameter"
+      ],
+      "explanations": {
+        "plain": "A function packages code under a name so you can run it again by calling it.",
+        "worked-example": "def double(n): return n * 2 defines a function. Calling double(4) runs its body with n = 4 and returns 8."
+      },
+      "teachBack": [
+        {
+          "id": "named-block",
+          "label": "a function is a named block of code",
+          "keywords": [
+            "named",
+            "block",
+            "function",
+            "group"
+          ]
+        },
+        {
+          "id": "call-to-run",
+          "label": "calling a function runs it",
+          "keywords": [
+            "call",
+            "run",
+            "execute",
+            "invoke"
+          ]
+        },
+        {
+          "id": "return-value",
+          "label": "a function can return a value",
+          "keywords": [
+            "return",
+            "value",
+            "output",
+            "result"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "recursion",
+      "title": "Recursion",
+      "summary": "A function that calls itself, with a base case to stop.",
+      "prerequisites": [
+        "functions"
+      ],
+      "keywords": [
+        "recursion",
+        "recursive",
+        "base case",
+        "itself"
+      ],
+      "explanations": {
+        "plain": "A recursive function calls itself on a smaller problem and stops at a base case.",
+        "worked-example": "To count down from 3, calls receive 3, then 2, then 1, then 0. The base case at 0 stops and returns instead of calling again."
+      },
+      "teachBack": [
+        {
+          "id": "self-call",
+          "label": "a recursive function calls itself",
+          "keywords": [
+            "calls itself",
+            "self",
+            "recursive"
+          ]
+        },
+        {
+          "id": "base-case",
+          "label": "a base case stops the recursion",
+          "keywords": [
+            "base case",
+            "stop",
+            "end"
+          ]
+        },
+        {
+          "id": "smaller-problem",
+          "label": "each recursive step solves a smaller problem",
+          "keywords": [
+            "smaller",
+            "simpler",
+            "reduces",
+            "problem"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arrays",
+      "title": "Arrays",
+      "summary": "An array stores many values in ordered slots so we can read and update each item by index.",
+      "prerequisites": [
+        "lists"
+      ],
+      "keywords": [
+        "array",
+        "arrays",
+        "index",
+        "slot",
+        "ordered",
+        "element",
+        "values"
+      ],
+      "explanations": {
+        "plain": "Arrays keep values in fixed positions. We access each item using its index, and the first slot is at index 0.",
+        "worked-example": "If nums = [10, 20, 30], then nums[0] is 10, nums[1] is 20, and nums[2] is 30."
+      },
+      "teachBack": [
+        {
+          "id": "array-index",
+          "label": "an array item is selected by its index",
+          "keywords": [
+            "index",
+            "position",
+            "slot",
+            "element"
+          ]
+        },
+        {
+          "id": "array-order",
+          "label": "the array keeps the original order unless we change an item",
+          "keywords": [
+            "order",
+            "sequence",
+            "same order"
+          ]
+        },
+        {
+          "id": "zero-based",
+          "label": "the first array index is 0",
+          "keywords": [
+            "0",
+            "zero",
+            "first"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hashing",
+      "title": "Hashing",
+      "summary": "Hashing maps a key to a value so lookups are fast and direct.",
+      "prerequisites": [
+        "lists",
+        "variables"
+      ],
+      "keywords": [
+        "hash",
+        "hashing",
+        "dictionary",
+        "map",
+        "key",
+        "value",
+        "lookup"
+      ],
+      "explanations": {
+        "plain": "A hash map stores values under unique keys, so we can find a value by key in almost constant time.",
+        "worked-example": "The map {'alice': 95, 'bob': 87} lets us ask for scores['alice'] and get 95."
+      },
+      "teachBack": [
+        {
+          "id": "key-value",
+          "label": "a hash map connects a key to a value",
+          "keywords": [
+            "key",
+            "value",
+            "stores",
+            "maps"
+          ]
+        },
+        {
+          "id": "fast-lookup",
+          "label": "lookups use the key to find the value quickly",
+          "keywords": [
+            "find",
+            "lookup",
+            "search",
+            "quick"
+          ]
+        },
+        {
+          "id": "unique-keys",
+          "label": "each key identifies one stored value",
+          "keywords": [
+            "unique",
+            "key",
+            "one value"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stacks",
+      "title": "Stacks",
+      "summary": "A stack follows LIFO: the last item added is removed first.",
+      "prerequisites": [
+        "lists"
+      ],
+      "keywords": [
+        "stack",
+        "stacks",
+        "lifo",
+        "push",
+        "pop",
+        "top"
+      ],
+      "explanations": {
+        "plain": "A stack adds items on top and removes the most recently added item first. This is called LIFO.",
+        "analogy": "A stack is like a pile of plates: you put a new plate on top and the top plate comes off first."
+      },
+      "teachBack": [
+        {
+          "id": "stack-top",
+          "label": "the top item is the most recent one",
+          "keywords": [
+            "top",
+            "most recent",
+            "last added"
+          ]
+        },
+        {
+          "id": "stack-lifo",
+          "label": "a stack follows last in, first out",
+          "keywords": [
+            "last in",
+            "first out",
+            "lifo"
+          ]
+        },
+        {
+          "id": "stack-push-pop",
+          "label": "push adds; pop removes the top item",
+          "keywords": [
+            "push",
+            "pop",
+            "add",
+            "remove"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "binary-search",
+      "title": "Binary Search",
+      "summary": "Binary search repeatedly cuts a sorted list in half until it finds the target or proves it is missing.",
+      "prerequisites": [
+        "arrays",
+        "loops"
+      ],
+      "keywords": [
+        "binary search",
+        "sorted",
+        "mid",
+        "half",
+        "search",
+        "divide and conquer"
+      ],
+      "explanations": {
+        "plain": "Binary search works only on sorted data. It checks the middle item, discards half the list, and keeps searching on the remaining half.",
+        "worked-example": "In [2, 5, 9, 15, 28], the middle is 9. If the target is 15, the search moves to the right half."
+      },
+      "teachBack": [
+        {
+          "id": "sorted-data",
+          "label": "binary search assumes the data is sorted",
+          "keywords": [
+            "sorted",
+            "ordered",
+            "sorted data"
+          ]
+        },
+        {
+          "id": "middle-step",
+          "label": "it chooses the middle element each time",
+          "keywords": [
+            "middle",
+            "mid",
+            "center"
+          ]
+        },
+        {
+          "id": "half-the-list",
+          "label": "it removes half the remaining space each step",
+          "keywords": [
+            "half",
+            "discard",
+            "ignore"
+          ]
+        }
+      ]
+    }
   ],
   "misconceptions": [
-    { "id": "off-by-one-start", "concept": "loop-bounds", "title": "Off-by-one (loop start)", "description": "thinks a loop starting at 1 still visits the item at index 0", "explanations": { "plain": "Index 0 is the first item. A loop that starts at 1 skips it." } },
-    { "id": "off-by-one-end", "concept": "loop-bounds", "title": "Off-by-one (loop end)", "description": "thinks the stop value of range() is included", "explanations": { "plain": "The stop value of range() is never included." } },
-    { "id": "index-vs-value", "concept": "loop-bounds", "title": "Index and value confused", "description": "mixes up the position i with the value nums[i]", "explanations": { "plain": "i is the position. nums[i] is the value stored there." } },
-    { "id": "counts-from-zero", "concept": "loop-bounds", "title": "Range read as 'first n items'", "description": "thinks range(a, b) means the first b-a items from the start", "explanations": { "plain": "range(a, b) starts at a, not at the beginning of the list." } },
-    { "id": "shifted-range", "concept": "loop-bounds", "title": "Shifted range", "description": "shifts both ends of range() by one", "explanations": { "plain": "Shifting both ends reaches an index that does not exist and still skips index 0." } },
-    { "id": "index-starts-at-one", "concept": "lists", "title": "Index starts at 1", "description": "thinks the first list item is at index 1", "explanations": { "plain": "In Python the first item is at index 0." } },
-    { "id": "len-is-last-index", "concept": "lists", "title": "Length equals last index", "description": "thinks len(list) is the index of the last item", "explanations": { "plain": "A list of 3 items has indexes 0, 1, 2. The last index is len - 1." } },
-    { "id": "range-counts-from-one", "concept": "loops", "title": "range starts at 1", "description": "thinks range(n) produces 1 to n", "explanations": { "plain": "range(n) produces 0 up to n - 1." } },
-    { "id": "count-equals-stop", "concept": "loops", "title": "Runs = stop value", "description": "thinks the body runs as many times as the stop value", "explanations": { "plain": "range(a, b) runs b - a times." } }
+    {
+      "id": "off-by-one-start",
+      "concept": "loop-bounds",
+      "title": "Off-by-one (loop start)",
+      "description": "thinks a loop starting at 1 still visits the item at index 0",
+      "explanations": {
+        "plain": "Index 0 is the first item. A loop that starts at 1 skips it."
+      }
+    },
+    {
+      "id": "off-by-one-end",
+      "concept": "loop-bounds",
+      "title": "Off-by-one (loop end)",
+      "description": "thinks the stop value of range() is included",
+      "explanations": {
+        "plain": "The stop value of range() is never included."
+      }
+    },
+    {
+      "id": "index-vs-value",
+      "concept": "loop-bounds",
+      "title": "Index and value confused",
+      "description": "mixes up the position i with the value nums[i]",
+      "explanations": {
+        "plain": "i is the position. nums[i] is the value stored there."
+      }
+    },
+    {
+      "id": "counts-from-zero",
+      "concept": "loop-bounds",
+      "title": "Range read as 'first n items'",
+      "description": "thinks range(a, b) means the first b-a items from the start",
+      "explanations": {
+        "plain": "range(a, b) starts at a, not at the beginning of the list."
+      }
+    },
+    {
+      "id": "shifted-range",
+      "concept": "loop-bounds",
+      "title": "Shifted range",
+      "description": "shifts both ends of range() by one",
+      "explanations": {
+        "plain": "Shifting both ends reaches an index that does not exist and still skips index 0."
+      }
+    },
+    {
+      "id": "index-starts-at-one",
+      "concept": "lists",
+      "title": "Index starts at 1",
+      "description": "thinks the first list item is at index 1",
+      "explanations": {
+        "plain": "In Python the first item is at index 0."
+      }
+    },
+    {
+      "id": "len-is-last-index",
+      "concept": "lists",
+      "title": "Length equals last index",
+      "description": "thinks len(list) is the index of the last item",
+      "explanations": {
+        "plain": "A list of 3 items has indexes 0, 1, 2. The last index is len - 1."
+      }
+    },
+    {
+      "id": "range-counts-from-one",
+      "concept": "loops",
+      "title": "range starts at 1",
+      "description": "thinks range(n) produces 1 to n",
+      "explanations": {
+        "plain": "range(n) produces 0 up to n - 1."
+      }
+    },
+    {
+      "id": "count-equals-stop",
+      "concept": "loops",
+      "title": "Runs = stop value",
+      "description": "thinks the body runs as many times as the stop value",
+      "explanations": {
+        "plain": "range(a, b) runs b - a times."
+      }
+    },
+    {
+      "id": "array-index-offset",
+      "concept": "arrays",
+      "title": "Index offset",
+      "description": "thinks the first array item is at index 1 instead of 0",
+      "explanations": {
+        "plain": "Arrays use zero-based indexing, so the first item is at 0."
+      }
+    },
+    {
+      "id": "array-length-misread",
+      "concept": "arrays",
+      "title": "Array length mistaken for value",
+      "description": "mistakes the length of the array for an item or an index",
+      "explanations": {
+        "plain": "Length tells how many items there are. The last valid index is length minus one."
+      }
+    },
+    {
+      "id": "array-lookup-mixup",
+      "concept": "arrays",
+      "title": "Lookup and position mix-up",
+      "description": "reads the wrong slot when picking an array position",
+      "explanations": {
+        "plain": "Each item is stored at its own index, so the position you ask for decides which value you get."
+      }
+    },
+    {
+      "id": "hash-key-value-swap",
+      "concept": "hashing",
+      "title": "Key and value swapped",
+      "description": "thinks a dictionary returns the key when you ask for the value",
+      "explanations": {
+        "plain": "A dictionary returns the value stored under the key, not the key itself."
+      }
+    },
+    {
+      "id": "hash-lookup-misread",
+      "concept": "hashing",
+      "title": "Wrong lookup result",
+      "description": "chooses a different key's value instead of the requested one",
+      "explanations": {
+        "plain": "Lookups are matched by the exact key in the map, not by the last item or a nearby key."
+      }
+    },
+    {
+      "id": "hash-missing-default-confusion",
+      "concept": "hashing",
+      "title": "Missing default confusion",
+      "description": "forgets that get(key, default) returns the default when the key is absent",
+      "explanations": {
+        "plain": "If a key is missing, the default is returned unless the key is present."
+      }
+    },
+    {
+      "id": "stack-lifo-confused",
+      "concept": "stacks",
+      "title": "LIFO mistaken",
+      "description": "thinks the first pushed value comes out first instead of the newest one",
+      "explanations": {
+        "plain": "Stacks remove the last item added, so they follow last-in-first-out."
+      }
+    },
+    {
+      "id": "stack-top-guess",
+      "concept": "stacks",
+      "title": "Top item guess",
+      "description": "picks some other item instead of the top of the stack",
+      "explanations": {
+        "plain": "The top of a stack is always the most recently added item."
+      }
+    },
+    {
+      "id": "stack-pop-miscall",
+      "concept": "stacks",
+      "title": "Push/pop mix-up",
+      "description": "forgets that pop removes the current top item",
+      "explanations": {
+        "plain": "push adds one item, and pop removes the current top item."
+      }
+    },
+    {
+      "id": "binary-middle-choice",
+      "concept": "binary-search",
+      "title": "Middle choice mistake",
+      "description": "picks the wrong middle index instead of the center slot",
+      "explanations": {
+        "plain": "Binary search always checks the middle element, using the current low and high bounds."
+      }
+    },
+    {
+      "id": "binary-half-ignore",
+      "concept": "binary-search",
+      "title": "Half-range mistake",
+      "description": "searches the wrong half after learning the middle value",
+      "explanations": {
+        "plain": "If the target is larger than the middle, search the right half; if smaller, search the left half."
+      }
+    },
+    {
+      "id": "binary-sorted-assumption",
+      "concept": "binary-search",
+      "title": "Sorted data forgotten",
+      "description": "forgets that binary search only works when data is sorted",
+      "explanations": {
+        "plain": "Binary search relies on the array being sorted so the correct half can be discarded safely."
+      }
+    },
+    {
+      "id": "variable-reassign-mistake",
+      "concept": "variables",
+      "title": "Assignment is not a formula",
+      "description": "thinks a variable keeps the old value instead of updating to the new expression",
+      "explanations": {
+        "plain": "When you assign a variable, its value becomes the result of the right-hand side at that moment."
+      }
+    },
+    {
+      "id": "variable-name-vs-value",
+      "concept": "variables",
+      "title": "Name and value confused",
+      "description": "confuses the variable name with the value stored inside it",
+      "explanations": {
+        "plain": "The variable name is just a label. The value is the data currently stored there."
+      }
+    },
+    {
+      "id": "function-return-confused",
+      "concept": "functions",
+      "title": "Return value confused",
+      "description": "thinks the function body itself is the output instead of the returned value",
+      "explanations": {
+        "plain": "A function may produce a value with return, and that value is what callers receive."
+      }
+    },
+    {
+      "id": "function-call-omitted",
+      "concept": "functions",
+      "title": "Function call skipped",
+      "description": "forgets that a function only runs when it is called",
+      "explanations": {
+        "plain": "Defining a function does not execute it. You must call it to run its code."
+      }
+    },
+    {
+      "id": "recursive-base-case-missed",
+      "concept": "recursion",
+      "title": "Base case forgotten",
+      "description": "forgets that recursion needs a stop condition",
+      "explanations": {
+        "plain": "Without a base case, the function keeps calling itself forever or until it crashes."
+      }
+    },
+    {
+      "id": "recursive-step-size-wrong",
+      "concept": "recursion",
+      "title": "Recursive step not smaller",
+      "description": "keeps calling the function on the same size problem instead of reducing it",
+      "explanations": {
+        "plain": "Each recursive step must move toward the base case by making the problem smaller."
+      }
+    },
+    {
+      "id": "accumulator-starts-at-one",
+      "concept": "loops",
+      "title": "Accumulator starts at one",
+      "description": "adds an extra one by initializing a running total incorrectly",
+      "explanations": {
+        "plain": "This running total starts at 0 and then adds each value once."
+      }
+    },
+    {
+      "id": "accumulator-includes-first-twice",
+      "concept": "loops",
+      "title": "First value counted twice",
+      "description": "initializes a running total with the first value and then adds that value again in the loop",
+      "explanations": {
+        "plain": "Start the total at 0 when the loop will add every list item."
+      }
+    },
+    {
+      "id": "accumulator-resets-each-loop",
+      "concept": "loops",
+      "title": "Running total reset",
+      "description": "forgets that the accumulator keeps its previous value between loop passes",
+      "explanations": {
+        "plain": "An accumulator keeps the sum so far and adds the next value to it."
+      }
+    },
+    {
+      "id": "loop-condition-includes-stop",
+      "concept": "loops",
+      "title": "Loop includes the length",
+      "description": "uses a loop condition that lets the index equal the list length",
+      "explanations": {
+        "plain": "A list of length n has valid indexes only from 0 through n - 1."
+      }
+    },
+    {
+      "id": "loop-condition-skips-last",
+      "concept": "loops",
+      "title": "Loop stops too early",
+      "description": "stops before visiting the final valid list index",
+      "explanations": {
+        "plain": "Use a condition that remains true for the final valid index, len(values) - 1."
+      }
+    },
+    {
+      "id": "loop-condition-never-starts",
+      "concept": "loops",
+      "title": "Loop condition is false initially",
+      "description": "chooses a condition that is false for the initial index of zero",
+      "explanations": {
+        "plain": "Check the condition with the initial value of i before tracing the loop body."
+      }
+    },
+    {
+      "id": "lists-index-vs-value",
+      "concept": "lists",
+      "title": "Index printed instead of item",
+      "description": "reports the position number instead of the value stored at that position",
+      "explanations": {
+        "plain": "The index is a position; values[index] gives the item stored at that position."
+      }
+    },
+    {
+      "id": "lists-first-item-skipped",
+      "concept": "lists",
+      "title": "First item skipped",
+      "description": "starts a traversal at index one and misses the item at index zero",
+      "explanations": {
+        "plain": "A traversal from index 0 includes the first item in the list."
+      }
+    },
+    {
+      "id": "lists-length-for-index",
+      "concept": "lists",
+      "title": "Length used as an item",
+      "description": "confuses the number of list items with the values stored in the list",
+      "explanations": {
+        "plain": "len(values) counts the items; values[i] reads one of those items."
+      }
+    },
+    {
+      "id": "recursive-base-case-too-early",
+      "concept": "recursion",
+      "title": "Base case stops too early",
+      "description": "stops before the recursive calculation has included all values down to zero",
+      "explanations": {
+        "plain": "Trace which values are included before deciding where the base case should stop."
+      }
+    },
+    {
+      "id": "recursive-base-case-wrong-direction",
+      "concept": "recursion",
+      "title": "Base case points the wrong way",
+      "description": "chooses a stopping condition that is already true at the initial input",
+      "explanations": {
+        "plain": "A base case should stop when the recursive input reaches the intended smallest problem."
+      }
+    }
   ],
   "questions": [
-    { "kind": "static", "id": "lists-index-1", "concept": "lists", "difficulty": 1, "prompt": "What is nums[1]?", "code": "nums = [5, 6, 7]",
-      "options": [ { "text": "6", "correct": true }, { "text": "5", "misconception": "index-starts-at-one" }, { "text": "7", "misconception": "len-is-last-index" } ],
-      "hints": ["Which index is the first item?"],
-      "feedback": { "index-starts-at-one": { "plain": "nums[1] is the SECOND item, because the first item is nums[0]." }, "len-is-last-index": { "plain": "nums[2] is the last item. nums[1] is the middle one, which is 6." } } },
-    { "kind": "static", "id": "lists-len-1", "concept": "lists", "difficulty": 2, "prompt": "Which index is the last item?", "code": "nums = [4, 8, 15]",
-      "options": [ { "text": "2", "correct": true }, { "text": "3", "misconception": "len-is-last-index" }, { "text": "1", "misconception": "index-starts-at-one" } ],
-      "hints": ["Count the indexes starting from 0."],
-      "feedback": { "len-is-last-index": { "plain": "len(nums) is 3, but indexes run 0, 1, 2. The last index is len(nums) - 1." }, "index-starts-at-one": { "plain": "Index 1 is the middle item. Indexes run 0, 1, 2." } } },
-    { "kind": "static", "id": "loops-range-1", "concept": "loops", "difficulty": 1, "prompt": "What does this print?", "code": "for i in range(3):\n    print(i)",
-      "options": [ { "text": "0  1  2", "correct": true }, { "text": "1  2  3", "misconception": "range-counts-from-one" }, { "text": "0  1  2  3", "misconception": "off-by-one-end" } ],
-      "hints": ["What is the first value of i?"],
-      "feedback": { "range-counts-from-one": { "plain": "range(3) starts at 0 and gives 0, 1, 2." }, "off-by-one-end": { "plain": "The stop value 3 is not included, so the last value is 2." } } },
-    { "kind": "static", "id": "loops-count-1", "concept": "loops", "difficulty": 2, "prompt": "How many times does the loop body run?", "code": "for i in range(2, 6):\n    print('hi')",
-      "options": [ { "text": "4", "correct": true }, { "text": "5", "misconception": "off-by-one-end" }, { "text": "6", "misconception": "count-equals-stop" } ],
-      "hints": ["List every value of i."],
-      "feedback": { "off-by-one-end": { "plain": "i takes 2, 3, 4, 5. The stop value 6 is not included, so 4 runs." }, "count-equals-stop": { "plain": "The count is stop minus start: 6 - 2 = 4, not 6." } } },
-    { "kind": "generated", "id": "loop-bounds-print", "concept": "loop-bounds", "difficulty": 1, "generator": "loop-bounds.print-loop" },
-    { "kind": "generated", "id": "loop-bounds-which", "concept": "loop-bounds", "difficulty": 2, "generator": "loop-bounds.which-range" }
+    {
+      "kind": "static",
+      "id": "lists-index-1",
+      "concept": "lists",
+      "difficulty": 1,
+      "prompt": "What is nums[1]?",
+      "code": "nums = [5, 6, 7]",
+      "options": [
+        {
+          "text": "6",
+          "correct": true
+        },
+        {
+          "text": "5",
+          "misconception": "index-starts-at-one"
+        },
+        {
+          "text": "7",
+          "misconception": "len-is-last-index"
+        },
+        {
+          "text": "3",
+          "misconception": "array-length-misread"
+        }
+      ],
+      "hints": [
+        "Which index is the first item?"
+      ],
+      "feedback": {
+        "index-starts-at-one": {
+          "plain": "nums[1] is the SECOND item, because the first item is nums[0]."
+        },
+        "len-is-last-index": {
+          "plain": "nums[2] is the last item. nums[1] is the middle one, which is 6."
+        },
+        "array-length-misread": {
+          "plain": "The length is 3, but nums[1] is the second element in the list, which is 6."
+        }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "lists-len-1",
+      "concept": "lists",
+      "difficulty": 2,
+      "prompt": "Which index is the last item?",
+      "code": "nums = [4, 8, 15]",
+      "options": [
+        {
+          "text": "2",
+          "correct": true
+        },
+        {
+          "text": "3",
+          "misconception": "len-is-last-index"
+        },
+        {
+          "text": "1",
+          "misconception": "index-starts-at-one"
+        },
+        {
+          "text": "0",
+          "misconception": "array-index-offset"
+        }
+      ],
+      "hints": [
+        "Count the indexes starting from 0."
+      ],
+      "feedback": {
+        "len-is-last-index": {
+          "plain": "len(nums) is 3, but indexes run 0, 1, 2. The last index is len(nums) - 1."
+        },
+        "index-starts-at-one": {
+          "plain": "Index 1 is the middle item. Indexes run 0, 1, 2."
+        },
+        "array-index-offset": {
+          "plain": "The first item is at index 0. The last item is the third item, which is at index 2."
+        }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "loops-range-1",
+      "concept": "loops",
+      "difficulty": 1,
+      "prompt": "What does this print?",
+      "code": "for i in range(3):\n    print(i)",
+      "options": [
+        {
+          "text": "0  1  2",
+          "correct": true
+        },
+        {
+          "text": "1  2  3",
+          "misconception": "range-counts-from-one"
+        },
+        {
+          "text": "0  1  2  3",
+          "misconception": "off-by-one-end"
+        },
+        {
+          "text": "2  1  0",
+          "misconception": "counts-from-zero"
+        }
+      ],
+      "hints": [
+        "What is the first value of i?"
+      ],
+      "feedback": {
+        "range-counts-from-one": {
+          "plain": "range(3) starts at 0 and gives 0, 1, 2."
+        },
+        "off-by-one-end": {
+          "plain": "The stop value 3 is not included, so the last value is 2."
+        },
+        "counts-from-zero": {
+          "plain": "The values go upward from 0 to 2, not backward from 2 to 0."
+        }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "loops-count-1",
+      "concept": "loops",
+      "difficulty": 2,
+      "prompt": "How many times does the loop body run?",
+      "code": "for i in range(2, 6):\n    print('hi')",
+      "options": [
+        {
+          "text": "4",
+          "correct": true
+        },
+        {
+          "text": "5",
+          "misconception": "off-by-one-end"
+        },
+        {
+          "text": "6",
+          "misconception": "count-equals-stop"
+        },
+        {
+          "text": "3",
+          "misconception": "counts-from-zero"
+        }
+      ],
+      "hints": [
+        "List every value of i."
+      ],
+      "feedback": {
+        "off-by-one-end": {
+          "plain": "i takes 2, 3, 4, 5. The stop value 6 is not included, so 4 runs."
+        },
+        "count-equals-stop": {
+          "plain": "The count is stop minus start: 6 - 2 = 4, not 6."
+        },
+        "counts-from-zero": {
+          "plain": "The loop starts at 2, not at 0, and it stops before 6."
+        }
+      }
+    },
+    {
+      "kind": "generated",
+      "id": "loop-bounds-print",
+      "concept": "loop-bounds",
+      "difficulty": 1,
+      "generator": "loop-bounds.print-loop"
+    },
+    {
+      "kind": "generated",
+      "id": "loop-bounds-which",
+      "concept": "loop-bounds",
+      "difficulty": 2,
+      "generator": "loop-bounds.which-range"
+    },
+    {
+      "kind": "static",
+      "id": "arrays-beginner",
+      "concept": "arrays",
+      "difficulty": 1,
+      "prompt": "Which value is at index 1?",
+      "code": "nums = [9, 4, 7]",
+      "options": [
+        {
+          "text": "4",
+          "correct": true
+        },
+        {
+          "text": "9",
+          "misconception": "array-index-offset"
+        },
+        {
+          "text": "7",
+          "misconception": "array-lookup-mixup"
+        },
+        {
+          "text": "3",
+          "misconception": "array-length-misread"
+        }
+      ],
+      "hints": [
+        "Count from zero."
+      ],
+      "feedback": {
+        "array-index-offset": {
+          "plain": "The first item is at index 0, so index 1 is the second item: 4."
+        },
+        "array-lookup-mixup": {
+          "plain": "7 is the third item, which is at index 2, not index 1."
+        },
+        "array-length-misread": {
+          "plain": "The array length is 3, but index 1 points to the second element, which is 4."
+        }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "arrays-intermediate",
+      "concept": "arrays",
+      "difficulty": 2,
+      "prompt": "After `nums.append(12)` and `nums.pop()`, what is the value at index 2?",
+      "code": "nums = [3, 5, 9]\nnums.append(12)\nnums.pop()",
+      "options": [
+        {
+          "text": "9",
+          "correct": true
+        },
+        {
+          "text": "12",
+          "misconception": "array-lookup-mixup"
+        },
+        {
+          "text": "5",
+          "misconception": "array-index-offset"
+        },
+        {
+          "text": "3",
+          "misconception": "array-length-misread"
+        }
+      ],
+      "hints": [
+        "The last item is removed, then the array stays in order."
+      ],
+      "feedback": {
+        "array-lookup-mixup": {
+          "plain": "The appended value is removed before the final check, so index 2 is still 9."
+        },
+        "array-index-offset": {
+          "plain": "The item at index 2 is the third element, which remains 9 after the pop."
+        },
+        "array-length-misread": {
+          "plain": "Length tells the number of items, but the third value is still 9 because the last element was removed."
+        }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "arrays-advanced",
+      "concept": "arrays",
+      "difficulty": 3,
+      "prompt": "If `nums = [5, 11, 17, 23]` and `nums[1] = 8`, what is `nums[3]`?",
+      "code": "nums = [5, 11, 17, 23]\nnums[1] = 8",
+      "options": [
+        {
+          "text": "23",
+          "correct": true
+        },
+        {
+          "text": "8",
+          "misconception": "array-lookup-mixup"
+        },
+        {
+          "text": "11",
+          "misconception": "array-index-offset"
+        },
+        {
+          "text": "4",
+          "misconception": "array-length-misread"
+        }
+      ],
+      "hints": [
+        "Only one slot changes."
+      ],
+      "feedback": {
+        "array-lookup-mixup": {
+          "plain": "Changing index 1 does not change the value at index 3, which remains 23."
+        },
+        "array-index-offset": {
+          "plain": "The old value at index 1 was 11, but index 3 still points to 23."
+        },
+        "array-length-misread": {
+          "plain": "The length is 4, but index 3 is still the fourth item, which is 23."
+        }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "hashing-beginner",
+      "concept": "hashing",
+      "difficulty": 1,
+      "prompt": "What is `scores['alice']`?",
+      "code": "scores = {'alice': 95, 'bob': 87}",
+      "options": [
+        {
+          "text": "95",
+          "correct": true
+        },
+        {
+          "text": "alice",
+          "misconception": "hash-key-value-swap"
+        },
+        {
+          "text": "87",
+          "misconception": "hash-lookup-misread"
+        },
+        {
+          "text": "error",
+          "misconception": "hash-missing-default-confusion"
+        }
+      ],
+      "hints": [
+        "Ask for the value stored under the key."
+      ],
+      "feedback": {
+        "hash-key-value-swap": {
+          "plain": "The dictionary returns the value 95 for the key 'alice', not the key itself."
+        },
+        "hash-lookup-misread": {
+          "plain": "The key 'alice' matches the value 95, not the other key 'bob'."
+        },
+        "hash-missing-default-confusion": {
+          "plain": "The key is present, so the dictionary returns 95 instead of raising an error."
+        }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "hashing-intermediate",
+      "concept": "hashing",
+      "difficulty": 2,
+      "prompt": "What is `counts['a']` after this code?",
+      "code": "counts = {'a': 2, 'b': 3}\ncounts['a'] = counts['a'] + 1",
+      "options": [
+        {
+          "text": "3",
+          "correct": true
+        },
+        {
+          "text": "2",
+          "misconception": "hash-lookup-misread"
+        },
+        {
+          "text": "4",
+          "misconception": "hash-key-value-swap"
+        },
+        {
+          "text": "5",
+          "misconception": "hash-missing-default-confusion"
+        }
+      ],
+      "hints": [
+        "Increment the existing value for the same key."
+      ],
+      "feedback": {
+        "hash-lookup-misread": {
+          "plain": "The key 'a' is updated from 2 to 3, so its value becomes 3."
+        },
+        "hash-key-value-swap": {
+          "plain": "The value is increased, not replaced by the key name or by a different key."
+        },
+        "hash-missing-default-confusion": {
+          "plain": "No default is used here; the value under the key 'a' is updated to 3."
+        }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "hashing-advanced",
+      "concept": "hashing",
+      "difficulty": 3,
+      "prompt": "What does `seen.get('green', 0)` return?",
+      "code": "seen = {'red': 1, 'blue': 2}\nprint(seen.get('green', 0))",
+      "options": [
+        {
+          "text": "0",
+          "correct": true
+        },
+        {
+          "text": "1",
+          "misconception": "hash-lookup-misread"
+        },
+        {
+          "text": "None",
+          "misconception": "hash-missing-default-confusion"
+        },
+        {
+          "text": "2",
+          "misconception": "hash-key-value-swap"
+        }
+      ],
+      "hints": [
+        "When a key is not present, the default is returned."
+      ],
+      "feedback": {
+        "hash-lookup-misread": {
+          "plain": "The key 'green' is not in the dictionary, so the default 0 is used."
+        },
+        "hash-missing-default-confusion": {
+          "plain": "get(key, default) returns the default value, not None, when the key isn't present."
+        },
+        "hash-key-value-swap": {
+          "plain": "The dictionary does not return a random stored value; it returns the default 0 because 'green' is missing."
+        }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "stacks-beginner",
+      "concept": "stacks",
+      "difficulty": 1,
+      "prompt": "What does this pop from the stack?",
+      "code": "stack = []\nstack.append('A')\nstack.append('B')\nprint(stack.pop())",
+      "options": [
+        {
+          "text": "B",
+          "correct": true
+        },
+        {
+          "text": "A",
+          "misconception": "stack-lifo-confused"
+        },
+        {
+          "text": "None",
+          "misconception": "stack-top-guess"
+        },
+        {
+          "text": "C",
+          "misconception": "stack-pop-miscall"
+        }
+      ],
+      "hints": [
+        "A stack removes the most recently added item."
+      ],
+      "feedback": {
+        "stack-lifo-confused": {
+          "plain": "Stacks are LIFO, so the most recent item 'B' comes off first."
+        },
+        "stack-top-guess": {
+          "plain": "pop removes the item at the top, which is 'B'."
+        },
+        "stack-pop-miscall": {
+          "plain": "A stack does not invent a new item; it removes the top item, which is 'B'."
+        }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "stacks-intermediate",
+      "concept": "stacks",
+      "difficulty": 2,
+      "prompt": "After these operations, what is the stack content?",
+      "code": "stack = ['A']\nstack.append('B')\nstack.pop()\nstack.append('C')",
+      "options": [
+        {
+          "text": "['A', 'C']",
+          "correct": true
+        },
+        {
+          "text": "['B', 'C']",
+          "misconception": "stack-lifo-confused"
+        },
+        {
+          "text": "['A', 'B', 'C']",
+          "misconception": "stack-pop-miscall"
+        },
+        {
+          "text": "['C']",
+          "misconception": "stack-top-guess"
+        }
+      ],
+      "hints": [
+        "Pop removes the current top item, then push adds a new one."
+      ],
+      "feedback": {
+        "stack-lifo-confused": {
+          "plain": "The top item 'B' is popped before 'C' is pushed. The remaining stack is ['A', 'C']."
+        },
+        "stack-pop-miscall": {
+          "plain": "A pop removes the top item, so 'B' is removed before 'C' is added."
+        },
+        "stack-top-guess": {
+          "plain": "The stack still contains 'A' after the pop, and then 'C' is pushed on top."
+        }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "stacks-advanced",
+      "concept": "stacks",
+      "difficulty": 3,
+      "prompt": "Which item will be removed next?",
+      "code": "stack = ['A', 'B', 'C']\n# C was pushed most recently",
+      "options": [
+        {
+          "text": "C",
+          "correct": true
+        },
+        {
+          "text": "A",
+          "misconception": "stack-lifo-confused"
+        },
+        {
+          "text": "B",
+          "misconception": "stack-top-guess"
+        },
+        {
+          "text": "None",
+          "misconception": "stack-pop-miscall"
+        }
+      ],
+      "hints": [
+        "In a stack the newest item is at the top."
+      ],
+      "feedback": {
+        "stack-lifo-confused": {
+          "plain": "A stack removes the newest item, not the oldest one. So C comes off first."
+        },
+        "stack-top-guess": {
+          "plain": "The top item is the most recently added one, which is C."
+        },
+        "stack-pop-miscall": {
+          "plain": "A stack still has a top item to remove. The next one out is C."
+        }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "binary-search-beginner",
+      "concept": "binary-search",
+      "difficulty": 1,
+      "prompt": "In a sorted list `[3, 7, 11, 19, 25]`, which index is checked first in binary search?",
+      "code": "nums = [3, 7, 11, 19, 25]",
+      "options": [
+        {
+          "text": "2",
+          "correct": true
+        },
+        {
+          "text": "0",
+          "misconception": "binary-middle-choice"
+        },
+        {
+          "text": "4",
+          "misconception": "binary-half-ignore"
+        },
+        {
+          "text": "1",
+          "misconception": "binary-sorted-assumption"
+        }
+      ],
+      "hints": [
+        "Binary search checks the middle element first."
+      ],
+      "feedback": {
+        "binary-middle-choice": {
+          "plain": "The middle index of a 5-item list is 2, not 0."
+        },
+        "binary-half-ignore": {
+          "plain": "The first step always starts in the middle, which is index 2."
+        },
+        "binary-sorted-assumption": {
+          "plain": "Binary search starts at the middle item, so index 2 is checked before either end."
+        }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "binary-search-intermediate",
+      "concept": "binary-search",
+      "difficulty": 2,
+      "prompt": "Given `nums = [3, 7, 11, 19, 25]` and target `19`, what should the next search range be after checking the middle item `11`?",
+      "code": "nums = [3, 7, 11, 19, 25]\nmid = 2\ntarget = 19",
+      "options": [
+        {
+          "text": "low = 3, high = 4",
+          "correct": true
+        },
+        {
+          "text": "low = 0, high = 2",
+          "misconception": "binary-half-ignore"
+        },
+        {
+          "text": "low = 2, high = 4",
+          "misconception": "binary-middle-choice"
+        },
+        {
+          "text": "low = 0, high = 4",
+          "misconception": "binary-sorted-assumption"
+        }
+      ],
+      "hints": [
+        "If the target is larger than the middle, keep the right half."
+      ],
+      "feedback": {
+        "binary-half-ignore": {
+          "plain": "19 is larger than 11, so the search moves to the right half: indices 3 and 4."
+        },
+        "binary-middle-choice": {
+          "plain": "The middle index 2 is already checked. The next interval is the right half, not the full range."
+        },
+        "binary-sorted-assumption": {
+          "plain": "Binary search does not keep the whole array after the midpoint. It discards the left half because the target is larger than the midpoint."
+        }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "binary-search-advanced",
+      "concept": "binary-search",
+      "difficulty": 3,
+      "prompt": "Why is binary search valid for this task?",
+      "code": "nums = [2, 5, 9, 15, 28]",
+      "options": [
+        {
+          "text": "The list is sorted, so the search can discard half the data each step.",
+          "correct": true
+        },
+        {
+          "text": "It works on any list, even if it is unsorted.",
+          "misconception": "binary-sorted-assumption"
+        },
+        {
+          "text": "It checks the first item first and then moves right.",
+          "misconception": "binary-middle-choice"
+        },
+        {
+          "text": "It only works when the list has an even length.",
+          "misconception": "binary-half-ignore"
+        }
+      ],
+      "hints": [
+        "Binary search needs a clear order before dividing."
+      ],
+      "feedback": {
+        "binary-sorted-assumption": {
+          "plain": "Binary search depends on a sorted list so it can safely discard half of the remaining candidates."
+        },
+        "binary-middle-choice": {
+          "plain": "The algorithm starts at the middle, not the first item."
+        },
+        "binary-half-ignore": {
+          "plain": "The search can work with odd or even lengths as long as the list is sorted and the middle is chosen correctly."
+        }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "variables-basic",
+      "concept": "variables",
+      "difficulty": 1,
+      "prompt": "What is x after this code runs?",
+      "code": "x = 5\nx = x + 2",
+      "options": [
+        {
+          "text": "7",
+          "correct": true
+        },
+        {
+          "text": "5",
+          "misconception": "variable-reassign-mistake"
+        },
+        {
+          "text": "2",
+          "misconception": "variable-name-vs-value"
+        },
+        {
+          "text": "x",
+          "misconception": "variable-name-vs-value"
+        }
+      ],
+      "hints": [
+        "Update the variable using the current value."
+      ],
+      "feedback": {
+        "variable-reassign-mistake": {
+          "plain": "The new value is calculated from the current value 5 plus 2, so x becomes 7."
+        },
+        "variable-name-vs-value": {
+          "plain": "x is a label for the stored value, and the stored value becomes 7 after the assignment."
+        }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "functions-call-1",
+      "concept": "functions",
+      "difficulty": 1,
+      "prompt": "What does this print?",
+      "code": "def add_one(x):\n    return x + 1\nprint(add_one(4))",
+      "options": [
+        {
+          "text": "5",
+          "correct": true
+        },
+        {
+          "text": "4",
+          "misconception": "function-call-omitted"
+        },
+        {
+          "text": "x + 1",
+          "misconception": "function-return-confused"
+        },
+        {
+          "text": "3",
+          "misconception": "function-call-omitted"
+        }
+      ],
+      "hints": [
+        "The function returns a value after the call."
+      ],
+      "feedback": {
+        "function-call-omitted": {
+          "plain": "The function is called with 4, so it computes 4 + 1 and returns 5."
+        },
+        "function-return-confused": {
+          "plain": "The expression x + 1 is the calculation, and the function returns the final value 5."
+        }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "recursion-base-case",
+      "concept": "recursion",
+      "difficulty": 1,
+      "prompt": "What is the result of `fact(3)`?",
+      "code": "def fact(n):\n    if n == 0:\n        return 1\n    return n * fact(n - 1)\nprint(fact(3))",
+      "options": [
+        {
+          "text": "6",
+          "correct": true
+        },
+        {
+          "text": "3",
+          "misconception": "recursive-base-case-missed"
+        },
+        {
+          "text": "1",
+          "misconception": "recursive-step-size-wrong"
+        },
+        {
+          "text": "0",
+          "misconception": "recursive-base-case-missed"
+        }
+      ],
+      "hints": [
+        "The base case stops the recursion at 0."
+      ],
+      "feedback": {
+        "recursive-base-case-missed": {
+          "plain": "The function computes 3 * 2 * 1 * 1, which is 6."
+        },
+        "recursive-step-size-wrong": {
+          "plain": "Each call reduces n by 1 until it reaches the base case 0, producing 6."
+        }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "variables-reassignment-intermediate",
+      "concept": "variables",
+      "difficulty": 2,
+      "prompt": "What are x and y after these assignments?",
+      "code": "x = 4\ny = x\nx = 9",
+      "options": [
+        { "text": "x is 9 and y is 4", "correct": true },
+        { "text": "x is 9 and y is 9", "misconception": "variable-reassign-mistake" },
+        { "text": "x is 4 and y is 4", "misconception": "variable-name-vs-value" },
+        { "text": "x and y both refer to the name x", "misconception": "variable-name-vs-value" }
+      ],
+      "hints": ["Assignments copy the current value on the right into the variable on the left."],
+      "feedback": {
+        "variable-reassign-mistake": { "plain": "When y = x runs, x is 4, so y receives 4. Changing x later does not change y." },
+        "variable-name-vs-value": { "plain": "x and y are separate names. At the end, x stores 9 and y stores 4." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "variables-expression-advanced",
+      "concept": "variables",
+      "difficulty": 3,
+      "prompt": "What is the final value of total?",
+      "code": "total = 3\nstep = total + 2\ntotal = step * 2",
+      "options": [
+        { "text": "10", "correct": true },
+        { "text": "5", "misconception": "variable-reassign-mistake" },
+        { "text": "6", "misconception": "variable-name-vs-value" },
+        { "text": "13", "misconception": "variable-reassign-mistake" }
+      ],
+      "hints": ["Evaluate each assignment from top to bottom."],
+      "feedback": {
+        "variable-reassign-mistake": { "plain": "step becomes 3 + 2 = 5, then total is reassigned to 5 * 2 = 10." },
+        "variable-name-vs-value": { "plain": "The expression uses the stored value of step, which is 5; the final total is 10." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "variables-independent-values-advanced",
+      "concept": "variables",
+      "difficulty": 3,
+      "prompt": "What does this code print?",
+      "code": "a = 6\nb = a + 1\na = 2\nprint(b)",
+      "options": [
+        { "text": "7", "correct": true },
+        { "text": "3", "misconception": "variable-reassign-mistake" },
+        { "text": "2", "misconception": "variable-name-vs-value" },
+        { "text": "6", "misconception": "variable-name-vs-value" }
+      ],
+      "hints": ["Find b when its assignment runs; later assignments to a do not recalculate b."],
+      "feedback": {
+        "variable-reassign-mistake": { "plain": "b is assigned 6 + 1 = 7 before a changes to 2." },
+        "variable-name-vs-value": { "plain": "b stores the result of its assignment, 7; it does not remain linked to the name a." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "lists-negative-index-advanced",
+      "concept": "lists",
+      "difficulty": 3,
+      "prompt": "What are values[0] and values[-1]?",
+      "code": "values = [12, 18, 25, 31]",
+      "options": [
+        { "text": "12 and 31", "correct": true },
+        { "text": "18 and 25", "misconception": "index-starts-at-one" },
+        { "text": "12 and 4", "misconception": "len-is-last-index" },
+        { "text": "31 and 12", "misconception": "lists-index-vs-value" }
+      ],
+      "hints": ["Index 0 is the first item; index -1 is the last item."],
+      "feedback": {
+        "index-starts-at-one": { "plain": "Index 0 selects the first item, 12. Index -1 selects the last item, 31." },
+        "len-is-last-index": { "plain": "The length is 4, but values[-1] means the last item, which is 31." },
+        "lists-index-vs-value": { "plain": "The values at the requested positions are 12 and 31; the positions themselves are not printed." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "loops-range-sum-intermediate",
+      "concept": "loops",
+      "difficulty": 2,
+      "prompt": "What is the value of total after the loop?",
+      "code": "total = 0\nfor n in range(2, 5):\n    total += n",
+      "options": [
+        { "text": "9", "correct": true },
+        { "text": "12", "misconception": "count-equals-stop" },
+        { "text": "7", "misconception": "range-counts-from-one" },
+        { "text": "5", "misconception": "count-equals-stop" }
+      ],
+      "hints": ["range(2, 5) produces 2, 3, and 4."],
+      "feedback": {
+        "count-equals-stop": { "plain": "The loop runs three times with values 2, 3, and 4, so their sum is 9." },
+        "range-counts-from-one": { "plain": "The values begin at 2, not 1, and the stop value 5 is excluded." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "loop-bounds-exclusive-intermediate",
+      "concept": "loop-bounds",
+      "difficulty": 2,
+      "prompt": "Which values does range(2, 6) produce?",
+      "code": "list(range(2, 6))",
+      "options": [
+        { "text": "2, 3, 4, 5", "correct": true },
+        { "text": "2, 3, 4, 5, 6", "misconception": "off-by-one-end" },
+        { "text": "0, 1, 2, 3, 4, 5", "misconception": "counts-from-zero" },
+        { "text": "3, 4, 5, 6", "misconception": "off-by-one-start" }
+      ],
+      "hints": ["The first value is included; the stop value is not."],
+      "feedback": {
+        "off-by-one-end": { "plain": "The stop value 6 is excluded, so the final value is 5." },
+        "counts-from-zero": { "plain": "The range starts at 2, not at zero." },
+        "off-by-one-start": { "plain": "The start value 2 is included as the first value." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "loop-bounds-count-advanced",
+      "concept": "loop-bounds",
+      "difficulty": 3,
+      "prompt": "How many times does the loop run?",
+      "code": "for i in range(3, 10, 2):\n    print(i)",
+      "options": [
+        { "text": "4", "correct": true },
+        { "text": "5", "misconception": "off-by-one-end" },
+        { "text": "3", "misconception": "off-by-one-start" },
+        { "text": "7", "misconception": "counts-from-zero" }
+      ],
+      "hints": ["List the values: 3, 5, 7, ... and stop before 10."],
+      "feedback": {
+        "off-by-one-end": { "plain": "The values are 3, 5, 7, and 9. The stop value 10 is not included, giving four runs." },
+        "off-by-one-start": { "plain": "The start value 3 is included; the values are 3, 5, 7, and 9." },
+        "counts-from-zero": { "plain": "The step is 2 and the start is 3, so the loop visits four values before reaching or passing 10." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "functions-parameters-intermediate",
+      "concept": "functions",
+      "difficulty": 2,
+      "prompt": "What does this call return?",
+      "code": "def combine(a, b):\n    return a * 10 + b\ncombine(3, 4)",
+      "options": [
+        { "text": "34", "correct": true },
+        { "text": "7", "misconception": "function-return-confused" },
+        { "text": "43", "misconception": "function-call-omitted" },
+        { "text": "None", "misconception": "function-return-confused" }
+      ],
+      "hints": ["Substitute 3 for a and 4 for b in the return expression."],
+      "feedback": {
+        "function-return-confused": { "plain": "The function returns a * 10 + b, which is 3 * 10 + 4 = 34." },
+        "function-call-omitted": { "plain": "The call supplies a = 3 and b = 4; the expression keeps their positions, so it returns 34." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "functions-return-flow-advanced",
+      "concept": "functions",
+      "difficulty": 3,
+      "prompt": "What is printed?",
+      "code": "def add(a, b):\n    result = a + b\n    return result\nx = add(2, 5)\nprint(x * 2)",
+      "options": [
+        { "text": "14", "correct": true },
+        { "text": "7", "misconception": "function-return-confused" },
+        { "text": "10", "misconception": "function-call-omitted" },
+        { "text": "12", "misconception": "function-return-confused" }
+      ],
+      "hints": ["First evaluate the function call, then evaluate the print expression."],
+      "feedback": {
+        "function-return-confused": { "plain": "add(2, 5) returns 7, which is stored in x; print then outputs 7 * 2 = 14." },
+        "function-call-omitted": { "plain": "The function call returns 7, and the code then multiplies that returned value by 2." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "functions-local-variables-advanced",
+      "concept": "functions",
+      "difficulty": 3,
+      "prompt": "What does this code print?",
+      "code": "def change(n):\n    n = n + 3\n    return n\nvalue = 4\nprint(change(value), value)",
+      "options": [
+        { "text": "7 4", "correct": true },
+        { "text": "7 7", "misconception": "function-return-confused" },
+        { "text": "4 4", "misconception": "function-call-omitted" },
+        { "text": "3 4", "misconception": "function-return-confused" }
+      ],
+      "hints": ["The function parameter n is local to the call; value is not reassigned."],
+      "feedback": {
+        "function-return-confused": { "plain": "change(value) returns 7, but changing its local parameter n does not reassign value, which remains 4." },
+        "function-call-omitted": { "plain": "change(value) is called and returns 7; value itself remains 4." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "recursion-call-trace-intermediate",
+      "concept": "recursion",
+      "difficulty": 2,
+      "prompt": "What does sum_down(3) return?",
+      "code": "def sum_down(n):\n    if n == 0:\n        return 0\n    return n + sum_down(n - 1)",
+      "options": [
+        { "text": "6", "correct": true },
+        { "text": "3", "misconception": "recursive-base-case-missed" },
+        { "text": "0", "misconception": "recursive-step-size-wrong" },
+        { "text": "5", "misconception": "recursive-base-case-too-early" }
+      ],
+      "hints": ["Expand the calls: 3 + sum_down(2), then continue until n is 0."],
+      "feedback": {
+        "recursive-base-case-missed": { "plain": "The calls add 3 + 2 + 1, then the base case returns 0, for a total of 6." },
+        "recursive-step-size-wrong": { "plain": "Each call contributes its current n before calling n - 1; the total is 3 + 2 + 1 = 6." },
+        "recursive-base-case-too-early": { "plain": "Stopping at n = 1 before adding it leaves only 3 + 2 = 5." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "recursion-factorial-trace-advanced",
+      "concept": "recursion",
+      "difficulty": 3,
+      "prompt": "What does factorial(4) return?",
+      "code": "def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)",
+      "options": [
+        { "text": "24", "correct": true },
+        { "text": "10", "misconception": "recursive-step-size-wrong" },
+        { "text": "4", "misconception": "recursive-base-case-missed" },
+        { "text": "0", "misconception": "recursive-base-case-too-early" }
+      ],
+      "hints": ["Expand 4 * factorial(3) until the base case is reached."],
+      "feedback": {
+        "recursive-step-size-wrong": { "plain": "The calls multiply 4 * 3 * 2 * 1, which is 24." },
+        "recursive-base-case-missed": { "plain": "The base case returns 1 at n = 1, after 4, 3, and 2 have been multiplied." },
+        "recursive-base-case-too-early": { "plain": "The base case returns 1 rather than 0, and the earlier calls multiply to 24." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "arrays-update-intermediate",
+      "concept": "arrays",
+      "difficulty": 2,
+      "prompt": "What is nums[2] after this update?",
+      "code": "nums = [4, 9, 14, 21]\nnums[2] = 17",
+      "options": [
+        { "text": "17", "correct": true },
+        { "text": "14", "misconception": "array-lookup-mixup" },
+        { "text": "2", "misconception": "array-length-misread" },
+        { "text": "9", "misconception": "array-index-offset" }
+      ],
+      "hints": ["An assignment to nums[2] replaces the item at index 2."],
+      "feedback": {
+        "array-lookup-mixup": { "plain": "Index 2 is updated from 14 to 17, so nums[2] is now 17." },
+        "array-length-misread": { "plain": "The index is a position, not the stored value; nums[2] contains 17 after the update." },
+        "array-index-offset": { "plain": "Indexes start at 0, and the assignment directly sets the value at index 2 to 17." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "hashing-update-intermediate",
+      "concept": "hashing",
+      "difficulty": 2,
+      "prompt": "What is scores['maya'] after the update?",
+      "code": "scores = {'lee': 90, 'maya': 84}\nscores['maya'] += 5",
+      "options": [
+        { "text": "89", "correct": true },
+        { "text": "84", "misconception": "hash-lookup-misread" },
+        { "text": "95", "misconception": "hash-key-value-swap" },
+        { "text": "5", "misconception": "hash-missing-default-confusion" }
+      ],
+      "hints": ["Find Maya's current value, then add 5 to that value."],
+      "feedback": {
+        "hash-lookup-misread": { "plain": "The update adds 5 to Maya's stored value 84, giving 89." },
+        "hash-key-value-swap": { "plain": "'maya' is the key; its value changes from 84 to 89." },
+        "hash-missing-default-confusion": { "plain": "The key already exists, so its value 84 is updated to 89." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "stacks-operation-trace-intermediate",
+      "concept": "stacks",
+      "difficulty": 2,
+      "prompt": "What value does the final pop return?",
+      "code": "stack = ['red']\nstack.append('green')\nstack.pop()\nstack.append('blue')\nstack.pop()",
+      "options": [
+        { "text": "blue", "correct": true },
+        { "text": "green", "misconception": "stack-lifo-confused" },
+        { "text": "red", "misconception": "stack-top-guess" },
+        { "text": "The stack is empty before the final pop", "misconception": "stack-pop-miscall" }
+      ],
+      "hints": ["After each pop, remove only the current top item."],
+      "feedback": {
+        "stack-lifo-confused": { "plain": "The first pop removes green. Blue is then pushed on top and is removed by the final pop." },
+        "stack-top-guess": { "plain": "Red remains at the bottom after the first pop; blue is added above it and comes off first." },
+        "stack-pop-miscall": { "plain": "The stack contains red after the first pop, then blue is pushed, so the final pop returns blue." }
+      }
+    },
+    {
+      "kind": "static",
+      "id": "binary-search-range-advanced",
+      "concept": "binary-search",
+      "difficulty": 3,
+      "prompt": "After checking index 3, what range remains when searching for 24?",
+      "code": "nums = [4, 8, 12, 16, 20, 24, 28]\ntarget = 24\nmid = 3",
+      "options": [
+        { "text": "indexes 4 through 6", "correct": true },
+        { "text": "indexes 0 through 2", "misconception": "binary-half-ignore" },
+        { "text": "indexes 3 through 6", "misconception": "binary-middle-choice" },
+        { "text": "indexes 0 through 6", "misconception": "binary-sorted-assumption" }
+      ],
+      "hints": ["The target is greater than the value at index 3, so keep only indexes to its right."],
+      "feedback": {
+        "binary-half-ignore": { "plain": "24 is greater than nums[3] = 16, so continue in the right half at indexes 4 through 6." },
+        "binary-middle-choice": { "plain": "Index 3 has already been checked; the remaining right-side indexes are 4 through 6." },
+        "binary-sorted-assumption": { "plain": "Because the list is sorted, values left of index 3 can be discarded; search indexes 4 through 6." }
+      }
+    },
+    {
+      "kind": "generated",
+      "id": "loops-accumulator-init",
+      "concept": "loops",
+      "difficulty": 2,
+      "generator": "loops.accumulator-init"
+    },
+    {
+      "kind": "generated",
+      "id": "loops-condition",
+      "concept": "loops",
+      "difficulty": 3,
+      "generator": "loops.condition"
+    },
+    {
+      "kind": "generated",
+      "id": "lists-index-vs-value",
+      "concept": "lists",
+      "difficulty": 2,
+      "generator": "lists.index-vs-value"
+    },
+    {
+      "kind": "generated",
+      "id": "recursion-base-case-generated",
+      "concept": "recursion",
+      "difficulty": 2,
+      "generator": "recursion.base-case"
+    }
   ]
 }

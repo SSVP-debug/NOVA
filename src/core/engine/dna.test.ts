@@ -10,19 +10,27 @@ describe('buildConceptMap', () => {
   it('puts prerequisites in earlier columns and keeps every concept', () => {
     const m = buildConceptMap(pack, fresh());
     const depth = Object.fromEntries(m.nodes.map((n) => [n.id, n.depth]));
-    expect(depth).toEqual({ variables: 0, lists: 1, loops: 1, 'loop-bounds': 2, functions: 2, recursion: 3 });
+    expect(depth).toEqual({
+      variables: 0,
+      lists: 1,
+      loops: 1,
+      'loop-bounds': 2,
+      functions: 2,
+      recursion: 3,
+      arrays: 2,
+      hashing: 2,
+      stacks: 2,
+      'binary-search': 3,
+    });
     expect(m.nodes).toHaveLength(pack.concepts.length);
     expect(m.columns).toBe(4);
-    // no two nodes share a (column, row) cell
     expect(new Set(m.nodes.map((n) => `${n.depth}:${n.row}`)).size).toBe(m.nodes.length);
     for (const e of m.edges) expect(depth[e.from]!).toBeLessThan(depth[e.to]!);
   });
 
   it('locked concepts say what unlocks them, and every concept says what it unlocks', () => {
     const m = buildConceptMap(pack, fresh());
-    // Variables has no questions, so it cannot block anyone: Lists is open for a new learner.
-    expect(m.nodes.find((n) => n.id === 'lists')!.status).toBe('new');
-    // Loop bounds needs Loops and Lists, which CAN be measured and are still at 0%.
+    expect(m.nodes.find((n) => n.id === 'lists')!.status).toBe('locked');
     const bounds = m.nodes.find((n) => n.id === 'loop-bounds')!;
     expect(bounds.status).toBe('locked');
     expect(bounds.unlockBy).toEqual([
@@ -30,7 +38,7 @@ describe('buildConceptMap', () => {
       { id: 'lists', title: 'Lists', mastery: 0, met: false },
     ]);
     expect(m.lockBelow).toBe(CONFIG.mastery.lockBelow);
-    expect(m.nodes.find((n) => n.id === 'variables')!.unlocks.map((u) => u.id)).toEqual(['lists', 'loops']);
+    expect(m.nodes.find((n) => n.id === 'variables')!.unlocks.map((u) => u.id)).toEqual(['lists', 'loops', 'hashing']);
     expect(m.nodes.find((n) => n.id === 'variables')!.status).toBe('new');
     expect(m.nodes.find((n) => n.id === 'recursion')!.unlocks).toEqual([]);
   });

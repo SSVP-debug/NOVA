@@ -2,47 +2,37 @@ import { describe, expect, it } from 'vitest';
 import {
   applyAttempt, buildConceptMap, conceptStatus, createLearner, isTestable, nextDiagnosticQuestion, planToday, prerequisiteMet,
 } from '@/core/engine';
-import type { AttemptEvent, ContentPack, QuestionSpec } from '@/core/types';
+import type { AttemptEvent } from '@/core/types';
 import { attempt, generators, NOW, pack } from '@/testkit';
 
 const fresh = () => createLearner('p1', pack, NOW);
 
-/** A copy of the pack where "variables" HAS a question, so it can be measured (and can lock others). */
-function packWithVariablesQuestion(): ContentPack {
-  const q: QuestionSpec = {
-    kind: 'static', id: 'variables-q1', concept: 'variables', difficulty: 1, prompt: 'x = 5. What is x?', hints: [],
-    options: [{ text: '5', correct: true }, { text: '6', misconception: 'index-starts-at-one' }],
-    feedback: { 'index-starts-at-one': { plain: 'x holds 5.' } },
-  };
-  return { ...structuredClone(pack), questions: [...pack.questions, q] };
-}
-
 describe('lock rule: a topic that cannot be measured must not block others', () => {
   it('knows which topics can be measured', () => {
-    expect(isTestable(pack, 'variables')).toBe(false); // sample pack has no Variables questions yet
+    expect(isTestable(pack, 'variables')).toBe(true);
     expect(isTestable(pack, 'loops')).toBe(true);
   });
 
-  it('a new learner can open Lists and Loops even though Variables has no questions', () => {
-    expect(conceptStatus(fresh(), pack, 'lists')).toBe('new');
-    expect(conceptStatus(fresh(), pack, 'loops')).toBe('new');
-    expect(conceptStatus(fresh(), pack, 'loop-bounds')).toBe('locked'); // Loops and Lists are measurable and still at 0
+  it('a fresh learner cannot open prereq topics until Variables is answered', () => {
+    expect(conceptStatus(fresh(), pack, 'variables')).toBe('new');
+    expect(conceptStatus(fresh(), pack, 'lists')).toBe('locked');
+    expect(conceptStatus(fresh(), pack, 'loops')).toBe('locked');
+    expect(conceptStatus(fresh(), pack, 'loop-bounds')).toBe('locked');
   });
 
-  it('once Variables has questions, the normal lock rule applies again', () => {
-    const p = packWithVariablesQuestion();
-    const s = createLearner('p', p, NOW);
-    expect(conceptStatus(s, p, 'lists')).toBe('locked');
-    const answered = applyAttempt(s, attempt({ concept: 'variables', correct: true }), p);
+  it('answering Variables unlocks dependent concepts', () => {
+    const s = createLearner('p', pack, NOW);
+    expect(conceptStatus(s, pack, 'lists')).toBe('locked');
+    const answered = applyAttempt(s, attempt({ concept: 'variables', correct: true }), pack);
     answered.concepts.variables!.mastery = 0.5;
-    expect(conceptStatus(answered, p, 'lists')).toBe('new');
+    expect(conceptStatus(answered, pack, 'lists')).toBe('new');
   });
 
-  it('the concept map agrees with the lock rule (arrow is "met", no "To unlock" note)', () => {
+  it('the concept map agrees with the lock rule and shows what blocks a topic', () => {
     const map = buildConceptMap(pack, fresh());
-    expect(map.edges.find((e) => e.from === 'variables' && e.to === 'lists')!.met).toBe(true);
-    expect(map.nodes.find((n) => n.id === 'lists')!.unlockBy).toEqual([]);
-    expect(prerequisiteMet(fresh(), pack, 'variables')).toBe(true);
+    expect(map.edges.find((e) => e.from === 'variables' && e.to === 'lists')!.met).toBe(false);
+    expect(map.nodes.find((n) => n.id === 'lists')!.unlockBy.map((u) => u.id)).toContain('variables');
+    expect(prerequisiteMet(fresh(), pack, 'variables')).toBe(false);
   });
 
   it('a perfect quick check leaves no answered topic locked', () => {
