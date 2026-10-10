@@ -50,3 +50,34 @@ describe('Home review list and the demo time control', () => {
     expect(screen.queryByRole('button', { name: '+7 days' })).toBeNull();
   });
 });
+
+describe('Home: two parts', () => {
+  it('keeps the plan on the left and puts what NOVA learned plus the next step on the right', async () => {
+    await open('/');
+    await screen.findByText('Nothing due for review');
+    const right = screen.getByRole('complementary', { name: 'About you and your next step' });
+    expect(right.textContent).toMatch(/What NOVA has learned about you/);
+    expect(right.textContent).toMatch(/Your next step in /);
+    const plan = screen.getByRole('region', { name: "Today's plan" });
+    expect(right.contains(plan)).toBe(false);
+    const learned = right.querySelector('#learned-h')!;
+    const next = right.querySelector('#next-h')!;
+    expect(learned.compareDocumentPosition(next) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy(); // learned first, next step below it
+  });
+
+  it('the next step sends the student to Learn for a topic of their chosen subject', async () => {
+    await open('/');
+    await screen.findByText('Nothing due for review');
+    const right = screen.getByRole('complementary', { name: 'About you and your next step' });
+    const learnBtn = Array.from(right.querySelectorAll('button')).find((b) => /^Learn /.test((b.textContent ?? '').trim()))!;
+    fireEvent.click(learnBtn);
+    expect(await screen.findByRole('heading', { name: 'Learn' })).toBeTruthy();
+  });
+
+  it('the learned card is no longer on the DNA screen', async () => {
+    await open('/');
+    fireEvent.click(await screen.findByRole('button', { name: 'My DNA' }));
+    await screen.findByText('Topic by topic');
+    expect(screen.queryByText('What NOVA has learned about you')).toBeNull();
+  });
+});

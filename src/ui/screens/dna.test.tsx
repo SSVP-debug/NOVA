@@ -31,7 +31,7 @@ describe('DNA screen', () => {
   it('shows the map with a text description, and a legend that does not rely on colour', async () => {
     await show('fresh');
     expect(await screen.findByRole('img', { name: /Concept map/ })).toBeTruthy();
-    expect(screen.getByText(/✔ Solid, ◐ Shaky, ○ New, ⊘ Locked/)).toBeTruthy();
+    expect(screen.getByText(/Star styles: Solid is a full star/)).toBeTruthy();
     expect(screen.getByText('Mistake timeline')).toBeTruthy();
     expect(screen.getByText('None yet.')).toBeTruthy();
   });
@@ -40,15 +40,34 @@ describe('DNA screen', () => {
     await show('fresh');
     await screen.findByText('Topic by topic');
     expect(screen.getAllByText(/To unlock:/).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/reach 35% in Loops \(now 0%\)/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/reach 35% in Loops \(now not started\)/).length).toBeGreaterThan(0);
     expect(screen.getByText(/Unlocks: .*Lists.*Loops.*Hashing/)).toBeTruthy();
-    expect(screen.getAllByText(/Needs: /).some((node) => /Variables \(0% ✖\)/.test(node.textContent ?? '') || /Loops \(0% ✖\), Lists \(0% ✖\)/.test(node.textContent ?? ''))).toBe(true);
+    expect(screen.getAllByText(/Needs: /).some((node) => /Variables \(not started, needs 35%\)/.test(node.textContent ?? ''))).toBe(true);
   });
 
   it('each topic has a text status, not only a colour', async () => {
     await show('aarav');
     const bar = await screen.findByRole('img', { name: /^Loop bounds: / });
-    expect(bar.getAttribute('aria-label')).toMatch(/Loop bounds: (Solid|Shaky|New|Locked), \d+%/);
+    expect(bar.getAttribute('aria-label')).toMatch(/Loop bounds: (Solid|Shaky|New|Locked)(, \d+%)?$/);
+  });
+
+  it('shows no tick marks or other symbols, and no score for a topic that was never answered', async () => {
+    await show('fresh');
+    await screen.findByText('Topic by topic');
+    expect(document.body.textContent ?? '').not.toMatch(/[\u2714\u2716\u25D0\u25CB\u2298\u25CF]/);
+    expect(screen.getByRole('img', { name: 'Variables: New' })).toBeTruthy(); // no "0%" for an untouched topic
+  });
+
+  it('a topic just below the Solid line is not shown as 75%', async () => {
+    const storage = new MemoryStorage();
+    const p = makeProfile('edge', NOW, true);
+    await storage.saveProfile(p);
+    const l = freshLearner(p.id, pack, NOW);
+    l.concepts['variables'] = { mastery: 0.746, attempts: 4, correct: 3, reviewStage: 0 };
+    await storage.saveLearner(l);
+    const services = createServices({ storage, ai: new TemplateAI(), clock: { now: () => NOW } });
+    render(<SessionProvider services={services}><Harness profileId={p.id} /></SessionProvider>);
+    expect(await screen.findByRole('img', { name: 'Variables: Shaky, 74%' })).toBeTruthy();
   });
 
   it("shows Aarav's mistake timeline in order with dates in words", async () => {

@@ -14,6 +14,8 @@ import { Ask } from './screens/Ask';
 import { ProfilePicker } from './screens/ProfilePicker';
 import { DEFAULT_SETTINGS } from '@/core/settings';
 import { applyDisplaySettings } from './theme';
+import { useContrast } from '@/app/contrast';
+import { ContrastToggle } from './ContrastToggle';
 import { Icon, StarMark, type IconName } from './icons';
 
 export type Route =
@@ -33,14 +35,15 @@ export function App() {
   const main = useRef<HTMLElement>(null);
   const firstRoute = useRef(true);
   const display = profile?.settings ?? DEFAULT_SETTINGS;
+  const { on: highContrast } = useContrast(); // works on the profile page too, where there is no profile yet
 
   // A different learner always starts on Home (no half-finished screen from the previous learner).
   // Done while rendering (not in an effect) so it can never fire after the student's next click.
   const [seenProfileId, setSeenProfileId] = useState(profile?.id);
   if (profile?.id !== seenProfileId) { setSeenProfileId(profile?.id); setRoute({ name: 'home' }); }
 
-  // Text size and high contrast follow the active profile.
-  useEffect(() => { applyDisplaySettings(display); }, [display.textScale, display.highContrast]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Text size follows the active profile. High contrast follows the toggle next to the logo (device and profile).
+  useEffect(() => { applyDisplaySettings({ textScale: display.textScale, highContrast }); }, [display.textScale, highContrast]);
 
   // Keyboard and screen-reader users land at the top of the new screen after changing it,
   // unless a screen already moved focus somewhere more specific.
@@ -67,7 +70,7 @@ export function App() {
     <div className="shell">
       <a className="skip" href="#main" onClick={(e) => { e.preventDefault(); main.current?.focus(); }}>Skip to main content</a>
       <aside className="side">
-        <div className="brand"><StarMark /><span>NOVA</span></div>
+        <div className="brand"><StarMark /><span>NOVA</span><ContrastToggle /></div>
         <nav className="tabs" aria-label="Main">
           {tab('home', 'Home', 'home')}{tab('learn', 'Learn', 'learn')}{tab('teach-back', 'Teach-back', 'teach', 'Teach')}{tab('ask', 'Ask', 'ask')}{tab('practice', 'Practice', 'practice')}{tab('dna', 'My DNA', 'dna')}{tab('settings', 'Settings', 'settings')}
         </nav>

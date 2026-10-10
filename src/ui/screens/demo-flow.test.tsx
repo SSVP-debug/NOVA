@@ -72,8 +72,10 @@ describe('the whole 3-minute demo, played through the real screens', () => {
     expect(screen.getByText('counterexample')).toBeTruthy();
     expect(screen.getByText(/counterexample helped you before \(2 of 2 follow-up questions correct\)/)).toBeTruthy();
 
-    // 3. The probe: answer it correctly, the mistake is fixed
-    click('Take the probe');
+    // 3. See the right solution, then the next question checks the fix: answer it correctly, the mistake is fixed
+    click('Show the right solution');
+    expect(await screen.findByTestId('solution')).toBeTruthy();
+    click('Next question');
     await screen.findByText(/Probe: checking that this mistake is fixed/);
     await answerWith(solve());
     expect(await screen.findByText('Correct.')).toBeTruthy();

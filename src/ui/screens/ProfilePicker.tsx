@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useSession } from '@/app/session';
 import { BackupImport } from '../BackupImport';
 import { OfflineBadge } from '../OfflineBadge';
+import { ContrastToggle } from '../ContrastToggle';
 import { StarMark } from '../icons';
 
 export function ProfilePicker() {
@@ -10,7 +11,7 @@ export function ProfilePicker() {
   return (
     <div className="welcome">
       <main>
-        <div className="hero-mark"><StarMark size={48} /><h1>NOVA</h1></div>
+        <div className="hero-mark"><StarMark size={48} /><h1>NOVA</h1><ContrastToggle /></div>
         <p style={{ fontSize: '1.125rem', margin: '0 0 1.5rem' }}>Your personal learning twin. Works offline. No account needed.</p>
         <div className="card">
           <h2 style={{ fontSize: '1.125rem' }}>Who is learning?</h2>

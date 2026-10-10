@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { buildIntervention, materializeQuestion, planToday, selectQuestion, summarizeSession } from '@/core/engine';
+import { buildIntervention, buildSolution, materializeQuestion, planToday, selectQuestion, summarizeSession } from '@/core/engine';
 import { CONFIG } from '@/core/config';
 import type { AttemptEvent, Confidence, ExplanationStyle, Intervention, MisconceptionId, Option, Question } from '@/core/types';
 import { useSession } from '@/app/session';
@@ -42,6 +42,7 @@ export function PracticeSession({ concept, focus, scripted, go, restart }: Props
   const [hints, setHints] = useState(0);
   const [t0, setT0] = useState(() => clock.now());
   const [res, setRes] = useState<Result | null>(null);
+  const [showSolution, setShowSolution] = useState(false); // after a wrong answer: the student asked for the right solution
   const [finished, setFinished] = useState(false);
 
   if (!learner || !before) return null;
@@ -55,6 +56,7 @@ export function PracticeSession({ concept, focus, scripted, go, restart }: Props
   const conceptTitle = pack.concepts.find((c) => c.id === q.concept)?.title ?? q.concept;
   const done = events.length;
   const isLast = done >= length;
+  const solution = buildSolution(pack, q);
 
   const check = async () => {
     const o = q.options.find((x) => x.id === picked)!;
@@ -78,7 +80,7 @@ export function PracticeSession({ concept, focus, scripted, go, restart }: Props
     const nq = selectQuestion({ pack, state: learner, generators, concept: q.concept, seed: s, focus: fb ? [fb] : [], recentSpecIds: [...recent, q.specId] });
     if (!nq) { setFinished(true); return; }
     setSeed(s); setRecent((r) => [...r, q.specId]); setProbeFor(fb); if (!asProbe) setAfterStyle(undefined);
-    setQ(nq); setConf(null); setPicked(null); setHints(0); setRes(null); setT0(clock.now());
+    setQ(nq); setConf(null); setPicked(null); setHints(0); setRes(null); setShowSolution(false); setT0(clock.now());
   };
 
   return (
@@ -136,15 +138,32 @@ export function PracticeSession({ concept, focus, scripted, go, restart }: Props
                 </div>
               </>
             )}
+            {showSolution && solution && (
+              <div className="box good" data-testid="solution">
+                <b>The right answer: {solution.answer}</b>
+                {solution.why && <p style={{ margin: '6px 0 0' }}>{solution.why}</p>}
+                {solution.hint && <p className="mu" style={{ margin: '6px 0 0' }}>Remember: {solution.hint}</p>}
+                <ListenButton label="the solution" text={`The right answer is ${solution.answer}. ${solution.why}`} />
+              </div>
+            )}
             <div className="row">
-              {isLast ? (
+              {res.option.correct ? (
+                isLast
+                  ? <button className="pri" onClick={() => setFinished(true)}>See my summary</button>
+                  : <button className="pri" onClick={() => nextQuestion(false)}>Next question</button>
+              ) : !showSolution ? (
+                <>
+                  <button className="pri" onClick={() => setShowSolution(true)}>Show the right solution</button>
+                  {isLast
+                    ? <button onClick={() => setFinished(true)}>See my summary</button>
+                    : <button onClick={() => nextQuestion(false)}>Skip to next question</button>}
+                </>
+              ) : isLast ? (
                 <button className="pri" onClick={() => setFinished(true)}>See my summary</button>
-              ) : res.option.correct ? (
-                <button className="pri" onClick={() => nextQuestion(false)}>Next question</button>
               ) : (
                 <>
-                  <button className="pri" onClick={() => nextQuestion(true)}>Take the probe</button>
-                  <button onClick={() => nextQuestion(false)}>Skip the probe</button>
+                  <button className="pri" onClick={() => nextQuestion(true)}>Next question</button>
+                  <span className="mu">The next question checks this idea again.</span>
                 </>
               )}
             </div>

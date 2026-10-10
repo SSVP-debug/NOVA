@@ -11,6 +11,7 @@ export interface MapNeed {
   id: ConceptId;
   title: string;
   mastery: number;
+  attempts: number; // 0 = never answered, so the mastery number is only a starting value and should not be shown as a score
   met: boolean; // mastery is high enough to unlock the concept that needs it
 }
 
@@ -19,6 +20,7 @@ export interface MapNode {
   title: string;
   status: ConceptStatus;
   mastery: number; // 0..1
+  attempts: number; // 0 = never answered (see MapNeed.attempts)
   depth: number; // 0 = no prerequisites. Used as the column in the map.
   row: number; // position inside its column
   needs: MapNeed[]; // direct prerequisites
@@ -51,6 +53,7 @@ export function buildConceptMap(pack: ContentPack, state: LearnerState): Concept
     id,
     title: getConcept(pack, id)?.title ?? id,
     mastery: masteryOf(state, id),
+    attempts: state.concepts[id]?.attempts ?? 0,
     met: prerequisiteMet(state, pack, id),
   });
 
@@ -67,6 +70,7 @@ export function buildConceptMap(pack: ContentPack, state: LearnerState): Concept
       title: c.title,
       status,
       mastery: masteryOf(state, id),
+      attempts: state.concepts[id]?.attempts ?? 0,
       depth: d,
       row,
       needs,

@@ -5,7 +5,7 @@
 export const isSpeechSupported = (): boolean =>
   typeof window !== 'undefined' && 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
 
-export function speak(text: string, lang = 'en'): boolean {
+export function speak(text: string, lang = 'en', onEnd?: () => void): boolean {
   if (!isSpeechSupported() || !text.trim()) return false;
   const synth = window.speechSynthesis;
   synth.cancel(); // never talk over ourselves
@@ -14,6 +14,7 @@ export function speak(text: string, lang = 'en'): boolean {
   u.rate = 0.95;
   const local = synth.getVoices().find((v) => v.localService && v.lang.toLowerCase().startsWith(lang));
   if (local) u.voice = local;
+  if (onEnd) { u.onend = onEnd; u.onerror = onEnd; }
   synth.speak(u);
   return true;
 }

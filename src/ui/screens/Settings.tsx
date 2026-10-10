@@ -43,14 +43,11 @@ export function Settings() {
           ))}
         </fieldset>
         <label className="choice">
-          <input type="checkbox" checked={s.highContrast} onChange={(e) => updateSettings({ highContrast: e.target.checked })} />
-          High contrast colours (black text on white, thicker borders)
-        </label>
-        <label className="choice">
           <input type="checkbox" checked={s.readAloud && speech} disabled={!speech} onChange={(e) => updateSettings({ readAloud: e.target.checked })} />
           Read aloud: show a "Listen" button on questions and explanations
         </label>
         {!speech && <p className="mu">This browser has no read-aloud voice, so this option is off.</p>}
+        <p className="mu">High contrast has its own switch next to the NOVA logo, so it is always one tap away.</p>
         <p className="mu">These choices are saved for {profile.name} on this device.</p>
       </section>
 

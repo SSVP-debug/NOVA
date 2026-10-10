@@ -34,8 +34,8 @@ describe('buildConceptMap', () => {
     const bounds = m.nodes.find((n) => n.id === 'loop-bounds')!;
     expect(bounds.status).toBe('locked');
     expect(bounds.unlockBy).toEqual([
-      { id: 'loops', title: 'Loops', mastery: 0, met: false },
-      { id: 'lists', title: 'Lists', mastery: 0, met: false },
+      { id: 'loops', title: 'Loops', mastery: 0, attempts: 0, met: false },
+      { id: 'lists', title: 'Lists', mastery: 0, attempts: 0, met: false },
     ]);
     expect(m.lockBelow).toBe(CONFIG.mastery.lockBelow);
     expect(m.nodes.find((n) => n.id === 'variables')!.unlocks.map((u) => u.id)).toEqual(['lists', 'loops', 'hashing']);

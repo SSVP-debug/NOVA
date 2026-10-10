@@ -1,21 +1,24 @@
-import { buildConceptMap, buildMistakeTimeline, calibrationSummary, type MapNode, type TimelineKind } from '@/core/engine';
+import { buildConceptMap, buildMistakeTimeline, type MapNode, type TimelineKind } from '@/core/engine';
 import type { ConceptStatus } from '@/core/types';
 import { DAY } from '@/core/util/time';
 import { useSession } from '@/app/session';
 
-const pct = (n: number) => `${Math.round(n * 100)}%`;
+// Rounded DOWN, so "75%" is only shown when the topic really reached 75% (the Solid line). Rounding up could show 75% on a Shaky topic.
+const pct = (n: number) => `${Math.floor(n * 100 + 1e-6)}%`;
+/** A topic never answered has no score yet: say so instead of showing its starting number. */
+const score = (x: { mastery: number; attempts: number }) => (x.attempts > 0 ? pct(x.mastery) : 'not started');
 
-/** Every status has a glyph, a word and a star style (filled, part-filled, dotted, dashed), so nothing depends on colour. */
-const STATUS: Record<ConceptStatus, { glyph: string; label: string }> = {
-  solid: { glyph: '✔', label: 'Solid' },
-  shaky: { glyph: '◐', label: 'Shaky' },
-  new: { glyph: '○', label: 'New' },
-  locked: { glyph: '⊘', label: 'Locked' },
+/** Every status has a word and a star style (filled, part-filled, dotted, dashed), so nothing depends on colour or symbols. */
+const STATUS: Record<ConceptStatus, { label: string }> = {
+  solid: { label: 'Solid' },
+  shaky: { label: 'Shaky' },
+  new: { label: 'New' },
+  locked: { label: 'Locked' },
 };
-const ENTRY: Record<TimelineKind, { glyph: string; text: string }> = {
-  seen: { glyph: '●', text: 'Made this mistake' },
-  'probe-missed': { glyph: '✖', text: 'Missed the follow-up check' },
-  fixed: { glyph: '✔', text: 'Passed the follow-up check (fixed)' },
+const ENTRY: Record<TimelineKind, string> = {
+  seen: 'Made this mistake',
+  'probe-missed': 'Missed the follow-up check',
+  fixed: 'Passed the follow-up check (fixed)',
 };
 const MISTAKE_STATUS = { active: 'Active', improving: 'Improving', resolved: 'Resolved' } as const;
 
@@ -64,7 +67,7 @@ function MapSvg({ map }: { map: ReturnType<typeof buildConceptMap> }) {
               </>}
               {(n.status === 'new' || n.status === 'locked') && <path d={starPath(cx(n), cy(n), R)} fill="none" stroke="var(--mu)" strokeWidth={1.75} strokeDasharray={n.status === 'new' ? '2 3' : '5 3'} strokeLinejoin="round" />}
               <text x={cx(n) + R + 10} y={cy(n) - 4} fontSize="14" fontWeight="600" fill="var(--tx)">{n.title}</text>
-              <text x={cx(n) + R + 10} y={cy(n) + 14} fontSize="12" fill="var(--mu)">{s.glyph} {s.label} {pct(n.mastery)}</text>
+              <text x={cx(n) + R + 10} y={cy(n) + 14} fontSize="12" fill="var(--mu)">{s.label}{n.attempts > 0 ? ` ${pct(n.mastery)}` : ''}</text>
             </g>
           );
         })}
@@ -80,14 +83,13 @@ export function Dna() {
   const now = clock.now();
   const map = buildConceptMap(pack, learner);
   const timeline = buildMistakeTimeline(pack, learner);
-  const cal = calibrationSummary(learner);
 
   return (
     <div>
       <div className="card"><h3 style={{ marginTop: 0 }}>Concept map</h3>
         <MapSvg map={map} />
         <p className="mu" style={{ margin: '8px 0 0' }}>
-          Status: ✔ Solid, ◐ Shaky, ○ New, ⊘ Locked. A line goes from a topic to the topic it unlocks. A gold line means the first topic is strong enough ({pct(map.lockBelow)} or more). A dotted line means not yet.
+          Star styles: Solid is a full star, Shaky is a part-filled star, New is a dotted star, Locked is a dashed star. A line goes from a topic to the topic it unlocks. A gold line means the first topic is strong enough ({pct(map.lockBelow)} or more). A dotted line means not yet.
         </p>
       </div>
 
@@ -97,16 +99,16 @@ export function Dna() {
           return (
             <div key={n.id} className="topic">
               <div className="head">
-                <b>{n.title}</b><span>{s.glyph} {s.label}, {pct(n.mastery)}</span>
+                <b>{n.title}</b><span>{s.label}{n.attempts > 0 ? `, ${pct(n.mastery)}` : ''}</span>
               </div>
-              <div className="bar" role="img" aria-label={`${n.title}: ${s.label}, ${pct(n.mastery)}`}><i style={{ width: pct(n.mastery) }} /></div>
+              <div className="bar" role="img" aria-label={`${n.title}: ${s.label}${n.attempts > 0 ? `, ${pct(n.mastery)}` : ''}`}><i style={{ width: n.attempts > 0 ? pct(n.mastery) : '0%' }} /></div>
               <div className="mu">
-                {n.needs.length ? <>Needs: {n.needs.map((p) => `${p.title} (${pct(p.mastery)} ${p.met ? '✔' : '✖'})`).join(', ')}. </> : 'Needs nothing first. '}
+                {n.needs.length ? <>Needs: {n.needs.map((p) => `${p.title} (${score(p)}${p.met ? ', ready' : `, needs ${pct(map.lockBelow)}`})`).join(', ')}. </> : 'Needs nothing first. '}
                 {n.unlocks.length ? <>Unlocks: {n.unlocks.map((u) => u.title).join(', ')}.</> : 'Does not unlock another topic.'}
               </div>
               {n.status === 'locked' && (
                 <div className="box tip" style={{ marginTop: 6 }}>
-                  <b>To unlock:</b> {n.unlockBy.map((p) => `reach ${pct(map.lockBelow)} in ${p.title} (now ${pct(p.mastery)})`).join(', and ')}.
+                  <b>To unlock:</b> {n.unlockBy.map((p) => `reach ${pct(map.lockBelow)} in ${p.title} (now ${score(p)})`).join(', and ')}.
                 </div>
               )}
             </div>
@@ -123,16 +125,11 @@ export function Dna() {
             </div>
             <ol className="timeline">
               {m.entries.map((e, i) => (
-                <li key={i}>{ENTRY[e.kind].glyph} {ENTRY[e.kind].text} <span className="mu">({ago(now, e.at)})</span></li>
+                <li key={i}>{ENTRY[e.kind]} <span className="mu">({ago(now, e.at)})</span></li>
               ))}
             </ol>
           </div>
         ))}
-      </div>
-
-      <div className="card"><h3 style={{ marginTop: 0 }}>What NOVA has learned about you</h3>
-        <p>{cal.enoughData ? `You said "Sure" ${cal.sureCount} times and ${cal.sureWrong} were wrong.` : 'Not enough answers yet to check your confidence.'}</p>
-        <p className="mu">{Object.entries(learner.strategies).map(([s, v]) => `${s}: helped ${v!.helped} of ${v!.shown}`).join(' | ') || 'No teaching-style history yet.'}</p>
       </div>
     </div>
   );

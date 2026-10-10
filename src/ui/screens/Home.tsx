@@ -2,6 +2,8 @@ import { planToday, reviewSchedule } from '@/core/engine';
 import { useSession } from '@/app/session';
 import { PackPicker } from '../PackPicker';
 import { Icon, type IconName } from '../icons';
+import { LearnedCard } from '../LearnedCard';
+import { NextStepCard } from '../NextStepCard';
 import type { Route } from '../App';
 
 const STEP_LABEL: Record<string, string> = {
@@ -23,7 +25,8 @@ export function Home({ go }: { go: (r: Route) => void }) {
   const due = reviews.filter((r) => r.due);
   const upcoming = reviews.find((r) => !r.due);
   return (
-    <div>
+    <div className="home-grid">
+      <div className="home-left">
       <PackPicker />
       <section className="card" aria-label="Today's plan">
         <div className="mu">Today's plan</div><h2 style={{ margin: '4px 0' }}>{plan.headline}</h2>
@@ -51,6 +54,11 @@ export function Home({ go }: { go: (r: Route) => void }) {
           {!due.length && upcoming && <p className="mu">Next review: {upcoming.title}, {upcoming.label}.</p>}
         </section>
       )}
+      </div>
+      <aside className="home-right" aria-label="About you and your next step">
+        <LearnedCard />
+        <NextStepCard go={go} />
+      </aside>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testi
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { TemplateAI } from '@/adapters/ai/templateAI';
 import { MemoryStorage } from '@/adapters/storage/memoryStorage';
+import { resetDeviceContrast } from '@/app/contrast';
 import { createServices } from '@/app/container';
 import { SessionProvider } from '@/app/session';
 import { downloadTextFile } from '@/app/download';
@@ -21,6 +22,7 @@ beforeEach(() => { vi.mocked(downloadTextFile).mockClear(); speak.mockClear(); c
 afterEach(() => {
   cleanup();
   applyDisplaySettings({ textScale: 1, highContrast: false });
+  resetDeviceContrast();
   Reflect.deleteProperty(window, 'speechSynthesis');
   Reflect.deleteProperty(globalThis, 'SpeechSynthesisUtterance');
 });
@@ -78,14 +80,37 @@ describe('Settings: reading and display', () => {
     await goSettings();
     fireEvent.click(screen.getByLabelText('Large'));
     await waitFor(() => expect(document.documentElement.style.fontSize).toBe('125%'));
-    fireEvent.click(screen.getByLabelText(/High contrast colours/));
+    fireEvent.click(screen.getByRole('switch', { name: 'High contrast' }));
     await waitFor(() => expect(document.documentElement.dataset.contrast).toBe('high'));
     const saved = (await storage.listProfiles())[0]!;
     expect(saved.settings).toMatchObject({ textScale: 1.25, highContrast: true });
     fireEvent.click(screen.getByLabelText('Normal'));
-    fireEvent.click(screen.getByLabelText(/High contrast colours/));
+    fireEvent.click(screen.getByRole('switch', { name: 'High contrast' }));
     await waitFor(() => expect(document.documentElement.dataset.contrast).toBeUndefined());
     expect(document.documentElement.style.fontSize).toBe('100%');
+  });
+
+  it('the contrast switch works on the account page, before any profile is open, and is remembered for the new profile', async () => {
+    const storage = new MemoryStorage();
+    const services = createServices({ storage, ai: new TemplateAI(), clock: { now: () => NOW } });
+    render(<SessionProvider services={services}><App /></SessionProvider>);
+    fireEvent.click(await screen.findByRole('switch', { name: 'High contrast' }));
+    await waitFor(() => expect(document.documentElement.dataset.contrast).toBe('high'));
+    fireEvent.change(screen.getByLabelText('Your name'), { target: { value: 'Riya' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Start' }));
+    await screen.findByRole('button', { name: 'Switch' });
+    expect(document.documentElement.dataset.contrast).toBe('high'); // still on after the profile is created
+    expect(screen.getByRole('switch', { name: 'High contrast' }).getAttribute('aria-checked')).toBe('true');
+    fireEvent.click(screen.getByRole('switch', { name: 'High contrast' }));
+    await waitFor(() => expect(document.documentElement.dataset.contrast).toBeUndefined());
+    expect((await storage.listProfiles())[0]!.settings.highContrast).toBe(false);
+  });
+
+  it('Settings no longer has a contrast checkbox (it moved next to the logo)', async () => {
+    await openApp();
+    await goSettings();
+    expect(screen.queryByLabelText(/High contrast colours/)).toBeNull();
+    expect(screen.getAllByRole('switch', { name: 'High contrast' })).toHaveLength(1);
   });
 
   it('read aloud is switched off with a clear note when the browser cannot speak', async () => {

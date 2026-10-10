@@ -14,3 +14,4 @@ export * from './session';
 export * from './diagnostic';
 export * from './lesson';
 export * from './dna';
+export * from './solution';
