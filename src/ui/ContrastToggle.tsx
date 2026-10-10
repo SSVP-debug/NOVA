@@ -15,7 +15,6 @@ export function ContrastToggle() {
       onClick={toggle}
     >
       <Icon name="contrast" size={20} />
-      <span className="ct-label">Contrast</span>
       <span className="ct-track" aria-hidden="true"><i /></span>
     </button>
   );
