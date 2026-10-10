@@ -32,33 +32,33 @@ describe('Subject picker', () => {
 
   it('switching shows the other subject\'s topics and Learn uses them', async () => {
     await open();
-    fireEvent.change(await subject(), { target: { value: 'seasons-basics' } });
-    await waitFor(() => expect((screen.getByLabelText('Subject') as HTMLSelectElement).value).toBe('seasons-basics'));
-    expect((await topics()).textContent).toBe('How Earth moves');
+    fireEvent.change(await subject(), { target: { value: 'everyday-math' } });
+    await waitFor(() => expect((screen.getByLabelText('Subject') as HTMLSelectElement).value).toBe('everyday-math'));
+    expect((await topics()).textContent).toBe('Fractions');
     expect(screen.queryByRole('button', { name: 'Loops' })).toBeNull();
   });
 
   it('each subject keeps its own progress', async () => {
     const storage = await open();
-    fireEvent.change(await subject(), { target: { value: 'seasons-basics' } });
-    await waitFor(() => expect((screen.getByLabelText('Subject') as HTMLSelectElement).value).toBe('seasons-basics'));
+    fireEvent.change(await subject(), { target: { value: 'everyday-math' } });
+    await waitFor(() => expect((screen.getByLabelText('Subject') as HTMLSelectElement).value).toBe('everyday-math'));
     // a brand-new subject starts with a quick check, whatever happened in the other subject
-    expect(await screen.findByText(/Quick check: How Earth moves/)).toBeTruthy();
+    expect(await screen.findByText(/Quick check: Fractions/)).toBeTruthy();
     expect(await storage.loadLearner((await storage.listProfiles())[0]!.id, 'programming-basics')).toBeUndefined(); // nothing saved until the student answers
   });
 
   it('remembers the last subject on this device', async () => {
     const storage = await open();
-    fireEvent.change(await subject(), { target: { value: 'seasons-basics' } });
-    await waitFor(() => expect((screen.getByLabelText('Subject') as HTMLSelectElement).value).toBe('seasons-basics'));
+    fireEvent.change(await subject(), { target: { value: 'everyday-math' } });
+    await waitFor(() => expect((screen.getByLabelText('Subject') as HTMLSelectElement).value).toBe('everyday-math'));
     cleanup();
     await open(storage); // next visit, same device
-    expect((await subject()).value).toBe('seasons-basics');
+    expect((await subject()).value).toBe('everyday-math');
   });
 
   it('the other subject really runs: its quick check starts and asks a question', async () => {
     await open();
-    fireEvent.change(await subject(), { target: { value: 'seasons-basics' } });
+    fireEvent.change(await subject(), { target: { value: 'everyday-math' } });
     fireEvent.click(await screen.findByRole('button', { name: 'Start' }));
     fireEvent.click(await screen.findByRole('button', { name: 'Start the check' }));
     expect(await screen.findByText(/Question 1 of up to/)).toBeTruthy();
