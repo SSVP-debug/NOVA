@@ -5,12 +5,12 @@ import { useSession } from '@/app/session';
 
 const pct = (n: number) => `${Math.round(n * 100)}%`;
 
-/** Every status has a glyph, a word and a border style, so nothing depends on colour. */
-const STATUS: Record<ConceptStatus, { glyph: string; label: string; fill: string; stroke: string; width: number; dash?: string; rx: number }> = {
-  solid: { glyph: '✔', label: 'Solid', fill: 'var(--okb)', stroke: 'var(--ok)', width: 3, rx: 6 },
-  shaky: { glyph: '◐', label: 'Shaky', fill: 'var(--wnb)', stroke: 'var(--wn)', width: 2, rx: 16 },
-  new: { glyph: '○', label: 'New', fill: 'var(--card)', stroke: 'var(--mu)', width: 2, dash: '2 4', rx: 6 },
-  locked: { glyph: '⊘', label: 'Locked', fill: 'var(--bg)', stroke: 'var(--mu)', width: 2, dash: '7 4', rx: 6 },
+/** Every status has a glyph, a word and a star style (filled, part-filled, dotted, dashed), so nothing depends on colour. */
+const STATUS: Record<ConceptStatus, { glyph: string; label: string }> = {
+  solid: { glyph: '✔', label: 'Solid' },
+  shaky: { glyph: '◐', label: 'Shaky' },
+  new: { glyph: '○', label: 'New' },
+  locked: { glyph: '⊘', label: 'Locked' },
 };
 const ENTRY: Record<TimelineKind, { glyph: string; text: string }> = {
   seen: { glyph: '●', text: 'Made this mistake' },
@@ -24,8 +24,10 @@ function ago(now: number, at: number): string {
   return days === 0 ? 'today' : days === 1 ? 'yesterday' : `${days} days ago`;
 }
 
-// map geometry
-const NODE_W = 144, NODE_H = 54, COL_GAP = 40, ROW_GAP = 16, PAD = 10;
+// map geometry: every topic is a star; the more the learner knows, the more of the star is lit
+const NODE_W = 140, NODE_H = 58, COL_GAP = 30, ROW_GAP = 14, PAD = 12, R = 13;
+const starPath = (cx: number, cy: number, r: number) =>
+  `M${cx} ${cy - r}L${cx + r * 0.3} ${cy - r * 0.3}L${cx + r} ${cy}L${cx + r * 0.3} ${cy + r * 0.3}L${cx} ${cy + r}L${cx - r * 0.3} ${cy + r * 0.3}L${cx - r} ${cy}L${cx - r * 0.3} ${cy - r * 0.3}Z`;
 
 function MapSvg({ map }: { map: ReturnType<typeof buildConceptMap> }) {
   const x = (n: MapNode) => PAD + n.depth * (NODE_W + COL_GAP);
@@ -33,24 +35,36 @@ function MapSvg({ map }: { map: ReturnType<typeof buildConceptMap> }) {
   const w = PAD * 2 + map.columns * NODE_W + (map.columns - 1) * COL_GAP;
   const h = PAD * 2 + map.rows * NODE_H + (map.rows - 1) * ROW_GAP;
   const byId = new Map(map.nodes.map((n) => [n.id, n]));
+  const cx = (n: MapNode) => x(n) + R + 4;
+  const cy = (n: MapNode) => y(n) + NODE_H / 2;
   return (
-    <div style={{ overflowX: 'auto' }}>
-      <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} role="img" aria-label="Concept map. Arrows go from a topic to the topics it unlocks. The same information is listed in words below." style={{ display: 'block', color: 'var(--mu)' }}>
+    <div className="sky">
+      <svg viewBox={`0 0 ${w} ${h}`} role="img" aria-label="Concept map drawn as a star chart. A line goes from a topic to the topic it unlocks. The same information is listed in words below." style={{ display: 'block', color: 'var(--mu)', width: '100%', minWidth: 540, maxWidth: w * 1.2, height: 'auto' }}>
         <defs>
-          <marker id="dna-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="currentColor" /></marker>
+          {map.nodes.map((n) => (
+            <clipPath key={n.id} id={`lit-${n.id}`}><rect x={cx(n) - R} y={cy(n) + R - 2 * R * Math.max(0.12, n.mastery)} width={2 * R} height={2 * R} /></clipPath>
+          ))}
         </defs>
         {map.edges.map((e) => {
           const a = byId.get(e.from)!, b = byId.get(e.to)!;
-          const x1 = x(a) + NODE_W, y1 = y(a) + NODE_H / 2, x2 = x(b), y2 = y(b) + NODE_H / 2;
-          return <path key={`${e.from}>${e.to}`} d={`M${x1} ${y1} C${x1 + 24} ${y1} ${x2 - 24} ${y2} ${x2 - 2} ${y2}`} fill="none" stroke="currentColor" strokeWidth={e.met ? 2.5 : 1.5} strokeDasharray={e.met ? undefined : '5 4'} markerEnd="url(#dna-arrow)" />;
+          const x1 = x(a) + NODE_W - 6, y1 = cy(a), x2 = cx(b) - R - 5, y2 = cy(b); // from the end of the label to the next star
+          const mx = (x1 + x2) / 2;
+          return <path key={`${e.from}>${e.to}`} d={`M${x1} ${y1} C${mx} ${y1} ${mx} ${y2} ${x2} ${y2}`} fill="none" stroke={e.met ? 'var(--star)' : 'currentColor'} strokeWidth={e.met ? 2 : 1.25} strokeDasharray={e.met ? undefined : '3 5'} strokeLinecap="round" opacity={e.met ? 0.9 : 0.7} />;
         })}
         {map.nodes.map((n) => {
           const s = STATUS[n.status];
+          const dim = n.status === 'locked' ? 0.6 : 1;
           return (
-            <g key={n.id} aria-hidden="true">
-              <rect x={x(n)} y={y(n)} width={NODE_W} height={NODE_H} rx={s.rx} fill={s.fill} stroke={s.stroke} strokeWidth={s.width} strokeDasharray={s.dash} />
-              <text x={x(n) + 10} y={y(n) + 22} fontSize="14" fontWeight="700" fill="var(--tx)">{n.title}</text>
-              <text x={x(n) + 10} y={y(n) + 41} fontSize="13" fill="var(--tx)">{s.glyph} {s.label} {pct(n.mastery)}</text>
+            <g key={n.id} aria-hidden="true" opacity={dim}>
+              {n.status === 'solid' && <circle cx={cx(n)} cy={cy(n)} r={R + 8} fill="var(--glow)" />}
+              {n.status === 'solid' && <path d={starPath(cx(n), cy(n), R)} fill="var(--starf)" stroke="var(--star)" strokeWidth={1.5} strokeLinejoin="round" />}
+              {n.status === 'shaky' && <>
+                <path d={starPath(cx(n), cy(n), R)} fill="none" stroke="var(--star)" strokeWidth={1.75} strokeLinejoin="round" />
+                <path d={starPath(cx(n), cy(n), R)} fill="var(--starf)" clipPath={`url(#lit-${n.id})`} />
+              </>}
+              {(n.status === 'new' || n.status === 'locked') && <path d={starPath(cx(n), cy(n), R)} fill="none" stroke="var(--mu)" strokeWidth={1.75} strokeDasharray={n.status === 'new' ? '2 3' : '5 3'} strokeLinejoin="round" />}
+              <text x={cx(n) + R + 10} y={cy(n) - 4} fontSize="14" fontWeight="600" fill="var(--tx)">{n.title}</text>
+              <text x={cx(n) + R + 10} y={cy(n) + 14} fontSize="12" fill="var(--mu)">{s.glyph} {s.label} {pct(n.mastery)}</text>
             </g>
           );
         })}
@@ -73,7 +87,7 @@ export function Dna() {
       <div className="card"><h3 style={{ marginTop: 0 }}>Concept map</h3>
         <MapSvg map={map} />
         <p className="mu" style={{ margin: '8px 0 0' }}>
-          Status: ✔ Solid, ◐ Shaky, ○ New, ⊘ Locked. An arrow goes from a topic to the topic it unlocks. A solid arrow means the first topic is strong enough ({pct(map.lockBelow)} or more). A dashed arrow means not yet.
+          Status: ✔ Solid, ◐ Shaky, ○ New, ⊘ Locked. A line goes from a topic to the topic it unlocks. A gold line means the first topic is strong enough ({pct(map.lockBelow)} or more). A dotted line means not yet.
         </p>
       </div>
 
@@ -81,8 +95,8 @@ export function Dna() {
         {map.nodes.map((n) => {
           const s = STATUS[n.status];
           return (
-            <div key={n.id} style={{ margin: '12px 0' }}>
-              <div className="row" style={{ justifyContent: 'space-between', margin: 0 }}>
+            <div key={n.id} className="topic">
+              <div className="head">
                 <b>{n.title}</b><span>{s.glyph} {s.label}, {pct(n.mastery)}</span>
               </div>
               <div className="bar" role="img" aria-label={`${n.title}: ${s.label}, ${pct(n.mastery)}`}><i style={{ width: pct(n.mastery) }} /></div>
@@ -103,11 +117,11 @@ export function Dna() {
       <div className="card"><h3 style={{ marginTop: 0 }}>Mistake timeline</h3>
         {timeline.length === 0 && <p className="mu">None yet.</p>}
         {timeline.map((m) => (
-          <div key={m.id} style={{ margin: '12px 0' }}>
-            <div className="row" style={{ justifyContent: 'space-between', margin: 0 }}>
+          <div key={m.id} className="topic">
+            <div className="head">
               <b>{m.title}</b><span className="tag">{MISTAKE_STATUS[m.status]}, seen {m.seen} time{m.seen === 1 ? '' : 's'}</span>
             </div>
-            <ol style={{ margin: '6px 0 0', paddingLeft: 22 }}>
+            <ol className="timeline">
               {m.entries.map((e, i) => (
                 <li key={i}>{ENTRY[e.kind].glyph} {ENTRY[e.kind].text} <span className="mu">({ago(now, e.at)})</span></li>
               ))}

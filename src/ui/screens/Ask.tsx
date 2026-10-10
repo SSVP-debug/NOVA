@@ -23,7 +23,7 @@ export function Ask({ go }: { go: (route: Route) => void }) {
   return (
     <div>
       <section className="card" aria-labelledby="ask-heading">
-        <h2 id="ask-heading" style={{ marginTop: 0 }}>Ask about a topic</h2>
+        <h1 id="ask-heading" className="page-title">Ask about a topic</h1>
         <p>Describe what is confusing. NOVA finds a topic in this lesson pack and answers with its verified lesson text.</p>
         <form onSubmit={submit}>
           <label className="field" htmlFor="ask-question">What are you stuck on?</label>

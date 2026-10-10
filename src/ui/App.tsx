@@ -14,6 +14,7 @@ import { Ask } from './screens/Ask';
 import { ProfilePicker } from './screens/ProfilePicker';
 import { DEFAULT_SETTINGS } from '@/core/settings';
 import { applyDisplaySettings } from './theme';
+import { Icon, StarMark, type IconName } from './icons';
 
 export type Route =
   | { name: 'home' }
@@ -48,25 +49,37 @@ export function App() {
     const a = document.activeElement;
     if (!a || a === document.body || a.closest('nav')) main.current?.focus();
   }, [route.name]);
-  if (!ready) return <div className="wrap">Loading...</div>;
+  if (!ready) return <div className="stage" role="status">Loading...</div>;
   // The demo tools sit in the same place on every screen, so their timer and messages survive switching screens.
-  const demoSlot = <div className="wrap demo-slot" style={{ paddingBottom: 0 }}><DemoTools go={setRoute} /></div>;
-  if (!profile) return (<>{demoSlot}<ProfilePicker /><div className="wrap"><OfflineBadge /></div></>);
-  const tab = (name: Route['name'], label: string) => (
-    <button className={route.name === name ? 'on' : ''} aria-current={route.name === name ? 'page' : undefined} onClick={() => setRoute({ name } as Route)}>{label}</button>
+  const demoSlot = <div className="demo-slot"><DemoTools go={setRoute} /></div>;
+  if (!profile) return (<>{demoSlot}<ProfilePicker /></>);
+  // `short` is the label that fits the phone tab bar; the full label stays the button's name.
+  const tab = (name: Route['name'], label: string, icon: IconName, short?: string) => (
+    <button className={route.name === name ? 'on' : ''} aria-current={route.name === name ? 'page' : undefined} aria-label={short ? label : undefined} onClick={() => setRoute({ name } as Route)}>
+      <Icon name={icon} />
+      {short ? <><span className="long">{label}</span><span className="short" aria-hidden="true">{short}</span></> : <span>{label}</span>}
+    </button>
   );
+  const title = PAGE_TITLE[route.name];
   return (
     <>
     {demoSlot}
-    <div className="wrap">
+    <div className="shell">
       <a className="skip" href="#main" onClick={(e) => { e.preventDefault(); main.current?.focus(); }}>Skip to main content</a>
-      <div className="row" style={{ justifyContent: 'space-between' }}>
-        <b style={{ fontSize: '1.5rem' }}>NOVA</b>
-        <span className="mu">{profile.name} {profile.seeded ? '(sample data)' : ''} <button onClick={() => selectProfile(null)}>Switch</button></span>
-      </div>
-      <div style={{ margin: '2px 0 6px' }}><OfflineBadge /></div>
-      <nav aria-label="Main">{tab('home', 'Home')}{tab('learn', 'Learn')}{tab('teach-back', 'Teach-back')}{tab('ask', 'Ask')}{tab('practice', 'Practice')}{tab('dna', 'My DNA')}{tab('settings', 'Settings')}</nav>
-      <main id="main" ref={main} tabIndex={-1}>
+      <aside className="side">
+        <div className="brand"><StarMark /><span>NOVA</span></div>
+        <nav className="tabs" aria-label="Main">
+          {tab('home', 'Home', 'home')}{tab('learn', 'Learn', 'learn')}{tab('teach-back', 'Teach-back', 'teach', 'Teach')}{tab('ask', 'Ask', 'ask')}{tab('practice', 'Practice', 'practice')}{tab('dna', 'My DNA', 'dna')}{tab('settings', 'Settings', 'settings')}
+        </nav>
+        <div className="who">
+          <span className="avatar" aria-hidden="true" style={{ background: profile.color }}>{profile.name.trim().charAt(0).toUpperCase()}</span>
+          <span className="name"><b>{profile.name}</b>{profile.seeded && <span className="mu">sample data</span>}</span>
+          <button onClick={() => selectProfile(null)}>Switch</button>
+        </div>
+        <div className="net"><OfflineBadge /></div>
+      </aside>
+      <main id="main" className="stage" ref={main} tabIndex={-1}>
+      {title && <h1 className="page-title">{title}</h1>}
       {route.name === 'home' && <Home go={setRoute} />}
       {route.name === 'learn' && <Learn concept={route.concept} go={setRoute} />}
       {route.name === 'teach-back' && <TeachBack concept={route.concept} go={setRoute} />}
@@ -80,3 +93,6 @@ export function App() {
     </>
   );
 }
+
+/** Screens with their own heading (Ask, Teach back, Practice, Quick check) are not listed here. */
+const PAGE_TITLE: Partial<Record<Route['name'], string>> = { home: 'Today', learn: 'Learn', dna: 'My learning DNA', settings: 'Settings' };

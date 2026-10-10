@@ -32,7 +32,7 @@ export function TeachBack({ concept, go }: { concept?: string; go: (route: Route
   return (
     <div>
       <section className="card" aria-labelledby="teach-back-heading">
-        <h2 id="teach-back-heading" style={{ marginTop: 0 }}>Teach it back</h2>
+        <h1 id="teach-back-heading" className="page-title">Teach it back</h1>
         <p>Explain the topic in your own words. NOVA checks your explanation against the key ideas.</p>
         <label className="field" htmlFor="teach-back-topic">Topic</label>
         <select

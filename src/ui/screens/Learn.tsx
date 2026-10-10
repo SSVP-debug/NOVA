@@ -29,11 +29,11 @@ export function Learn({ concept, go }: { concept?: string; go: (r: Route) => voi
 
   return (
     <div>
-      <div className="row">{pack.concepts.map((x) => <button key={x.id} className={x.id === c.id ? 'on' : ''} aria-pressed={x.id === c.id} onClick={() => go({ name: 'learn', concept: x.id })}>{x.title}</button>)}</div>
+      <div className="chips" role="group" aria-label="Topics">{pack.concepts.map((x) => <button key={x.id} className={x.id === c.id ? 'on' : ''} aria-pressed={x.id === c.id} onClick={() => go({ name: 'learn', concept: x.id })}>{x.title}</button>)}</div>
       <div className="card">
         <h2 style={{ marginTop: 0 }}>{c.title}</h2>
         <div className="mu">Explained as: <b>{STYLE_LABEL[shown]}</b>{picked ? ' (your choice)' : ''}</div>
-        <p aria-live="polite">{lessonText(pack, c.id, shown)}</p>
+        <p className="lesson-text" aria-live="polite">{lessonText(pack, c.id, shown)}</p>
         <ListenButton label="the lesson" text={`${c.title}. ${lessonText(pack, c.id, shown)}`} />
         <details>
           <summary>Why this?</summary>

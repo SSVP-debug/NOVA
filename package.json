@@ -21,6 +21,7 @@
     "content:review": "tsx scripts/export-content-review.ts"
   },
   "dependencies": {
+    "@fontsource-variable/lexend": "^5.3.0",
     "@huggingface/transformers": "^4.3.1",
     "dexie": "^4.4.6",
     "react": "^19.3.0",

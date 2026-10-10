@@ -83,8 +83,8 @@ export function PracticeSession({ concept, focus, scripted, go, restart }: Props
 
   return (
     <div>
-      <div className="card" style={{ padding: 12 }}>
-        <div className="row" style={{ justifyContent: 'space-between' }}>
+      <div className="card" style={{ padding: 16 }}>
+        <div className="qhead">
           <b>{conceptTitle}</b>
           <span className="mu">Question {Math.min(done + (res ? 0 : 1), length)} of {length}</span>
           <button onClick={() => (done > 0 ? setFinished(true) : go({ name: 'home' }))}>{done > 0 ? 'End session' : 'Leave'}</button>
@@ -106,7 +106,7 @@ export function PracticeSession({ concept, focus, scripted, go, restart }: Props
         {!res ? (
           <>
             <p className="mu" id="conf-label">How sure are you?</p>
-            <div className="row" role="group" aria-labelledby="conf-label">
+            <div className="seg" role="group" aria-labelledby="conf-label">
               {(['sure', 'unsure', 'guess'] as Confidence[]).map((c) => (
                 <button key={c} aria-pressed={conf === c} className={conf === c ? 'on' : ''} onClick={() => setConf(c)}>{c}</button>
               ))}
