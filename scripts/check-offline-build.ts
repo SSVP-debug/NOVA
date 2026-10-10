@@ -60,7 +60,9 @@ if (refs.length && !errors.some((e) => e.startsWith('index.html'))) ok.push(`all
 
 // 3. every built asset must be saved
 const assets = files.filter((f) => f.startsWith('assets/'));
-const unsaved = assets.filter((f) => !precache.has(f));
+// The optional model engine is saved on demand (first download), not with the app.
+const ON_DEMAND = /^assets\/(ai-model-[^/]+\.js|ort-wasm-[^/]+\.wasm)$/; // engine script, and the library's own unused copy of the engine
+const unsaved = assets.filter((f) => !precache.has(f) && !ON_DEMAND.test(f));
 if (unsaved.length) fail(`built files not saved for offline: ${unsaved.join(', ')}`);
 else ok.push(`all ${assets.length} built files in assets/ are saved`);
 
@@ -77,7 +79,8 @@ else {
 }
 
 // 5. nothing loaded from the internet
-const textFiles = files.filter((f) => /\.(html|css|js|webmanifest|svg)$/.test(f));
+// The on-demand model engine contains library text with CDN/model-hub addresses; it is checked separately below.
+const textFiles = files.filter((f) => /\.(html|css|js|webmanifest|svg)$/.test(f) && !ON_DEMAND.test(f));
 const hosts = new Map<string, string[]>();
 for (const f of textFiles) {
   for (const m of readFileSync(join(DIST, f), 'utf8').matchAll(/https?:\/\/([a-zA-Z0-9._:-]+)/g)) {
@@ -90,6 +93,15 @@ if (unknown.length) fail(`unexpected internet addresses in the build: ${unknown.
 else ok.push(`no unexpected internet addresses (${[...hosts.keys()].join(', ') || 'none'} are text only)`);
 for (const f of textFiles.filter((x) => x.endsWith('.css'))) {
   if (/@import\s+url\(\s*["']?https?:/.test(readFileSync(join(DIST, f), 'utf8'))) fail(`${f} imports a stylesheet or font from the internet.`);
+}
+
+// 5b. the optional model needs its engine files served from this site, or it cannot start offline
+const hasModelEngine = files.some((f) => ON_DEMAND.test(f));
+if (hasModelEngine) {
+  const need = ['ort/ort-wasm-simd-threaded.asyncify.mjs', 'ort/ort-wasm-simd-threaded.asyncify.wasm'];
+  const missing = need.filter((f) => !files.includes(f));
+  if (missing.length) fail(`the optional model engine needs ${missing.join(', ')} in dist (run npm install, then build again).`);
+  else ok.push('optional model: engine files are served from this site and saved when the model is downloaded');
 }
 
 // 6. size report (useful as evidence for low-resource devices)

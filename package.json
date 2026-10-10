@@ -5,7 +5,9 @@
   "description": "NOVA - offline-first, on-device personal learning twin (Code Carnival 3.0, PS-06)",
   "type": "module",
   "scripts": {
+    "predev": "tsx scripts/copy-ort.ts",
     "dev": "vite",
+    "prebuild": "tsx scripts/copy-ort.ts",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
@@ -14,9 +16,12 @@
     "validate:content": "tsx scripts/validate-content.ts",
     "check": "npm run typecheck && npm run test && npm run validate:content",
     "check:offline": "tsx scripts/check-offline-build.ts",
-    "evidence": "tsx scripts/run-evidence.ts"
+    "evidence": "tsx scripts/run-evidence.ts",
+    "verify:content": "tsx scripts/verify-content.ts",
+    "content:review": "tsx scripts/export-content-review.ts"
   },
   "dependencies": {
+    "@huggingface/transformers": "^4.3.1",
     "dexie": "^4.4.6",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"

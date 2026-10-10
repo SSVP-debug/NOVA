@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ModelSettings } from '@/ui/ModelSettings';
 import { backupFileName } from '@/app/backup';
 import { downloadTextFile } from '@/app/download';
 import { useSession } from '@/app/session';
@@ -70,6 +71,8 @@ export function Settings() {
           {' '}Learning features work with the model off.
         </p>
       </section>
+
+      <ModelSettings />
 
       <section className="card" aria-labelledby="set-backup">
         <h2 id="set-backup" style={{ marginTop: 0 }}>Backup and restore</h2>

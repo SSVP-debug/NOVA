@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 // Set VITE_BASE=/NOVA/ when hosting under a sub-path (for example GitHub Pages project sites). Default: site root.
 export default defineConfig({
   base: process.env.VITE_BASE ?? '/',
+  worker: { format: 'es', rollupOptions: { output: { entryFileNames: 'assets/ai-model-[hash].js' } } },
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   plugins: [
     react(),
@@ -13,7 +14,18 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg'],
-      workbox: { globPatterns: ['**/*.{js,css,html,svg,json,woff2}'] },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,json,woff2}'],
+        // The optional model engine is big: it is NOT saved with the app. It is saved the first time
+        // the student downloads the model, so offline works afterwards.
+        globIgnores: ['**/assets/ai-model-*.js'],
+        maximumFileSizeToCacheInBytes: 40 * 1024 * 1024,
+        runtimeCaching: [{
+          urlPattern: ({ url }: { url: URL }) => /\/assets\/ai-model-[^/]+\.js$/.test(url.pathname) || /\/ort\/[^/]+$/.test(url.pathname),
+          handler: 'CacheFirst',
+          options: { cacheName: 'nova-model-engine', cacheableResponse: { statuses: [0, 200] } },
+        }],
+      },
       manifest: {
         name: 'NOVA - Your Personal Learning Twin',
         short_name: 'NOVA',
@@ -25,5 +37,5 @@ export default defineConfig({
       },
     }),
   ],
-  test: { environment: 'node', include: ['src/**/*.test.{ts,tsx}'], testTimeout: 30000 },
+  test: { environment: 'node', include: ['src/**/*.test.{ts,tsx}'] },
 });

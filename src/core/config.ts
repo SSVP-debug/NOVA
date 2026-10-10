@@ -24,5 +24,13 @@ export const CONFIG = {
   },
   history: { cap: 200 },
   pace: { emaWeight: 0.3 },
-  ai: { timeoutMs: 4000, liteModeMaxCores: 2, liteModeMaxMemoryGB: 2 },
+  ai: {
+    timeoutMs: 4000,
+    liteModeMaxCores: 2,
+    liteModeMaxMemoryGB: 2,
+    // Optional model that runs inside the browser (Transformers.js in a Web Worker). Unmeasured: see docs/EVIDENCE.md.
+    browserModelTimeoutMs: 15000, // CPU generation is slower than a laptop server; templates are shown first anyway
+    browserModelId: 'onnx-community/SmolLM2-360M-Instruct',
+    browserModelDtype: 'q4',
+  },
 } as const;

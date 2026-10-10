@@ -13,13 +13,12 @@ Definition of done for every task: `npm run check` passes, tests added, works of
 | A6 | **DONE.** All app time comes from the injected `Clock` (a test, `clock-guard.test.ts`, fails if `Date.now()` or `new Date()` appears outside `src/app/clock.ts`, `src/core/util/id.ts` and `src/adapters/`). Hidden demo tools: open the app with `?demo=1` to get "+1 day", "+7 days" and "Reset time" | Verified by `clock.test.ts` and `home-review.test.tsx` |
 
 ## Phase B: Content
-Code implementation is complete below; authored question content is AI-drafted and still requires human review before release: `{"draft": true, "review": "pending"}`.
 | ID | Task | Acceptance |
 |---|---|---|
-| B1 | **IMPLEMENTED.** Complete the original 6 concepts with explanations in 2+ styles, teach-back checklists, and keywords | Validator has no warnings for those concepts |
-| B2 | **IMPLEMENTED; human review pending.** 4 to 6 questions per concept with misconception-tagged distractors | Every wrong option tagged; reviewed by a human |
-| B3 | **IMPLEMENTED.** Add 4 generator templates (accumulator init, loop condition, index vs value in lists, base case) | Each passes the generator test pattern (500 seeds) |
-| B4 | **IMPLEMENTED.** Add a second small pack (about 10 questions, non-programming) to prove generality | Loads via the same code with zero engine changes |
+| B1 | **DONE (drafted, awaiting human review).** All 6 programming topics have a plain explanation plus at least one more style, a teach-back checklist of 3 to 4 items, and routing keywords. The seasons pack has 3 topics. Validator: 0 errors, 0 warnings | `docs/content-review/*.md` signed off by a person |
+| B2 | **DONE (drafted, awaiting human review).** Programming: 32 questions (4 to 6 per topic, 266 checked by running the code in real Python). Seasons: 12 questions. Every wrong answer is tagged and has feedback. Each mistake is still offered by only one question for most mistakes (48 of 59), which is the next content job | `npm run verify:content` passes; human sign-off pending |
+| B3 | **DONE.** Four generators (`accumulator.init`, `loops.while-condition`, `lists.index-vs-value`, `recursion.base-case`) in `src/generators/basics.ts`, registered, used by the pack, covered by 500-seed tests and the Python check. The old unused `phaseB.ts` (duplicate options in 68 of 200 samples, a fixed question) was removed | `packs.test.ts`, `generators.test.ts`, `npm run verify:content` |
+| B4 | **DONE.** Second pack `seasons-basics` (Science): 3 topics, 12 questions, 19 mistakes, runs on the same engine with no engine change (`packs.test.ts`). Not yet selectable in the app (profiles use `programming-basics`) | `packs.test.ts` |
 
 ## Phase C: AI layer
 | ID | Task | Acceptance |
@@ -41,3 +40,7 @@ Code implementation is complete below; authored question content is AI-drafted a
 
 ## Phase E: Stretch (only if A to D are done)
 Bandit strategy selector, BKT mastery, bring-your-own-notes, Pyodide code questions, voice input
+
+| ID | Task | Acceptance |
+|---|---|---|
+| E1 | **DONE in code and tests with a pretend model; real-model test pending.** Optional in-browser model (Transformers.js in a Web Worker). Settings has "Download model" (one-time, needs internet), progress, "Remove model". After download it loads from the browser cache with the network off. Not downloaded, loading, failed or low-resource device = verified templates, instantly. The engine files are served from this site (`public/ort`, copied by `scripts/copy-ort.ts`) and saved on first download | **Needs a person:** download the model in Chrome, switch to airplane mode, reload, and check that Learn, Teach-back and the wrong-answer explanation still work; fill in the numbers in `docs/EVIDENCE.md` |
