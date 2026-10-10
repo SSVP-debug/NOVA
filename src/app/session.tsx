@@ -44,6 +44,10 @@ const lastPackKey = (profileId: string) => `nova.pack.${profileId}`;
 const readLastPack = (profileId: string): string | null => { try { return localStorage.getItem(lastPackKey(profileId)); } catch { return null; } };
 const writeLastPack = (profileId: string, packId: string) => { try { localStorage.setItem(lastPackKey(profileId), packId); } catch { /* private mode: not remembered */ } };
 
+const ACTIVE_KEY = 'nova.active';
+const readActive = (): string | null => { try { return localStorage.getItem(ACTIVE_KEY); } catch { return null; } };
+const writeActive = (id: string | null) => { try { if (id) localStorage.setItem(ACTIVE_KEY, id); else localStorage.removeItem(ACTIVE_KEY); } catch { /* private mode: not remembered */ } };
+
 export function SessionProvider({ services: baseServices, children }: { services: Services; children: ReactNode }) {
   const { storage, clock } = baseServices;
   const pack = baseServices.pack; // the default subject (demo learners are always built on it)
@@ -71,18 +75,31 @@ export function SessionProvider({ services: baseServices, children }: { services
   const resetTime = useCallback(() => { services.demoClock?.reset(); setTimeShiftDays(0); }, [services]);
 
   const refresh = useCallback(async () => setProfiles(await storage.listProfiles()), [storage]);
-  useEffect(() => { refresh().finally(() => setReady(true)); }, [refresh]);
-
+  const restored = useRef(false);
   const selectProfile = useCallback(async (id: string | null, packId?: string) => {
-    if (!id) { setProfile(null); setLearner(null); return; }
+    if (!id) { writeActive(null); setProfile(null); setLearner(null); return; }
     const p = await storage.getProfile(id);
     if (!p) return;
     const wanted = packId ?? readLastPack(id);
     const target = baseServices.packs.find((x) => x.id === wanted) ?? pack;
     const l = (await storage.loadLearner(id, target.id)) ?? createLearner(id, target, clock.now());
     writeLastPack(id, target.id);
+    writeActive(id); // a page refresh brings the same student back
     setProfile(p); setLearner(l);
   }, [storage, pack, clock, baseServices]);
+
+  // After a refresh, open the profile that was open before (if it still exists). Otherwise show the profile page.
+  useEffect(() => {
+    if (restored.current) return;
+    restored.current = true;
+    (async () => {
+      try {
+        await refresh();
+        const id = readActive();
+        if (id) await selectProfile(id);
+      } finally { setReady(true); }
+    })();
+  }, [refresh, selectProfile]);
 
   const switchPack = useCallback(async (packId: string) => {
     const current = profileRef.current;
@@ -120,7 +137,7 @@ export function SessionProvider({ services: baseServices, children }: { services
     services.demoClock?.reset(); // seeded history is built from "now", so time goes back to real time first
     setTimeShiftDays(0);
     for (const p of await storage.listProfiles()) if (p.seeded) await storage.deleteProfile(p.id); // real profiles stay
-    if (profileRef.current?.seeded) { setProfile(null); setLearner(null); }
+    if (profileRef.current?.seeded) { writeActive(null); setProfile(null); setLearner(null); }
     await ensureDemo();
   }, [services, storage, ensureDemo]);
 
@@ -174,7 +191,7 @@ export function SessionProvider({ services: baseServices, children }: { services
 
   const removeProfile = useCallback(async (id: string) => {
     await storage.deleteProfile(id);
-    if (profile?.id === id) { setProfile(null); setLearner(null); }
+    if (profile?.id === id) { writeActive(null); setProfile(null); setLearner(null); }
     await refresh();
   }, [storage, profile, refresh]);
 

@@ -16,7 +16,9 @@ async function open(storage = new MemoryStorage()) {
   if (!(await storage.listProfiles()).length) await storage.saveProfile(makeProfile('Asha', NOW));
   const services = createServices({ storage, ai: new TemplateAI() });
   render(<SessionProvider services={services}><App /></SessionProvider>);
-  fireEvent.click(await screen.findByRole('button', { name: 'Asha' }));
+  // On a repeat visit the same student is opened again (page refresh), so there is nothing to pick.
+  const who = await screen.findByRole('button', { name: /^(Asha|Switch)$/ });
+  if (who.textContent !== 'Switch') fireEvent.click(who);
   return storage;
 }
 const subject = () => screen.findByLabelText('Subject') as Promise<HTMLSelectElement>;

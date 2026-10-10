@@ -8,3 +8,5 @@
 
 New files: `src/app/contrast.ts`, `src/ui/ContrastToggle.tsx`, `src/ui/LearnedCard.tsx`, `src/ui/NextStepCard.tsx`, `src/core/engine/solution.ts` (+ test).
 `npm run check`: typecheck, 207 tests and content validation pass.
+
+6. **Page refresh keeps you logged in.** The open profile is remembered on the device (`nova.active`) and opened again after a refresh. "Switch" and deleting the profile clear it, so the profile page still shows when you ask for it. A refresh returns to Home (screens are not remembered).

@@ -11,7 +11,7 @@ import { makeProfile } from '@/seed/personas';
 import { attempt, NOW, pack } from '@/testkit';
 import { App } from '../App';
 
-afterEach(() => { cleanup(); window.history.pushState({}, '', '/'); });
+afterEach(() => { cleanup(); localStorage.clear(); window.history.pushState({}, '', '/'); });
 
 async function open(url: string) {
   window.history.pushState({}, '', url);
@@ -79,5 +79,26 @@ describe('Home: two parts', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'My DNA' }));
     await screen.findByText('Topic by topic');
     expect(screen.queryByText('What NOVA has learned about you')).toBeNull();
+  });
+});
+
+describe('Page refresh', () => {
+  it('opens the same student again instead of the profile page', async () => {
+    const storage = new MemoryStorage();
+    const p = makeProfile('Asha', NOW);
+    await storage.saveProfile(p);
+    const make = () => createServices({ storage, ai: new TemplateAI(), clock: { now: () => NOW } });
+    render(<SessionProvider services={make()}><App /></SessionProvider>);
+    fireEvent.click(await screen.findByRole('button', { name: 'Asha' }));
+    await screen.findByRole('button', { name: 'Switch' });
+    cleanup(); // same as refreshing the page: new React tree, same storage and localStorage
+    render(<SessionProvider services={make()}><App /></SessionProvider>);
+    expect(await screen.findByRole('button', { name: 'Switch' })).toBeTruthy();
+    expect(screen.queryByText('Who is learning?')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Switch' })); // Switch really leaves the profile
+    await screen.findByText('Who is learning?');
+    cleanup();
+    render(<SessionProvider services={make()}><App /></SessionProvider>);
+    expect(await screen.findByText('Who is learning?')).toBeTruthy(); // and a refresh after Switch stays on the profile page
   });
 });
