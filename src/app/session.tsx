@@ -16,7 +16,8 @@ interface Session {
   profile: Profile | null;
   learner: LearnerState | null;
   createProfile(name: string): Promise<void>;
-  selectProfile(id: string | null): Promise<void>;
+  selectProfile(id: string | null, packId?: string): Promise<void>; // packId = subject; default is the one used last
+  switchPack(packId: string): Promise<void>; // change subject for the active profile (each subject keeps its own progress)
   seedDemoProfiles(): Promise<void>; // adds only the demo learners that are missing
   resetDemoProfiles(): Promise<void>; // deletes ONLY sample-data profiles, recreates both, resets demo time
   openDemoProfile(kind: 'fresh' | 'aarav'): Promise<void>;
@@ -39,17 +40,31 @@ export const useSession = (): Session => {
   return s;
 };
 
-export function SessionProvider({ services, children }: { services: Services; children: ReactNode }) {
-  const { storage, pack, clock } = services;
+const lastPackKey = (profileId: string) => `nova.pack.${profileId}`;
+const readLastPack = (profileId: string): string | null => { try { return localStorage.getItem(lastPackKey(profileId)); } catch { return null; } };
+const writeLastPack = (profileId: string, packId: string) => { try { localStorage.setItem(lastPackKey(profileId), packId); } catch { /* private mode: not remembered */ } };
+
+export function SessionProvider({ services: baseServices, children }: { services: Services; children: ReactNode }) {
+  const { storage, clock } = baseServices;
+  const pack = baseServices.pack; // the default subject (demo learners are always built on it)
   const [ready, setReady] = useState(false);
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
   const profileRef = useRef<Profile | null>(null); // always the newest profile, even between renders
   profileRef.current = profile;
   const [learner, setLearner] = useState<LearnerState | null>(null);
+  // The subject in use follows the loaded learner, so a screen can never see a pack that does not match its learner.
+  const activePack = useMemo(
+    () => (learner && baseServices.packs.find((p) => p.id === learner.packId)) || baseServices.pack,
+    [learner, baseServices],
+  );
+  const services = useMemo<Services>(
+    () => (activePack === baseServices.pack ? baseServices : { ...baseServices, pack: activePack }),
+    [activePack, baseServices],
+  );
   const ai = useMemo(
-    () => profile?.settings.aiMode === 'off' ? new TemplateAI() : services.ai,
-    [profile?.settings.aiMode, services.ai],
+    () => profile?.settings.aiMode === 'off' ? new TemplateAI() : baseServices.ai,
+    [profile?.settings.aiMode, baseServices.ai],
   );
   const [timeShiftDays, setTimeShiftDays] = useState(services.demoClock?.shiftDays ?? 0);
   const advanceDays = useCallback((days: number) => { services.demoClock?.advanceDays(days); setTimeShiftDays(services.demoClock?.shiftDays ?? 0); }, [services]);
@@ -58,13 +73,21 @@ export function SessionProvider({ services, children }: { services: Services; ch
   const refresh = useCallback(async () => setProfiles(await storage.listProfiles()), [storage]);
   useEffect(() => { refresh().finally(() => setReady(true)); }, [refresh]);
 
-  const selectProfile = useCallback(async (id: string | null) => {
+  const selectProfile = useCallback(async (id: string | null, packId?: string) => {
     if (!id) { setProfile(null); setLearner(null); return; }
     const p = await storage.getProfile(id);
     if (!p) return;
-    const l = (await storage.loadLearner(id, pack.id)) ?? createLearner(id, pack, clock.now());
+    const wanted = packId ?? readLastPack(id);
+    const target = baseServices.packs.find((x) => x.id === wanted) ?? pack;
+    const l = (await storage.loadLearner(id, target.id)) ?? createLearner(id, target, clock.now());
+    writeLastPack(id, target.id);
     setProfile(p); setLearner(l);
-  }, [storage, pack, clock]);
+  }, [storage, pack, clock, baseServices]);
+
+  const switchPack = useCallback(async (packId: string) => {
+    const current = profileRef.current;
+    if (current) await selectProfile(current.id, packId);
+  }, [selectProfile]);
 
   const createProfile = useCallback(async (name: string) => {
     const p = makeProfile(name.trim() || 'Student', clock.now());
@@ -103,24 +126,24 @@ export function SessionProvider({ services, children }: { services: Services; ch
 
   const openDemoProfile = useCallback(async (kind: 'fresh' | 'aarav') => {
     const d = await ensureDemo();
-    await selectProfile((kind === 'fresh' ? d.fresh : d.aarav).id);
+    await selectProfile((kind === 'fresh' ? d.fresh : d.aarav).id, pack.id); // the demo script is written for the default subject
   }, [ensureDemo, selectProfile]);
 
   const recordAttempt = useCallback(async (ev: AttemptEvent) => {
     if (!learner) throw new Error('No active learner');
-    const next = applyAttempt(learner, ev, pack);
+    const next = applyAttempt(learner, ev, activePack);
     setLearner(next);
     await storage.saveLearner(next);
     return next;
-  }, [learner, pack, storage]);
+  }, [learner, activePack, storage]);
 
   const recordAttempts = useCallback(async (evs: AttemptEvent[]) => {
     if (!learner) throw new Error('No active learner');
-    const next = evs.reduce((state, ev) => applyAttempt(state, ev, pack), learner);
+    const next = evs.reduce((state, ev) => applyAttempt(state, ev, activePack), learner);
     setLearner(next);
     await storage.saveLearner(next);
     return next;
-  }, [learner, pack, storage]);
+  }, [learner, activePack, storage]);
 
   const exportCurrent = useCallback(async () => {
     if (!profile) throw new Error('No active profile');
@@ -156,7 +179,7 @@ export function SessionProvider({ services, children }: { services: Services; ch
   }, [storage, profile, refresh]);
 
   const value = useMemo<Session>(() => ({
-    services, ai, ready, profiles, profile, learner, canShiftTime: !!services.demoClock, timeShiftDays, advanceDays, resetTime, createProfile, selectProfile, seedDemoProfiles, resetDemoProfiles, openDemoProfile, recordAttempt, recordAttempts, exportCurrent, importFile, updateSettings, removeProfile,
-  }), [services, ai, ready, profiles, profile, learner, timeShiftDays, advanceDays, resetTime, createProfile, selectProfile, seedDemoProfiles, resetDemoProfiles, openDemoProfile, recordAttempt, recordAttempts, exportCurrent, importFile, updateSettings, removeProfile]);
+    services, ai, ready, profiles, profile, learner, canShiftTime: !!services.demoClock, timeShiftDays, advanceDays, resetTime, createProfile, selectProfile, switchPack, seedDemoProfiles, resetDemoProfiles, openDemoProfile, recordAttempt, recordAttempts, exportCurrent, importFile, updateSettings, removeProfile,
+  }), [services, ai, ready, profiles, profile, learner, timeShiftDays, advanceDays, resetTime, createProfile, selectProfile, switchPack, seedDemoProfiles, resetDemoProfiles, openDemoProfile, recordAttempt, recordAttempts, exportCurrent, importFile, updateSettings, removeProfile]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

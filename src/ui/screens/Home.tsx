@@ -1,5 +1,6 @@
 import { planToday, reviewSchedule } from '@/core/engine';
 import { useSession } from '@/app/session';
+import { PackPicker } from '../PackPicker';
 import type { Route } from '../App';
 
 const STEP_LABEL: Record<string, string> = {
@@ -19,6 +20,7 @@ export function Home({ go }: { go: (r: Route) => void }) {
   const upcoming = reviews.find((r) => !r.due);
   return (
     <div>
+      <PackPicker />
       <div className="card"><div className="mu">Today's plan</div><h2 style={{ margin: '4px 0' }}>{plan.headline}</h2>
         {plan.steps.map((s, i) => (
           <div className="row" key={i}>
