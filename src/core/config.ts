@@ -13,7 +13,7 @@ export const CONFIG = {
   review: { intervalsDays: [1, 3, 7, 14, 30] },
   strategy: { minShownToTrust: 2, minHelpRate: 0.5 },
   planner: { maxSteps: 3, minutes: { fix: 5, review: 3, learn: 8, diagnostic: 5 } },
-  selector: { recentWindow: 5 },
+  selector: { recentWindow: 5, answeredPenalty: 3, freshBonus: 0.5 }, // prefer questions not answered yet, and ones that can show a mistake not tested yet
   session: { length: 5 }, // questions per practice session
   // Quick diagnostic for a new profile (backlog A2).
   diagnostic: {

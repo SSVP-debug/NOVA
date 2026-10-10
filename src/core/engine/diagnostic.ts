@@ -1,6 +1,6 @@
 import { CONFIG } from '../config';
 import type { GeneratorRegistry } from '../ports';
-import type { AttemptEvent, ConceptId, ContentPack, Difficulty, LearnerState, MisconceptionId, Plan, Question } from '../types';
+import type { AttemptEvent, ConceptId, ContentPack, Difficulty, LearnerState, MisconceptionId, Plan, Question, QuestionSpec } from '../types';
 import { topoOrder } from './graph';
 import { planToday } from './planner';
 import { materializeQuestion } from './questions';
@@ -89,10 +89,22 @@ export function nextDiagnosticQuestion(i: DiagnosticInput): Question | null {
   const target = chooseDiagnosticTarget(i.pack, i.events);
   if (!target) return null;
   const asked = new Set(i.events.map((e) => e.specId));
+  // Mistakes the earlier questions of this check already offered: a question that offers NEW ones tells us more.
+  const covered = new Set<MisconceptionId>();
+  for (const q of i.pack.questions) if (asked.has(q.id)) offeredBy(q, i.generators).forEach((m) => covered.add(m));
+  const fresh = (q: QuestionSpec) => offeredBy(q, i.generators).filter((m) => !covered.has(m)).length;
+  const gap = (q: QuestionSpec) => Math.abs(q.difficulty - target.difficulty);
   const spec = i.pack.questions
     .filter((q) => q.concept === target.concept && !asked.has(q.id))
-    .sort((a, b) => Math.abs(a.difficulty - target.difficulty) - Math.abs(b.difficulty - target.difficulty))[0];
+    // stay within one level of the target difficulty (the check still adapts), then prefer the most new mistakes
+    .sort((a, b) => (gap(a) > 1 ? 1 : 0) - (gap(b) > 1 ? 1 : 0) || fresh(b) - fresh(a) || gap(a) - gap(b))[0];
   return spec ? materializeQuestion(spec, i.generators, i.seed + i.events.length, target.focus) : null;
+}
+
+/** Mistakes a question can reveal (its wrong options, or the targets of its generator). */
+export function offeredBy(spec: QuestionSpec, generators: GeneratorRegistry): MisconceptionId[] {
+  if (spec.kind === 'static') return [...new Set(spec.options.flatMap((o) => (o.misconception ? [o.misconception] : [])))];
+  return generators.get(spec.generator)?.targets ?? [];
 }
 
 // ---------- results ----------

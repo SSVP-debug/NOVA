@@ -3,6 +3,7 @@ import type { GeneratorRegistry } from '../ports';
 import type { ConceptId, ContentPack, Difficulty, LearnerState, MisconceptionId, Question, QuestionSpec } from '../types';
 import { createRng } from '../util/rng';
 import { masteryOf } from './graph';
+import { offeredBy } from './diagnostic';
 import { materializeQuestion } from './questions';
 
 export interface SelectInput {
@@ -34,6 +35,11 @@ export function selectQuestion(i: SelectInput): Question | null {
   const target = targetDifficulty(masteryOf(i.state, i.concept));
   const rnd = createRng(i.seed);
 
+  // Coverage first: a question the learner has not answered yet can still reveal a new mistake.
+  const answered = new Set(i.state.history.map((e) => e.specId));
+  const tested = new Set<string>();
+  for (const q of i.pack.questions) if (answered.has(q.id)) offeredBy(q, i.generators).forEach((m) => tested.add(m));
+
   const scored = i.pack.questions
     .filter((q) => q.concept === i.concept)
     .map((q) => ({
@@ -41,7 +47,9 @@ export function selectQuestion(i: SelectInput): Question | null {
       score:
         -Math.abs(q.difficulty - target) * 2 +
         (testsFocus(q, i.generators, focus) ? 5 : 0) -
-        (recent.has(q.id) ? 10 : 0) +
+        (recent.has(q.id) ? 10 : 0) -
+        (answered.has(q.id) ? CONFIG.selector.answeredPenalty : 0) +
+        CONFIG.selector.freshBonus * Math.min(3, offeredBy(q, i.generators).filter((m) => !tested.has(m)).length) +
         rnd() * 0.5,
     }))
     .sort((a, b) => b.score - a.score);

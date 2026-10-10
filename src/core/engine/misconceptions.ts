@@ -24,9 +24,13 @@ export function updateMisconceptions(draft: LearnerState, ev: AttemptEvent, pack
     }
     return;
   }
-  // A correct normal answer: active mistakes in the same concept become "improving".
+  // A correct normal answer is only evidence about a mistake when the question could have shown it
+  // (the mistake was one of its wrong options and the learner avoided it). Then it becomes "improving".
+  // An answer to a question that never offered the mistake says nothing, so the mistake stays active.
+  const spec = pack.questions.find((q) => q.id === ev.specId);
   for (const def of pack.misconceptions) {
     const m = draft.misconceptions[def.id];
-    if (def.concept === ev.concept && m && m.status === 'active') m.status = 'improving';
+    if (def.concept !== ev.concept || !m || m.status !== 'active') continue;
+    if (spec?.kind === 'static' && spec.options.some((o) => o.misconception === def.id)) m.status = 'improving';
   }
 }

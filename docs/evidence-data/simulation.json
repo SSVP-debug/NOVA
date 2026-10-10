@@ -17,76 +17,118 @@
     "nova": {
       "policy": "nova",
       "learners": 500,
-      "meanAttemptsToResolve": 15.448,
-      "ciAttempts": 0.6973155330459806,
+      "meanAttemptsToResolve": 34.976,
+      "ciAttempts": 0.7970210476999949,
       "resolvedWithin20": {
-        "p": 0.796,
-        "ci": 0.03532178858438513
+        "p": 0.128,
+        "ci": 0.029284262859085256
       },
       "resolvedWithinBudget": {
-        "p": 0.986,
-        "ci": 0.01029848983103834
+        "p": 0.326,
+        "ci": 0.04108750949862987
       },
-      "meanWrongAnswers": 7.368,
-      "bestStyleShare": 0.4253968253968254
+      "meanWrongAnswers": 7.76,
+      "bestStyleShare": 0.37203947368421053,
+      "mistakesOfferedShare": 0.823666666666667,
+      "unfixedOfferedShare": 0.502
     },
     "baseline": {
       "policy": "baseline",
       "learners": 500,
-      "meanAttemptsToResolve": 15.26,
-      "ciAttempts": 1.0684297807904837,
+      "meanAttemptsToResolve": 33.734,
+      "ciAttempts": 0.9733891387830416,
       "resolvedWithin20": {
-        "p": 0.714,
-        "ci": 0.039609849441773946
+        "p": 0.162,
+        "ci": 0.0322961375275744
       },
       "resolvedWithinBudget": {
-        "p": 0.904,
-        "ci": 0.025822060893739673
+        "p": 0.316,
+        "ci": 0.040751412009892365
       },
-      "meanWrongAnswers": 5.472,
-      "bestStyleShare": 0.34247076023391815
+      "meanWrongAnswers": 6.518,
+      "bestStyleShare": 0.508438171218165,
+      "mistakesOfferedShare": 0.7313333333333338,
+      "unfixedOfferedShare": 0.37
+    }
+  },
+  "ideal": {
+    "nova": {
+      "policy": "nova",
+      "learners": 500,
+      "meanAttemptsToResolve": 26.788,
+      "ciAttempts": 1.2529752999397876,
+      "resolvedWithin20": {
+        "p": 0.382,
+        "ci": 0.042588955413346306
+      },
+      "resolvedWithinBudget": {
+        "p": 0.912,
+        "ci": 0.024831892783273687
+      },
+      "meanWrongAnswers": 2.628,
+      "bestStyleShare": 0.3399168399168399,
+      "mistakesOfferedShare": 0.9603333333333337,
+      "unfixedOfferedShare": 0.012
+    },
+    "baseline": {
+      "policy": "baseline",
+      "learners": 500,
+      "meanAttemptsToResolve": 35.886,
+      "ciAttempts": 1.7667179592489604,
+      "resolvedWithin20": {
+        "p": 0.296,
+        "ci": 0.040013197182929526
+      },
+      "resolvedWithinBudget": {
+        "p": 0.746,
+        "ci": 0.03815551688550425
+      },
+      "meanWrongAnswers": 1.744,
+      "bestStyleShare": 0.5584862385321101,
+      "mistakesOfferedShare": 0.8640000000000007,
+      "unfixedOfferedShare": 0.008
     }
   },
   "diagnosis": {
     "nova": {
       "policy": "nova",
       "learners": 500,
-      "precision": 0.8967000000000003,
-      "recall": 0.554,
-      "f1": 0.684871854966568
+      "precision": 0.5253000000000001,
+      "recall": 0.3243333333333334,
+      "f1": 0.40104900153007195
     },
     "baseline": {
       "policy": "baseline",
       "learners": 500,
-      "precision": 0.7057666666666667,
-      "recall": 0.8083333333333339,
-      "f1": 0.7535760150878046
+      "precision": 0.39996666666666686,
+      "recall": 0.30533333333333335,
+      "f1": 0.34630130598484493
     }
   },
   "timingsUs": [
     {
       "name": "applyAttempt (learner with history)",
-      "us": 51.6052995
+      "us": 35.259061499999916
     },
     {
       "name": "planToday",
-      "us": 15.419592000000081
+      "us": 12.164631499999814
     },
     {
       "name": "selectQuestion",
-      "us": 31.53958
+      "us": 43.58028450000006
     },
     {
       "name": "generate one question (generator)",
-      "us": 6.851745999999935
+      "us": 9.050260499999922
     },
     {
       "name": "next quick-check question",
-      "us": 9.227808000000095
+      "us": 20.805212999999863
     },
     {
       "name": "createLearner",
-      "us": 1.244581999999923
+      "us": 0.877471499999956
     }
   ],
   "exportBytes": 4649

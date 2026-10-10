@@ -14,7 +14,7 @@ Date of these numbers: 7 October 2026. Everything here was measured on the **sam
 
 ## 2. Automated tests (run `npm run check`)
 
-**154 tests in 29 files pass**, plus content validation (0 errors, 5 warnings for topics that have no questions yet) and a production build.
+**172 tests in 30 files pass**, plus content validation (0 errors and 0 warnings for both packs) and a production build.
 
 | Area | What the tests prove |
 |---|---|
@@ -33,55 +33,83 @@ Date of these numbers: 7 October 2026. Everything here was measured on the **sam
 ## 3. Personalization in one sentence you can say live
 "Same wrong answer, two learners: the new learner gets a plain explanation; the learner with history gets the counterexample that worked for them before, and **Why this?** shows the rule." (Demo with the seeded learners, labeled sample data.)
 
-## 4. Simulated learners: NOVA against a memoryless tutor
+## 4. Content evidence (Phase B)
+
+| | Programming basics | Seasons and the Earth |
+|---|---|---|
+| Topics | 6 (variables, lists, loops, loop bounds, functions, recursion) | 3 |
+| Named mistakes the pack can find | 59 | 19 |
+| Questions (hand-written / made by generators) | 32 (26 / 6) | 12 (12 / 0) |
+| Questions per topic | 4 to 6 | 3 to 5 |
+
+- **Every answer that contains code was run in real Python** (`npm run verify:content`): 266 questions (every hand-written one plus 40 examples from each generator), all marked answers match what Python really prints or does. I also broke an answer on purpose and the check caught it.
+- **Not yet checked by a person.** The content was drafted with AI help. Science facts (Seasons) and the wording of every explanation need a human review. Read `docs/content-review/*.md`, check each item, and sign it off. Until then say "drafted, review in progress".
+- **Breadth, not depth.** Every defined mistake can be found by at least one question, but **48 of the 59 programming mistakes (and 16 of 19 seasons mistakes) are offered by only one question**. NOVA can only find a mistake if that question is asked. More questions per mistake is the next content job.
+- **The second pack runs on the same engine** (quick check, plan, targeted question, explanation, doubt routing). Building it exposed one real bug in the doubt matcher (common words such as "why" and "the" in topic titles pulled questions toward the wrong topic). It is fixed and tested. A student can now choose the subject on Home (task E2); each subject keeps its own progress.
+
+## 5. Simulated learners: NOVA against a memoryless tutor
 
 ### Simulated learners (500 per policy, seed 2026)
 
-Pack: **programming-basics** v0.1.0. Budget: 40 questions per learner. Assumptions: a learner with a mistake falls into it 90% of the time when a matching wrong option appears, makes a random wrong answer 15% of the time otherwise, and an explanation removes the mistake 80% of the time in the learner's hidden best style and 35% in another style.
+Pack: **programming-basics** v0.2.0. Budget: 40 questions per learner. Assumptions: a learner with a mistake falls into it 90% of the time when a matching wrong option appears, makes a random wrong answer 15% of the time otherwise, and an explanation removes the mistake 80% of the time in the learner's hidden best style and 35% in another style.
 
 #### Experiment A: how fast are hidden mistakes removed?
 | | NOVA | Baseline (memoryless) |
 |---|---|---|
-| Mean questions until the learner has no mistake left (not resolved = 40) | 15.4 (±0.7) | 15.3 (±1.1) |
-| Fully resolved within 20 questions | 79.6% (±3.5) | 71.4% (±4.0) |
-| Fully resolved within 40 questions | 98.6% (±1.0) | 90.4% (±2.6) |
-| Mean wrong answers | 7.4 | 5.5 |
-| Explanations given in the learner's best style | 42.5% | 34.2% |
+| Mean questions until the learner has no mistake left (not resolved = 40) | 35.0 (±0.8) | 33.7 (±1.0) |
+| Fully resolved within 20 questions | 12.8% (±2.9) | 16.2% (±3.2) |
+| Fully resolved within 40 questions | 32.6% (±4.1) | 31.6% (±4.1) |
+| Mean wrong answers | 7.8 | 6.5 |
+| Explanations given in the learner's best style | 37.2% | 50.8% |
+
+#### Experiment C: an ideal learner (always falls into a mistake when offered, always learns from an explanation, never slips; budget 60 questions)
+This removes the learner assumptions, so it shows only what the **content and the engine** can do.
+| | NOVA | Baseline (memoryless) |
+|---|---|---|
+| Share of a learner's mistakes that some asked question offered as a wrong answer | 96.0% | 86.4% |
+| Learners fully resolved within 60 questions | 91.2% (±2.5) | 74.6% (±3.8) |
+| Learners left with a mistake that a question had already offered but that was not fixed | 1.2% | 0.8% |
 
 #### Experiment B: does the system find the right mistakes? (teaching switched off, 10 questions)
 | | NOVA | Baseline |
 |---|---|---|
-| Precision (flagged mistakes that are real) | 89.7% | 70.6% |
-| Recall (real mistakes that were found) | 55.4% | 80.8% |
-| F1 | 68.5% | 75.4% |
+| Precision (flagged mistakes that are real) | 52.5% | 40.0% |
+| Recall (real mistakes that were found) | 32.4% | 30.5% |
+| F1 | 40.1% | 34.6% |
 
-### Engine speed (Node v22.22.2, Intel(R) Xeon(R) Processor @ 2.80GHz, 1 cores)
+### Engine speed (Node v22.22.2, Intel(R) Xeon(R) Processor @ 2.10GHz, 1 cores)
 | Operation | Mean time |
 |---|---|
-| applyAttempt (learner with history) | 51.6 µs |
-| planToday | 15.4 µs |
-| selectQuestion | 31.5 µs |
-| generate one question (generator) | 6.9 µs |
-| next quick-check question | 9.2 µs |
-| createLearner | 1.2 µs |
+| applyAttempt (learner with history) | 35.3 µs |
+| planToday | 12.2 µs |
+| selectQuestion | 43.6 µs |
+| generate one question (generator) | 9.1 µs |
+| next quick-check question | 20.8 µs |
+| createLearner | 0.9 µs |
 
-Learner export (Aarav, 15 answers): 4.5 KB. Simulation run time: 1.2 s.
+Learner export (Aarav, 15 answers): 4.5 KB. Simulation run time: 3.2 s.
 
 #### How to read these numbers (honest)
-- **What the baseline is:** a tutor with no memory. It picks a random question, always gives the plain explanation, never probes. It is a fair "generic tutor", not a real competitor product.
-- **Completion:** within 40 questions NOVA resolved **98.6%** of simulated learners and the baseline **90.4%** (the ± ranges do not overlap). Within 20 questions: 79.6% against 71.4% (the ranges nearly touch).
-- **Speed on average: no difference.** About 15.4 against 15.3 questions. NOVA does not make the average learner faster here. A likely reason is that the first questions are a quick check with no teaching, but I did not test that. NOVA also gets more wrong answers (7.4 against 5.5), as expected when it deliberately asks about known mistakes; that was not tested either.
-- **Style adaptation is NOT shown by this experiment.** NOVA gave the learner's best style 42.5% of the time. Picking one of two styles at random would give about 50%. The rule needs a mistake to repeat or a style to be used twice before it trusts history, and these short runs rarely get there. The mechanism is proven in unit tests with seeded history, but the pitch should say it improves "over several sessions", not claim it from this table.
-- **Diagnosis (10 questions, teaching off):** NOVA's flags are more reliable (precision 89.7% against 70.6%) but it finds fewer real mistakes (recall 55.4% against 80.8%). Overall F1 is lower (68.5% against 75.4%). So in a very short test the baseline finds more mistakes, with more false alarms.
-- **Why recall is low (tested, not shipped):** NOVA turns an active mistake into "improving" after any later correct answer in the same topic, even if that question never offered the wrong option the learner falls for. In a throwaway experiment with that rule removed, NOVA's recall rose to **90.8%** and F1 to **84.8%**, but mistakes were removed more slowly (mean 18.0 questions, only 85.8% resolved within 40, which is below the baseline's 90.4%). So the current rule is a **trade-off**, not a bug.
-- **Recommended next step (not done):** let a correct answer lower the mistake only if the question actually offered that mistake's wrong option. That needs `AttemptEvent` to record which mistakes a question offered, which changes `types.ts`, so it needs the lead's decision. The simulation can then be re-run to check the effect (`npm run evidence`).
-- **Assumptions are guesses:** how often learners fall into a mistake, how often an explanation fixes it, and that a hidden "best style" exists. Change them in `src/sim/learnerSim.ts` (`DEFAULT_SIM`) and the table updates.
+- **What changed since the first version of this table.** Three small engine rules were added to fix the weak diagnosis (recall 6.5%): (1) the quick check prefers the question that can show the most new mistakes, staying within one difficulty level; (2) practice prefers a question not answered before and one that can show a mistake not tested yet; (3) a correct answer lowers a flagged mistake to "improving" only when that question could have shown the mistake (before, any correct answer in the topic did). Tests for each rule are in `src/core/engine/diagnosis-coverage.test.ts`.
+- **What the baseline is:** a tutor with no memory. It picks a random question, always gives the plain explanation, never probes, and flags every wrong answer. It is a fair "generic tutor", not a real competitor product.
+- **Finding mistakes got much better, with a cost.** Recall rose from 6.5% to 32.4% (baseline 30.5%) and F1 from 12.1% to 40.1% (baseline 34.6%). Precision fell from 83.0% to 52.5% (baseline 40.0%): a wrong answer by slip now stays flagged until a later question that could show it is answered correctly or a probe resolves it. About half of the flags are wrong, so the app should say "possible mistake" and let the probe confirm it.
+- **Repeated on 5 random seeds** (2026, 1, 2, 3, 4): F1 was higher than the baseline in all 5 (by 4 to 10 points), precision was higher in all 5 (by 12 to 15 points), recall was higher in 4 and about equal in 1.
+- **Why the check still cannot find everything:** 48 of 59 mistakes are offered by only one question, and an 8-question check shows at most about 19 of them. The content decides the ceiling. Adding questions that offer the same mistakes in other ways is the next content job.
+- **Ideal learner (Experiment C):** within 60 questions NOVA fully resolves 91.2% (±2.5) against 74.6% (±3.8) for the baseline (before the changes: 78.6%). On the 5 seeds the gap was 17 to 21 points every time. This shows what the content and the engine can do when the learner assumptions are removed.
+- **No proof that NOVA fixes mistakes faster under the normal assumptions.** Within 40 questions NOVA 32.6% (±4.1) against 31.6% (±4.1) with seed 2026, but on 4 of the 5 seeds NOVA was 1.6 to 3.2 points **behind**. Treat it as equal. NOVA is also slower at the start (12.8% against 16.2% resolved within 20 questions) and gets more wrong answers (7.8 against 6.5), as expected when it deliberately asks about known mistakes.
+- **Style adaptation is not shown:** NOVA gave the learner's best style 37.2% of the time; random choice between two styles gives about 50% (the baseline got 50.8%). The rule needs a mistake to repeat before it trusts history. It works in the unit tests with seeded history (the demo), but this experiment does not prove it, and the number is now lower than before (42.3%).
+- **Pack:** these numbers use the 6-topic `programming-basics` pack in the repository. If your copy has more topics, run `npm run evidence` again and paste the new tables.
 
-## 5. Speed and weak-device numbers
+#### What you can and cannot say
+- **Can say:** NOVA names the mistake with evidence, remembers the learner, chooses a teaching style by rule and shows why, schedules reviews, works offline. In simulation it finds the right mistakes better than a generic tutor (F1 40.1% against 34.6%; precision 52.5% against 40.0%; recall 32.4% against 30.5%, repeated on 5 seeds), and with an ideal learner it clears more learners' mistakes within 60 questions (91.2% against 74.6%).
+- **Cannot say:** that NOVA fixes mistakes faster than a generic tutor under realistic assumptions, that its flags are mostly right (about half are), or that it adapts to learning style in practice. The simulation does not show these, and no real students have used it.
+- **Assumptions are guesses:** how often learners fall into a mistake, how often an explanation fixes it, and that a hidden best style exists. Change them in `src/sim/learnerSim.ts` (`DEFAULT_SIM`).
+
+## 6. Speed and weak-device numbers
 
 The Node numbers above (microseconds per engine call) were measured on a cloud server, **not a weak device**. They show the engine is not the bottleneck: every call takes far less than a millisecond.
 
-**To get real weak-device numbers:** open the app on the weakest device with `?demo=1`, press **Run device check**, then **Copy these numbers** and paste them below. Also use `npm run check:offline` for the saved size (currently **125.6 KB gzipped, 400.6 KB raw**).
+**To get real weak-device numbers:** open the app on the weakest device with `?demo=1`, press **Run device check**, then **Copy these numbers** and paste them below. Also use `npm run check:offline` for the saved size (currently **140.3 KB gzipped, 458.2 KB raw**).
 
 | Item | Result |
 |---|---|
@@ -91,14 +119,14 @@ The Node numbers above (microseconds per engine call) were measured on a cloud s
 | Storage used by app and profiles (MB) | ______ |
 | Engine: save one answer / plan / next question (microseconds) | ______ |
 | Time from tapping the link to the first question visible (stopwatch) | ______ s |
-| Saved app size (gzip) | 125.6 KB |
+| Saved app size (gzip) | 140.3 KB |
 
 Paste the raw copied text here:
 ```
 (paste the device check output)
 ```
 
-## 6. AI model benchmark (Phase C1 — device run pending)
+## 7. AI model benchmark (Phase C1 — device run pending)
 
 No model benchmark has been run for this checkout: Ollama is not installed in the development environment, and the demo laptop and weakest device are not available here. Do not present the following as measurements or claim a model is selected.
 
@@ -111,23 +139,26 @@ Run the same 10 verified `Intervention` texts on each candidate after downloadin
 
 The Ollama adapter is implemented, but `gemma3:1b` is only the current default tag, **not a benchmark-backed model choice**. Lite mode and template fallback remain the supported path until the device results are recorded.
 
-## 7. Offline evidence
-Automated: build check passes (see section 2). The latest build precaches **400.6 KB raw / 125.6 KB gzip**. **Still to do by a person:** the real-browser and real-device test in `docs/OFFLINE_TEST.md` (screenshot of the empty Network tab and the results table).
+## 8. Offline evidence
+Automated: build check passes (see section 2). The latest build precaches **458.2 KB raw / 140.3 KB gzip**. **Still to do by a person:** the real-browser and real-device test in `docs/OFFLINE_TEST.md` (screenshot of the empty Network tab and the results table).
 
-## 8. Accessibility evidence
+## 9. Accessibility evidence
 Automated: contrast (AAA), text sizes, focus and Listen button (section 2). **Still to do by a person:** `docs/ACCESSIBILITY_CHECK.md` (keyboard-only run, 200% zoom, read-aloud with Wi-Fi off, optional screen reader).
 
-## 9. Known limits (say these before a judge asks)
+## 10. Known limits (say these before a judge asks)
 - No real students have used NOVA. The simulation is a model of behaviour, not of people.
 - The content pack is a small sample. Results will change with real content.
-- Style adaptation needs several sessions to show.
-- Short diagnosis finds fewer mistakes than a random quiz that flags every wrong answer.
+- Style adaptation needs several sessions to show, and is not proven by the simulation.
+- NOVA is not faster than a memoryless tutor in the simulation. The quick check finds few mistakes.
+- Content was drafted with AI help and is not yet signed off by a person.
 - Not yet tested in a real browser or on a weak device (steps are written).
 - A local model has not yet been benchmarked or selected on the demo laptop and weakest device; the AI UI works with templates instead.
 
-## 10. How to regenerate
+## 11. How to regenerate
 ```
 npm run evidence        # rewrites docs/evidence-data/simulation.md and simulation.json
+npm run verify:content  # runs every code question in real Python (needs Python 3)
+npm run content:review  # rewrites the human review sheets in docs/content-review/
 npm run check           # tests and content validation
 npm run build && npm run check:offline
 ```
